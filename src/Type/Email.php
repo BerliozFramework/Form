@@ -35,11 +35,9 @@ class Email extends Text
     /**
      * Validation.
      *
-     * @param \Berlioz\Form\FormValidation $formValidation Form validation
-     *
      * @return bool
      */
-    public function validation(FormValidation $formValidation)
+    public function validation()
     {
         return preg_match('/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/', $this->getValue()) == 1;
     }
