@@ -159,7 +159,7 @@ abstract class FormElement implements FormElementInterface
             if ($this->hasParent()) {
                 return $this->getParent()->getTemplateFilename();
             } else {
-                return '@Berlioz/Form.twig';
+                return '@Berlioz-Form/Twig/Default.twig';
             }
         }
     }
