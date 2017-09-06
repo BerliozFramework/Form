@@ -55,6 +55,9 @@ class Form extends FormElement implements FormTraversableInterface
         $this->getOptions()
              ->setOptions(['method' => 'post'])
              ->setOptions($options);
+
+        // Default data to false
+        $this->formData = false;
     }
 
     /**
