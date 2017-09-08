@@ -157,7 +157,7 @@ class FormCollection extends FormElement implements FormTraversableInterface, \A
                 throw new BerliozException(sprintf('"%s" is not a valid name', $offset));
             }
         } else {
-            throw new BerliozException('Only class whose implements \Berlioz\Core\Form\FormElement interface can be added');
+            throw new BerliozException('Only class whose implements \Berlioz\Form\FormElement interface can be added');
         }
     }
 

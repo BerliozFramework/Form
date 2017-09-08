@@ -323,13 +323,13 @@ class Form extends FormElement implements FormTraversableInterface
 
                             // Transformer
                             if (!$formElement->getOptions()->is_empty('transformer')) {
-                                if ($formElement->getOptions()->is_string('transformer') && $formElement->getOptions()->is_a('transformer', '\Berlioz\Core\Form\FormTransformer')) {
+                                if ($formElement->getOptions()->is_string('transformer') && $formElement->getOptions()->is_a('transformer', '\Berlioz\Form\FormTransformer')) {
                                     $transformerClass = $formElement->getOptions()->get('transformer');
                                     /** @var \Berlioz\Form\FormTransformer $transformer */
                                     $transformer = new $transformerClass($data[$formElement->getName()], $formElement->getDefaultValue());
                                     $data[$formElement->getName()] = $transformer->result();
                                 } else {
-                                    throw new BerliozException(sprintf('Invalid option "transformer" for input named "%s", need to be class name and class must implement \Berlioz\Core\Form\FormTransformer interface.', $formElement->getName()));
+                                    throw new BerliozException(sprintf('Invalid option "transformer" for input named "%s", need to be class name and class must implement \Berlioz\Form\FormTransformer interface.', $formElement->getName()));
                                 }
                             }
                         }
