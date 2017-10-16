@@ -33,6 +33,23 @@ class Number extends Text
     }
 
     /**
+     * Get value.
+     *
+     * @return int
+     */
+    public function getValue()
+    {
+        $value = parent::getValue();
+        $attributes = $this->getOptions()->get('attributes');
+
+        if (!empty($attributes['step']) && $attributes['step'] == (string) (float) $attributes['step']) {
+            return floatval($value);
+        } else {
+            return intval($value);
+        }
+    }
+
+    /**
      * Validation.
      *
      * @return bool
