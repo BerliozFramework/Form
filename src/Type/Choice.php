@@ -28,10 +28,11 @@ class Choice extends FormType
      */
     public function __construct(string $name, array $options = [])
     {
-        $this->getOptions()->setOptions(['expanded'    => false,
-                                         'multiple'    => false,
-                                         'allow_clear' => false,
-                                         'choices'     => []]);
+        $this->getOptions()->setOptions(['expanded'         => false,
+                                         'multiple'         => false,
+                                         'allow_clear'      => false,
+                                         'allow_all_values' => false,
+                                         'choices'          => []]);
 
         parent::__construct($name, $options);
     }
@@ -111,7 +112,7 @@ class Choice extends FormType
             // Set selected !
             // WARNING: Do not move this part before $this->choices completion
             {
-                $values = parent::getValue();
+                $values = $this->getSubmittedValue();
 
                 // Values
                 if (!is_array($values) && !is_a($values, '\ArrayAccess')) {
@@ -119,8 +120,6 @@ class Choice extends FormType
                 }
 
                 foreach ($this->choices as $choice) {
-                    //$value = $this->choiceCallback('choice_value', $choice->getOriginalData(), $choice_key, $index) ?? $choice_value;
-
                     if (is_array($choice)) {
                         foreach ($choice as $choice2) {
                             $choice2->setSelected(false);
@@ -167,7 +166,11 @@ class Choice extends FormType
                         $result = b_property_get($choice_value, $this->getOptions()->get($callback_name), $exists);
 
                         if ($exists === false) {
-                            $result = null;
+                            if (method_exists($choice_value, $this->getOptions()->get($callback_name))) {
+                                $result = call_user_func([$choice_value, $this->getOptions()->get($callback_name)]);
+                            } else {
+                                $result = null;
+                            }
                         }
                     } else {
                         $result = $this->getOptions()->get($callback_name);
@@ -210,10 +213,28 @@ class Choice extends FormType
             }
         }
 
+        if (!$this->getOptions()->is_null('allow_all_values')) {
+            $parentValue = $this->getSubmittedValue();
+            is_array($parentValue) || $parentValue = [$parentValue];
+
+            foreach ($parentValue as $value) {
+                // If option is boolean, check if true value or check if it's an callable value for validation
+                if (($this->getOptions()->is_bool('allow_all_values') && $this->getOptions()->get('allow_all_values') === true) ||
+                    ($this->getOptions()->is_callable('allow_all_values') && call_user_func($this->getOptions()->get('allow_all_values'), $value) === true)) {
+                    if (!(in_array($value, $fValue, true) || in_array($value, $fValue, true))) {
+                        $fValue[] = $value;
+                    }
+                }
+            }
+        }
+
         // Not multiple ?
         if ($this->getOptions()->get('multiple') == false) {
             $fValue = reset($fValue);
         }
+
+        // Transformer
+        $fValue = $this->transformValue($fValue);
 
         return $fValue;
     }
