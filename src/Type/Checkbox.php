@@ -19,6 +19,22 @@ class Checkbox extends FormType
     const TYPE = 'checkbox';
 
     /**
+     * Choice constructor.
+     *
+     * @param string $name    Name
+     * @param array  $options Options
+     */
+    public function __construct(string $name, array $options = [])
+    {
+        // Default required for checkbox (boolean)
+        if (!isset($options['required'])) {
+            $options['required'] = false;
+        }
+
+        parent::__construct($name, $options);
+    }
+
+    /**
      * Get template data.
      *
      * @param array $options Options
@@ -28,9 +44,18 @@ class Checkbox extends FormType
     public function getTemplateData(array $options = []): array
     {
         $fOptions = parent::getTemplateData($options);
-        $fOptions['value'] = (string) $this->getOptions()->get('value');
-        $fOptions['checked'] = $this->getOptions()->get('value') == $this->getDefaultValue();
+        $fOptions['checked'] = $this->getDefaultValue() == true;
 
         return $fOptions;
+    }
+
+    /**
+     * Get value.
+     *
+     * @return bool
+     */
+    public function getValue()
+    {
+        return parent::getValue() == true;
     }
 }
