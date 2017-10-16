@@ -115,12 +115,11 @@ class FormType extends FormElement
     }
 
     /**
-     * Get value.
+     * Get submitted value.
      *
      * @return mixed
-     * @throws \Berlioz\Core\Exception\BerliozException If invalid "transformer" option
      */
-    public function getValue()
+    public function getSubmittedValue()
     {
         $value = null;
         $mainForm = $this->getMainParent();
@@ -134,6 +133,47 @@ class FormType extends FormElement
             $exists = false;
             if (empty($value = b_array_traverse($mainForm->getData(), $fullQualifiedName, $exists)) && $exists === false) {
                 $value = $this->getOptions()->get('data');
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * Get value.
+     *
+     * @return mixed
+     */
+    public function getValue()
+    {
+        // Transformer
+        return $this->transformValue($this->getSubmittedValue());
+    }
+
+    /**
+     * Transform value.
+     *
+     * @param mixed $value
+     *
+     * @return mixed
+     * @throws \Berlioz\Core\Exception\BerliozException If invalid "transformer" option
+     */
+    protected function transformValue($value)
+    {
+        // Transformer
+        if (!$this->getOptions()->is_empty('transformer')) {
+            if ($this->getOptions()->is_string('transformer') && $this->getOptions()->is_a('transformer', '\Berlioz\Form\FormTransformer')) {
+                $transformerClass = $this->getOptions()->get('transformer');
+                /** @var \Berlioz\Form\FormTransformer $transformer */
+                $transformer = new $transformerClass($value, $this->getDefaultValue());
+                $value = $transformer->result();
+            } else {
+                if ($this->getOptions()->is_callable('transformer')) {
+                    $transformerCallback = $this->getOptions()->get('transformer');
+                    $value = $transformerCallback($value, $this->getDefaultValue());
+                } else {
+                    throw new BerliozException(sprintf('Invalid option "transformer" for input named "%s", need to be class name and class must implement \Berlioz\Form\FormTransformer interface OR a callable function.', $this->getName()));
+                }
             }
         }
 
