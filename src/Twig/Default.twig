@@ -148,7 +148,7 @@
 {%- endblock -%}
 
 {%- block form_widget_checkbox -%}
-  <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}{% if checked %}checked="checked" {% endif %}/>
+  <input type="{{ type }}" {{ block('widget_attributes') }} value="1" {% if checked %}checked="checked" {% endif %}/>
 {%- endblock -%}
 
 {%- block form_widget_radio -%}
