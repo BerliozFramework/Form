@@ -2,15 +2,17 @@
 
 namespace Berlioz\Form\Type;
 
-
 use Berlioz\Form\FormType;
 use Berlioz\Form\FormValidation;
 
+/**
+ * Class Date field type for Berlioz form
+ *
+ * @package Berlioz\Form\Type
+ */
 class Date extends FormType
 {
     const TYPE = 'date';
-    /** @var string Field format */
-    private $format;
 
     /**
      * Email constructor.
@@ -29,9 +31,28 @@ class Date extends FormType
     }
 
     /**
+     * Get template data.
+     *
+     * @param array $options Options
+     *
+     * @return array
+     */
+    public function getTemplateData(array $options = []): array
+    {
+        $fOptions = parent::getTemplateData($options);
+
+        if ($fOptions['value'] instanceof \DateTime) {
+            $format = $this->getOptions()->get('format');
+            $fOptions['value'] = $fOptions['value']->format($format);
+        }
+
+        return $fOptions;
+    }
+
+    /**
      * Get value.
      *
-     * @return int
+     * @return bool|\DateTime
      */
     public function getValue()
     {
