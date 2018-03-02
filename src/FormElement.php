@@ -51,7 +51,7 @@ abstract class FormElement implements FormElementInterface
         $fqName = $this->getName();
 
         if ($this->hasParent()) {
-            $fqName = $this->getParent()->getName() . $separator . $fqName;
+            $fqName = $this->getParent()->getFullQualifiedName() . $separator . $fqName;
         }
 
         return $fqName;
