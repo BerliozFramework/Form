@@ -102,7 +102,11 @@
 {% endblock %}
 
 {% block widget_choice_expanded %}
+  {% set originalId = id %}
   {% for choiceKey, choiceValue in choices %}
+    {% if not loop.first %}
+      {% set id = originalId ~ '_' ~ loop.index %}
+    {% endif %}
     {% set type = choiceValue.type %}
     {% set label = choiceValue.label %}
     {% set value = choiceValue.value %}
