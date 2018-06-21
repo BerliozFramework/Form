@@ -148,6 +148,7 @@ class Form extends FormElement implements FormTraversableInterface
                                        ['form'       => $this,
                                         'name'       => $this->getName(),
                                         'full_name'  => $this->getFormName(),
+                                        'action'     => $this->getOptions()->get('action') ?? '',
                                         'method'     => $this->getOptions()->get('method') ?? 'post',
                                         'attributes' => $this->getOptions()->get('attributes') ?? []]);
     }
