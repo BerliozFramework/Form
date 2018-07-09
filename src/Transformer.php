@@ -12,24 +12,23 @@
 
 namespace Berlioz\Form;
 
-
-interface FormTraversableInterface extends FormElementInterface, \IteratorAggregate
+interface Transformer
 {
     /**
-     * Check if a form element exists.
+     * Transform data to form.
      *
-     * @param string $name Name of form element
+     * @param mixed $data
      *
-     * @return bool
+     * @return mixed
      */
-    public function __isset(string $name): bool;
+    public function toForm($data);
 
     /**
-     * Get a form element.
+     * Transform data from form.
      *
-     * @param string $name Name of form element
+     * @param mixed $data
      *
-     * @return \Berlioz\Form\FormElement
+     * @return mixed
      */
-    public function __get(string $name): FormElement;
+    public function fromForm($data);
 }

@@ -10,17 +10,19 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form\Type;
+namespace Berlioz\Form\Tests\Data;
 
-use Berlioz\Form\AbstractType;
-
-class Hidden extends AbstractType
+class EntityHobby
 {
-    /**
-     * @inheritdoc
-     */
-    public function getType(): string
+    private $name;
+
+    public function getName()
     {
-        return 'hidden';
+        return $this->name;
+    }
+
+    public function setName($name): void
+    {
+        $this->name = $name;
     }
 }

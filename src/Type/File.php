@@ -12,24 +12,55 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\Form;
-use Berlioz\Form\FormType;
+use Berlioz\Form\AbstractType;
 
-class File extends FormType
+/**
+ * Class File
+ *
+ * @package Berlioz\Form\Type
+ * @todo    Multiple files
+ */
+class File extends AbstractType
 {
-    const TYPE = 'file';
+    /**
+     * @inheritdoc
+     */
+    public function getType(): string
+    {
+        return 'file';
+    }
+
+    /////////////
+    /// VALUE ///
+    /////////////
 
     /**
      * @inheritdoc
      */
-    public function setParent(Form $parent): void
+    public function getValue(bool $raw = false)
     {
-        parent::setParent($parent);
+        if ($raw) {
+            return null;
+        }
 
-        // Set 'enctype' attribute to the form element for file type
-        $mainParentOptions = $parent->getMainParent()->getOptions();
-        $mainParentOptions->set('attributes',
-                                array_merge($mainParentOptions->get('attributes') ?? [],
-                                            ['enctype' => 'multipart/form-data']));
+        return parent::getValue($raw);
+    }
+
+    /////////////
+    /// BUILD ///
+    /////////////
+
+    /**
+     * @inheritdoc
+     */
+    public function build()
+    {
+        parent::build();
+
+        if (!is_null($form = $this->getForm())) {
+            $formAttributes = $form->getOption('attributes', []);
+            $formAttributes['enctype'] = 'multipart/form-data';
+            $form->setOption('attributes', $formAttributes);
+        }
     }
 }

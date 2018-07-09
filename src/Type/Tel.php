@@ -10,9 +10,15 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form;
+namespace Berlioz\Form\Type;
 
-
-interface FormCollectionInterface extends FormElementInterface, \ArrayAccess, \IteratorAggregate
+class Tel extends Text
 {
+    /**
+     * @inheritdoc
+     */
+    public function getType(): string
+    {
+        return 'tel';
+    }
 }

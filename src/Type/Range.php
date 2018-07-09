@@ -14,13 +14,13 @@ namespace Berlioz\Form\Type;
 
 use Berlioz\Form\AbstractType;
 
-class Hidden extends AbstractType
+class Range extends AbstractType
 {
     /**
      * @inheritdoc
      */
     public function getType(): string
     {
-        return 'hidden';
+        return 'range';
     }
 }

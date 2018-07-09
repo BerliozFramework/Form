@@ -14,45 +14,16 @@ namespace Berlioz\Form\Type;
 
 class ChoiceValue
 {
-    /** @var string Type */
-    private $type;
     /** @var string Label */
     private $label;
     /** @var string Value */
     private $value;
-    /** @var string[] Attributes */
-    private $attributes;
-    /** @var bool Selected ? */
-    private $selected;
-    /** @var mixed Original data */
-    private $originalData;
-
-    /**
-     * ChoiceValue constructor.
-     */
-    public function __construct()
-    {
-    }
-
-    /**
-     * Get type.
-     *
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * Set type.
-     *
-     * @param string $type
-     */
-    public function setType(string $type)
-    {
-        $this->type = $type;
-    }
+    /** @var mixed Final value */
+    private $finalValue;
+    /** @var array Attributes */
+    private $attributes = [];
+    /** @var bool Selected? */
+    private $selected = false;
 
     /**
      * Get label.
@@ -68,10 +39,14 @@ class ChoiceValue
      * Set label.
      *
      * @param string $label
+     *
+     * @return static
      */
-    public function setLabel(string $label)
+    public function setLabel(string $label): ChoiceValue
     {
         $this->label = $label;
+
+        return $this;
     }
 
     /**
@@ -88,16 +63,44 @@ class ChoiceValue
      * Set value.
      *
      * @param string $value
+     *
+     * @return static
      */
-    public function setValue(string $value)
+    public function setValue(string $value): ChoiceValue
     {
         $this->value = $value;
+
+        return $this;
+    }
+
+    /**
+     * Get final value.
+     *
+     * @return mixed
+     */
+    public function getFinalValue()
+    {
+        return $this->finalValue;
+    }
+
+    /**
+     * Set final value.
+     *
+     * @param mixed $value
+     *
+     * @return static
+     */
+    public function setFinalValue($value): ChoiceValue
+    {
+        $this->finalValue = $value;
+
+        return $this;
     }
 
     /**
      * Get attributes.
      *
-     * @return \string[]
+     * @return array
      */
     public function getAttributes(): array
     {
@@ -105,52 +108,57 @@ class ChoiceValue
     }
 
     /**
-     * Set attributes.
+     * Get attribute.
      *
-     * @param \string[] $attributes
+     * @param string $name    Attribute name
+     * @param null   $default Default value if not exists
+     *
+     * @return mixed|null
      */
-    public function setAttributes(array $attributes)
+    public function getAttribute(string $name, $default = null)
     {
-        $this->attributes = $attributes;
+        if (array_key_exists($name, $this->attributes)) {
+            return $this->attributes[$name];
+        }
+
+        return $default;
     }
 
     /**
-     * Is selected ?
+     * Set attributes.
+     *
+     * @param array $attributes
+     *
+     * @return static
+     */
+    public function setAttributes(array $attributes): ChoiceValue
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * Is selected?
      *
      * @return bool
      */
     public function isSelected(): bool
     {
-        return $this->selected ?? false;
+        return $this->selected;
     }
 
     /**
      * Set selected.
      *
-     * @param mixed $selected
+     * @param bool $selected
+     *
+     * @return static
      */
-    public function setSelected(bool $selected)
+    public function setSelected(bool $selected): ChoiceValue
     {
         $this->selected = $selected;
-    }
 
-    /**
-     * Get original data.
-     *
-     * @return mixed
-     */
-    public function getOriginalData()
-    {
-        return $this->originalData;
-    }
-
-    /**
-     * Set original data.
-     *
-     * @param mixed $originalData
-     */
-    public function setOriginalData($originalData)
-    {
-        $this->originalData = $originalData;
+        return $this;
     }
 }

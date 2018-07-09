@@ -10,17 +10,8 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form\Type;
-
-use Berlioz\Form\AbstractType;
-
-class Hidden extends AbstractType
-{
-    /**
-     * @inheritdoc
-     */
-    public function getType(): string
-    {
-        return 'hidden';
-    }
+$file = __DIR__ . '/../vendor/autoload.php';
+if (!file_exists($file)) {
+    throw new RuntimeException('Install dependencies using composer to run the test suite.');
 }
+$autoload = require_once $file;

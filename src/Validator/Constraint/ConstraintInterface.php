@@ -10,17 +10,21 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form\Type;
+namespace Berlioz\Form\Validator\Constraint;
 
-use Berlioz\Form\AbstractType;
-
-class Hidden extends AbstractType
+interface ConstraintInterface
 {
     /**
-     * @inheritdoc
+     * ConstraintInterface constructor.
+     *
+     * @param array       $context
      */
-    public function getType(): string
-    {
-        return 'hidden';
-    }
+    public function __construct(array $context = []);
+
+    /**
+     * __toString() PHP magic method.
+     *
+     * @return string
+     */
+    public function __toString(): string;
 }

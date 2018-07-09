@@ -12,50 +12,15 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\FormType;
+use Berlioz\Form\AbstractType;
 
-class Checkbox extends FormType
+class Checkbox extends AbstractType
 {
-    const TYPE = 'checkbox';
-
     /**
-     * Choice constructor.
-     *
-     * @param string $name    Name
-     * @param array  $options Options
+     * @inheritdoc
      */
-    public function __construct(string $name, array $options = [])
+    public function getType(): string
     {
-        // Default required for checkbox (boolean)
-        if (!isset($options['required'])) {
-            $options['required'] = false;
-        }
-
-        parent::__construct($name, $options);
-    }
-
-    /**
-     * Get template data.
-     *
-     * @param array $options Options
-     *
-     * @return array
-     */
-    public function getTemplateData(array $options = []): array
-    {
-        $fOptions = parent::getTemplateData($options);
-        $fOptions['checked'] = $this->getDefaultValue() == true;
-
-        return $fOptions;
-    }
-
-    /**
-     * Get value.
-     *
-     * @return bool
-     */
-    public function getValue()
-    {
-        return parent::getValue() == true;
+        return 'checkbox';
     }
 }

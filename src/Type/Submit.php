@@ -12,15 +12,10 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\AbstractType;
-
-class Hidden extends AbstractType
+class Submit extends Button
 {
-    /**
-     * @inheritdoc
-     */
     public function getType(): string
     {
-        return 'hidden';
+        return 'submit';
     }
 }

@@ -10,17 +10,8 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form\Type;
+namespace Berlioz\Form\Exception;
 
-use Berlioz\Form\AbstractType;
-
-class Hidden extends AbstractType
+class ValidatorException extends FormException
 {
-    /**
-     * @inheritdoc
-     */
-    public function getType(): string
-    {
-        return 'hidden';
-    }
 }

@@ -14,13 +14,16 @@ namespace Berlioz\Form\Type;
 
 use Berlioz\Form\AbstractType;
 
-class Hidden extends AbstractType
+class Button extends AbstractType
 {
-    /**
-     * @inheritdoc
-     */
+    public function __construct(array $options = [])
+    {
+        parent::__construct(array_replace_recursive(['required' => false,
+                                                     'mapped'   => false], $options));
+    }
+
     public function getType(): string
     {
-        return 'hidden';
+        return 'button';
     }
 }

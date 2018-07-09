@@ -10,17 +10,15 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form\Type;
+namespace Berlioz\Form;
 
-use Berlioz\Form\AbstractType;
-
-class Hidden extends AbstractType
+class View implements \IteratorAggregate
 {
     /**
      * @inheritdoc
      */
-    public function getType(): string
+    public function getIterator()
     {
-        return 'hidden';
+        return new \ArrayIterator($this);
     }
 }

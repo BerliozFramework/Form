@@ -10,23 +10,17 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form;
+namespace Berlioz\Form\Type;
 
+use Berlioz\Form\AbstractType;
 
-interface FormTransformer
+class Week extends AbstractType
 {
     /**
-     * FormTransformer constructor.
-     *
-     * @param mixed $newValue     New value
-     * @param mixed $defaultValue Default value
+     * @inheritdoc
      */
-    public function __construct($newValue, $defaultValue = null);
-
-    /**
-     * Get result after transformation.
-     *
-     * @return mixed
-     */
-    public function result();
+    public function getType(): string
+    {
+        return 'week';
+    }
 }

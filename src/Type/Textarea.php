@@ -12,10 +12,13 @@
 
 namespace Berlioz\Form\Type;
 
-
-use Berlioz\Form\FormType;
-
-class Textarea extends FormType
+class TextArea extends Text
 {
-    const TYPE = 'textarea';
+    /**
+     * @inheritdoc
+     */
+    public function getType(): string
+    {
+        return 'textarea';
+    }
 }

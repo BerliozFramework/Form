@@ -14,5 +14,11 @@ namespace Berlioz\Form\Type;
 
 class Password extends Text
 {
-    const TYPE = 'password';
+    /**
+     * @inheritdoc
+     */
+    public function getType(): string
+    {
+        return 'password';
+    }
 }

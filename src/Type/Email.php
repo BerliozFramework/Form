@@ -12,33 +12,19 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\FormValidation;
-
+/**
+ * Class Email
+ *
+ * @package Berlioz\Form\Type
+ * @todo    Multiple emails
+ */
 class Email extends Text
 {
-    const TYPE = 'email';
-
     /**
-     * Email constructor.
-     *
-     * @param string $name    Name
-     * @param array  $options Options
+     * @inheritdoc
      */
-    public function __construct(string $name, array $options = [])
+    public function getType(): string
     {
-        parent::__construct($name, $options);
-
-        // Validation
-        $this->addValidation(new FormValidation([$this, 'validation']));
-    }
-
-    /**
-     * Validation.
-     *
-     * @return bool
-     */
-    public function validation()
-    {
-        return preg_match('/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/', $this->getValue()) == 1;
+        return 'email';
     }
 }

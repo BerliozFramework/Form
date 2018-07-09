@@ -10,17 +10,17 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form\Type;
+namespace Berlioz\Form\Validator\Constraint;
 
-use Berlioz\Form\AbstractType;
-
-class Hidden extends AbstractType
+class NotEmptyConstraint extends BasicConstraint
 {
     /**
-     * @inheritdoc
+     * LengthConstraint constructor.
+     *
+     * @param array $context
      */
-    public function getType(): string
+    public function __construct(array $context = [])
     {
-        return 'hidden';
+        parent::__construct($context, 'The field is required.');
     }
 }

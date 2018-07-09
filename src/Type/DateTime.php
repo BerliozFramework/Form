@@ -12,15 +12,13 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\AbstractType;
-
-class Hidden extends AbstractType
+class DateTime extends Date
 {
     /**
      * @inheritdoc
      */
     public function getType(): string
     {
-        return 'hidden';
+        return 'datetime-local';
     }
 }

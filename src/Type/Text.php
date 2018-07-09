@@ -12,10 +12,30 @@
 
 namespace Berlioz\Form\Type;
 
+use Berlioz\Form\AbstractType;
+use Berlioz\Form\Validator\LengthValidator;
 
-use Berlioz\Form\FormType;
-
-class Text extends FormType
+class Text extends AbstractType
 {
-    const TYPE = 'text';
+    /**
+     * @inheritdoc
+     */
+    public function getType(): string
+    {
+        return 'text';
+    }
+
+    /**
+     * @inheritdoc
+     * @throws \Berlioz\Form\Exception\ValidatorException
+     */
+    public function build()
+    {
+        parent::build();
+
+        // Length validator
+        if (isset($this->options['attributes']['maxlength']) || isset($this->options['attributes']['maxlength'])) {
+            $this->options['validators'][] = new LengthValidator;
+        }
+    }
 }
