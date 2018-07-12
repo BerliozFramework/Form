@@ -167,7 +167,7 @@ class TwigExtension extends \Twig_Extension
      */
     public function functionFormLabel(FormType $formType, array $options = []): string
     {
-        if ($this->getTemplateEngine()->hasBlock($formType->getTemplateFilename(), 'form_rows')) {
+        if ($this->getTemplateEngine()->hasBlock($formType->getTemplateFilename(), 'form_label')) {
             return $this->getTemplateEngine()
                         ->renderBlock($formType->getTemplateFilename(),
                                       'form_label',
