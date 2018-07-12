@@ -89,7 +89,7 @@ class TwigExtension extends \Twig_Extension
      */
     public function functionFormStart(Form $form, array $options = []): string
     {
-        if ($this->getTemplateEngine()->hasBlock($form->getTemplateFilename(), 'form_rows')) {
+        if ($this->getTemplateEngine()->hasBlock($form->getTemplateFilename(), 'form_start')) {
             return $this->getTemplateEngine()
                         ->renderBlock($form->getTemplateFilename(),
                                       'form_start',
@@ -108,7 +108,7 @@ class TwigExtension extends \Twig_Extension
      */
     public function functionFormEnd(Form $form): string
     {
-        if ($this->getTemplateEngine()->hasBlock($form->getTemplateFilename(), 'form_rows')) {
+        if ($this->getTemplateEngine()->hasBlock($form->getTemplateFilename(), 'form_end')) {
             return $this->getTemplateEngine()
                         ->renderBlock($form->getTemplateFilename(),
                                       'form_end',
@@ -127,7 +127,7 @@ class TwigExtension extends \Twig_Extension
      */
     public function functionFormErrors(Form $form): string
     {
-        if ($this->getTemplateEngine()->hasBlock($form->getTemplateFilename(), 'form_rows')) {
+        if ($this->getTemplateEngine()->hasBlock($form->getTemplateFilename(), 'form_errors')) {
             return $this->getTemplateEngine()
                         ->renderBlock($form->getTemplateFilename(),
                                       'form_errors',
@@ -187,7 +187,7 @@ class TwigExtension extends \Twig_Extension
      */
     public function functionFormWidget(FormType $formType, array $options = []): string
     {
-        if ($this->getTemplateEngine()->hasBlock($formType->getTemplateFilename(), 'form_rows')) {
+        if ($this->getTemplateEngine()->hasBlock($formType->getTemplateFilename(), 'form_widget')) {
             // Set inserted
             $formType->setInserted(true);
 
@@ -210,7 +210,7 @@ class TwigExtension extends \Twig_Extension
      */
     public function functionFormRow(FormType $formType, array $options = []): string
     {
-        if ($this->getTemplateEngine()->hasBlock($formType->getTemplateFilename(), 'form_rows')) {
+        if ($this->getTemplateEngine()->hasBlock($formType->getTemplateFilename(), 'form_row')) {
             // Set inserted
             $formType->setInserted(true);
 
