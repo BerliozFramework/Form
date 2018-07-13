@@ -214,7 +214,7 @@ abstract class Element implements ElementInterface
 
             /** @var \Berlioz\Form\ElementInterface $element */
             foreach ($this as $element) {
-                if ($element->isValid()) {
+                if (!$element->isValid()) {
                     $childrenValid = false;
                 }
             }
