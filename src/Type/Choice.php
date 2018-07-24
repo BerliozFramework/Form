@@ -80,7 +80,7 @@ class Choice extends AbstractType
      */
     public function setValue($value, bool $submitted = false)
     {
-        if (!is_array($value)) {
+        if (!is_array($value) && !$value instanceof \Traversable) {
             $value = [$value];
         }
 
@@ -96,9 +96,14 @@ class Choice extends AbstractType
     {
         $found = [];
 
+        $rawValue = parent::getValue(true);
+        if ($rawValue instanceof \Traversable) {
+            $rawValue = iterator_to_array($rawValue);
+        }
+
         foreach ($this->choices as $choiceValue) {
-            if (in_array($choiceValue->getValue(), parent::getValue(true))
-                || in_array($choiceValue->getFinalValue(), parent::getValue(true))) {
+            if (in_array($choiceValue->getValue(), $rawValue)
+                || in_array($choiceValue->getFinalValue(), $rawValue)) {
                 $found[] = $choiceValue->setSelected(true);
             }
         }
