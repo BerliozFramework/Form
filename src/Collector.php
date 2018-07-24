@@ -13,6 +13,7 @@
 namespace Berlioz\Form;
 
 use Berlioz\Form\Exception\CollectorException;
+use Berlioz\Form\Type\AbstractType;
 
 class Collector
 {
@@ -129,8 +130,8 @@ class Collector
     /**
      * Collect data for field.
      *
-     * @param \Berlioz\Form\AbstractType $type
-     * @param mixed                      $mapped
+     * @param \Berlioz\Form\Type\AbstractType $type
+     * @param mixed                           $mapped
      *
      * @return mixed|null
      * @throws \Berlioz\Form\Exception\CollectorException

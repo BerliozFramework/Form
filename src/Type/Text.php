@@ -12,7 +12,6 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\AbstractType;
 use Berlioz\Form\Validator\LengthValidator;
 
 class Text extends AbstractType

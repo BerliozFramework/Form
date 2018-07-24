@@ -12,8 +12,6 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\AbstractType;
-
 /**
  * Class File
  *

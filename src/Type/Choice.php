@@ -12,7 +12,6 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\AbstractType;
 use Berlioz\Form\View\ViewInterface;
 
 class Choice extends AbstractType

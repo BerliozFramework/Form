@@ -13,6 +13,7 @@
 namespace Berlioz\Form;
 
 use Berlioz\Form\Exception\PropagationException;
+use Berlioz\Form\Type\AbstractType;
 
 class Propagator
 {
@@ -183,9 +184,9 @@ class Propagator
     /**
      * Propagate value to mapped object given.
      *
-     * @param \Berlioz\Form\AbstractType $type
-     * @param object|array               $mapped
-     * @param mixed|null                 $value
+     * @param \Berlioz\Form\Type\AbstractType $type
+     * @param object|array                    $mapped
+     * @param mixed|null                      $value
      *
      * @throws \Berlioz\Form\Exception\PropagationException
      */

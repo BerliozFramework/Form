@@ -10,8 +10,10 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form;
+namespace Berlioz\Form\Type;
 
+use Berlioz\Form\Element;
+use Berlioz\Form\Transformer;
 use Berlioz\Form\Validator\NotEmptyValidator;
 use Berlioz\Form\View\BasicView;
 use Berlioz\Form\View\ViewInterface;
@@ -93,7 +95,11 @@ abstract class AbstractType extends Element
             return $this->value;
         }
 
-        return $this->submittedValue ?? $this->value;
+        if ($this->getForm()->isSubmitted()) {
+            return $this->submittedValue;
+        }
+
+        return $this->value;
     }
 
     /**

@@ -12,8 +12,6 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\AbstractType;
-
 class Button extends AbstractType
 {
     public function __construct(array $options = [])
