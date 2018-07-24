@@ -1,7 +1,7 @@
 {# Attributes #}
 
 {%- block widget_attributes -%}
-  id="{{ id }}" name="{{ name }}"
+  id="{{ id }}" name="{{ name ~ (multiple ? '[]' : '') }}"
   {%- if disabled %} disabled="disabled"{% endif -%}
   {%- if required %} required="required"{% endif -%}
   {%- if readonly %} readonly="readonly"{% endif -%}
