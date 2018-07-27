@@ -12,16 +12,44 @@
 
 namespace Berlioz\Form\Type;
 
+use Berlioz\Form\View\ViewInterface;
+
 class Button extends AbstractType
 {
     public function __construct(array $options = [])
     {
         parent::__construct(array_replace_recursive(['required' => false,
-                                                     'mapped'   => false], $options));
+                                                     'mapped'   => false,
+                                                     'value'    => null], $options));
     }
 
     public function getType(): string
     {
         return 'button';
+    }
+
+    /**
+     * Is button clicked?
+     *
+     * @return bool
+     */
+    public function isClicked(): bool
+    {
+        return !is_null($this->getValue(true));
+    }
+
+    /////////////
+    /// BUILD ///
+    /////////////
+
+    /**
+     * @inheritdoc
+     */
+    public function buildView(): ViewInterface
+    {
+        $view = parent::buildView();
+        $view->mergeVars(['value' => $this->getValue(true) ?? $this->getOption('value')]);
+
+        return $view;
     }
 }
