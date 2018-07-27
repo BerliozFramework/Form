@@ -101,10 +101,12 @@ class Choice extends AbstractType
             $rawValue = iterator_to_array($rawValue);
         }
 
-        foreach ($this->choices as $choiceValue) {
-            if (in_array($choiceValue->getValue(), $rawValue)
-                || in_array($choiceValue->getFinalValue(), $rawValue)) {
-                $found[] = $choiceValue->setSelected(true);
+        if (!is_null($rawValue)) {
+            foreach ($this->choices as $choiceValue) {
+                if (in_array($choiceValue->getValue(), $rawValue)
+                    || in_array($choiceValue->getFinalValue(), $rawValue)) {
+                    $found[] = $choiceValue->setSelected(true);
+                }
             }
         }
 
