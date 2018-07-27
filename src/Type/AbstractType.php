@@ -165,6 +165,7 @@ abstract class AbstractType extends Element
                               'name'             => $this->getFormName(),
                               'label'            => $this->getOption('label', false),
                               'label_attributes' => $this->getOption('label_attributes', []),
+                              'helper'           => $this->getOption('helper', false),
                               'value'            => $this->getValue(true),
                               'errors'           => $this->getConstraints(),
                               'required'         => $this->getOption('required', false, true),
