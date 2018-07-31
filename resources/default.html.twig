@@ -16,10 +16,16 @@
         {{- block('attributes') -}}
       {% endwith %}
     {%- else -%}
-      {%- if attrv is same as(true) -%}
-        {{- " " ~ attrn }}="{{ attrn }}"
-      {%- elseif attrv is not same as(false) -%}
-        {{- " " ~ ( attrn_prefix is defined ? attrn_prefix ~ '-' : '' ) ~ attrn }}="{{ attrv }}"
+      {%- set attrn = ( attrn_prefix is defined ? attrn_prefix ~ '-' : '' ) ~ attrn -%}
+
+      {%- if attrn starts with 'data-' and (attrv is same as(true) or attrv is same as(false)) -%}
+          {{- " " ~ attrn }}="{{ attrv ? 'true' : 'false' }}"
+      {%- else -%}
+        {%- if attrv is same as(true) -%}
+          {{- " " ~ attrn }}="{{ attrn }}"
+        {%- elseif attrv is not same as(false) -%}
+          {{- " " ~ attrn }}="{{ attrv }}"
+        {%- endif -%}
       {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
