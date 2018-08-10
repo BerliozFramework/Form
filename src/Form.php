@@ -175,7 +175,11 @@ class Form extends Group
                     $submittedData = $request->getQueryParams();
                     break;
                 case 'post':
-                    $submittedData = array_merge_recursive($request->getParsedBody(), $request->getUploadedFiles());
+                    if (!is_array($parsedBody = $request->getParsedBody())) {
+                        $parsedBody = [];
+                    }
+
+                    $submittedData = array_merge_recursive($parsedBody, $request->getUploadedFiles());
                     break;
                 default:
                     $submittedData = [];
