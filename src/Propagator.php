@@ -101,6 +101,17 @@ class Propagator
                 $mapped = [];
             }
 
+            // Handle group transformer
+            $transformer = $group->getTransformer();
+            $transformedMapped = null;
+            $isTransformed = false;
+            
+            if(!empty($transformer)) {
+                $isTransformed = true;
+                $transformedMapped = $mapped;
+                $mapped = [];
+            } 
+
             /** @var \Berlioz\Form\ElementInterface $item */
             foreach ($group as $item) {
                 if ($item instanceof Group) {
@@ -126,6 +137,11 @@ class Propagator
                 } else {
                     throw new PropagationException;
                 }
+            }
+
+            if($isTransformed) {
+                $transformedMapped = $transformer->fromForm($mapped);
+                $mapped = $transformedMapped;
             }
         }
     }

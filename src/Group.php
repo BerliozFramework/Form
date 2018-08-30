@@ -93,6 +93,22 @@ class Group extends TraversableElement
         return $this;
     }
 
+    /**
+     * Get transformer.
+     *
+     * @return \Berlioz\Form\Transformer|null
+     */
+    public function getTransformer(): ?Transformer
+    {
+        if (!is_null($transformer = $this->getOption('transformer'))) {
+            if ($transformer instanceof Transformer) {
+                return $transformer;
+            }
+        }
+
+        return null;
+    }
+
     /////////////
     /// VALUE ///
     /////////////
