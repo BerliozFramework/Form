@@ -51,6 +51,8 @@ class Choice extends AbstractType
     public function getValue(bool $raw = false)
     {
         $value = [];
+
+        $this->buildChoices();
         $selectedChoicesValue = $this->getSelectedChoicesValue();
 
         foreach ($selectedChoicesValue as $choiceValue) {
@@ -257,6 +259,9 @@ class Choice extends AbstractType
      */
     public function buildView(): ViewInterface
     {
+        $this->buildChoices();
+        $this->getSelectedChoicesValue();
+
         $view = parent::buildView();
         $view->mergeVars(['allow_clear' => $this->getOption('allow_clear', false),
                           'expanded'    => $this->getOption('expanded', false),
