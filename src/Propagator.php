@@ -105,12 +105,12 @@ class Propagator
             $transformer = $group->getTransformer();
             $transformedMapped = null;
             $isTransformed = false;
-            
+
             if(!empty($transformer)) {
                 $isTransformed = true;
                 $transformedMapped = $mapped;
                 $mapped = [];
-            } 
+            }
 
             /** @var \Berlioz\Form\ElementInterface $item */
             foreach ($group as $item) {
