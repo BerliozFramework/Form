@@ -55,6 +55,13 @@ class Collector
 
         if ($group->getOption('mapped', false, true)) {
             $subMapped = $mapped;
+            $transformer = $group->getTransformer();
+
+            // Apply the group data transformer prior to collection if present
+            if(!empty($transformer)) {
+                $subMapped = $transformer->toForm($subMapped);
+            }
+
             if (!$group instanceof Form && !is_null($group->getName())) {
                 $subMapped = $this->collectValue($mapped, $group->getName());
             }
