@@ -105,7 +105,8 @@ class Choice extends AbstractType
 
         if (!is_null($rawValue)) {
             foreach ($this->choices as $choiceValue) {
-                if (in_array($choiceValue->getValue(), $rawValue)) {
+                if (in_array($choiceValue->getValue(), $rawValue)
+                    || in_array($choiceValue->getFinalValue(), $rawValue)) {
                     $found[] = $choiceValue->setSelected(true);
                 }
             }
