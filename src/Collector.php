@@ -57,13 +57,13 @@ class Collector
             $subMapped = $mapped;
             $transformer = $group->getTransformer();
 
+            if (!$group instanceof Form && !is_null($group->getName())) {
+                $subMapped = $this->collectValue($mapped, $group->getName());
+            }
+
             // Apply the group data transformer prior to collection if present
             if(!empty($transformer)) {
                 $subMapped = $transformer->toForm($subMapped);
-            }
-
-            if (!$group instanceof Form && !is_null($group->getName())) {
-                $subMapped = $this->collectValue($mapped, $group->getName());
             }
 
             /** @var \Berlioz\Form\ElementInterface $item */
