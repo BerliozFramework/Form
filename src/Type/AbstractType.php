@@ -88,9 +88,19 @@ abstract class AbstractType extends Element
     public function getValue(bool $raw = false)
     {
         if (!$raw && !is_null($transformer = $this->getTransformer())) {
-            return $transformer->fromForm($this->getValue(true));
+            return $transformer->fromForm($this->getRawValue());
         }
 
+        return $this->getRawValue();
+    }
+
+    /**
+     * Get raw value.
+     *
+     * @return mixed
+     */
+    protected function getRawValue()
+    {
         if ($this->getOption('readonly', false, true)) {
             return $this->value;
         }
