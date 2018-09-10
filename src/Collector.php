@@ -65,7 +65,7 @@ class Collector
             if(!empty($transformer)) {
                 $subMapped = $transformer->toForm($subMapped);
             }
-            
+
             /** @var \Berlioz\Form\ElementInterface $item */
             foreach ($group as $item) {
                 if (!is_null($item->getName())) {
