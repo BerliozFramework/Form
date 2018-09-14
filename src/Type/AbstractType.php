@@ -118,12 +118,12 @@ abstract class AbstractType extends Element
     public function setValue($value, bool $submitted = false)
     {
         if ($submitted) {
+            $this->submittedValue = $value;
+        } else {
             if (!is_null($transformer = $this->getTransformer())) {
                 $value = $transformer->toForm($value);
             }
 
-            $this->submittedValue = $value;
-        } else {
             $this->value = $value;
         }
 
