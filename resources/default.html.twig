@@ -73,7 +73,7 @@
 
 {%- block collection_row -%}
   {% if editable %}
-    <div data-collection="{{ name }}" id="{{ id }}" data-prototype="{{ form_row(prototype)|spaceless|e }}" data-collection-min="{{ min_elements }}" data-collection-max="{{ max_elements }}">
+    <div id="{{ id }}" data-collection="{{ name }}" data-prototype="{{ form_row(prototype)|spaceless|e }}" data-collection-min="{{ min_elements }}" data-collection-max="{{ max_elements }}">
   {% else %}
     <div>
   {% endif %}
