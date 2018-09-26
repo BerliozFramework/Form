@@ -168,7 +168,6 @@ class Propagator
                     $subMapped = [];
                 }
             }
-            
 
             if (!(is_array($subMapped) || $subMapped instanceof \Traversable)) {
                 throw new PropagationException;
