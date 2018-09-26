@@ -101,15 +101,28 @@ class Propagator
                 $mapped = [];
             }
 
+            // Handle group transformer
+            $transformer = $group->getTransformer();
+            $transformedMapped = null;
+            $isTransformed = false;
+
+            if(!empty($transformer)) {
+                $isTransformed = true;
+                $transformedMapped = $mapped;
+                $mapped = [];
+            }
+
             /** @var \Berlioz\Form\ElementInterface $item */
-            foreach ($group as $item) {
-                if ($item instanceof Group) {
+            foreach ($group as $key => $item) {
+                if($item instanceof Group) {
                     $subMapped = $mapped;
 
                     if (!is_null($item->getName())) {
-                        $subMapped = $this->getOrCreateMappedObject($item, $subMapped);
+                        if(!$isTransformed) {
+                            $subMapped = $this->getOrCreateMappedObject($item, $subMapped);
+                        }
 
-                        if (is_null($subMapped)) {
+                        if (!isset($subMapped)) {
                             $subMapped = [];
                         }
                     }
@@ -127,6 +140,11 @@ class Propagator
                     throw new PropagationException;
                 }
             }
+
+            if($isTransformed) {
+                $transformedMapped = $transformer->fromForm($mapped);
+                $mapped = $transformedMapped;
+            }
         }
     }
 
@@ -141,8 +159,14 @@ class Propagator
     private function propagateCollection(Collection $collection, &$mapped)
     {
         if ($collection->getOption('mapped', false, true)) {
-            if (is_null($subMapped = $this->getOrCreateMappedObject($collection, $mapped))) {
+            if (is_array($mapped)) {
                 $subMapped = [];
+            } else {
+                $subMapped = $this->getOrCreateMappedObject($collection, $mapped);
+                
+                if(is_null($subMapped)) {
+                    $subMapped = [];
+                }
             }
 
             if (!(is_array($subMapped) || $subMapped instanceof \Traversable)) {

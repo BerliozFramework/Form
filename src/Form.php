@@ -179,7 +179,7 @@ class Form extends Group
                         $parsedBody = [];
                     }
 
-                    $submittedData = array_merge_recursive($parsedBody, $request->getUploadedFiles());
+                    $submittedData = array_replace_recursive($parsedBody, $request->getUploadedFiles());
                     break;
                 default:
                     $submittedData = [];
