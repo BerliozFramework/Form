@@ -88,6 +88,14 @@
   {{ form_errors(form) }}
 {%- endblock -%}
 
+{%- block button_row -%}
+  {{ form_widget(form) }}
+  {{ form_errors(form) }}
+{%- endblock -%}
+
+{%- block submit_row -%}
+  {{ block('button_row') }}
+{%- endblock -%}
 
 {# Label #}
 
@@ -161,4 +169,14 @@
       </optgroup>
     {% endif %}
   {% endfor %}
+{%- endblock -%}
+
+{%- block submit_widget -%}
+  {{ block('button_widget') }}
+{%- endblock -%}
+
+{%- block button_widget -%}
+  <button {{ block('widget_attributes') }} type="{{ type }}" {% if value is not empty %}value="{{ value }}" {% endif %} >
+    {% if label is not empty %}{{ label }}{% endif %}
+  </button>
 {%- endblock -%}
