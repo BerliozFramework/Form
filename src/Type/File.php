@@ -29,22 +29,6 @@ class File extends AbstractType
     }
 
     /////////////
-    /// VALUE ///
-    /////////////
-
-    /**
-     * @inheritdoc
-     */
-    public function getValue(bool $raw = false)
-    {
-        if ($raw) {
-            return null;
-        }
-
-        return parent::getValue($raw);
-    }
-
-    /////////////
     /// BUILD ///
     /////////////
 
