@@ -73,13 +73,15 @@
 
 {%- block collection_row -%}
   {% if editable %}
-    <div data-prototype="{{ form_row(prototype)|spaceless|e }}" data-collection-min="{{ min_elements }}" data-collection-max="{{ max_elements }}">
+    <div id="{{ id }}" data-collection="{{ name }}" data-prototype="{{ form_row(prototype)|spaceless|e }}" data-collection-min="{{ min_elements }}" data-collection-max="{{ max_elements }}">
   {% else %}
     <div>
   {% endif %}
-  {% for element in form %}
-    {{ form_row(element) }}
-  {% endfor %}
+    {% for key, element in form %}
+      <div data-collection-key="{{ key }}">
+        {{ form_row(element) }}
+      </div>
+    {% endfor %}
   </div>
 {%- endblock -%}
 

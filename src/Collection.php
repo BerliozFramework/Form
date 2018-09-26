@@ -179,6 +179,8 @@ class Collection extends TraversableElement
         /** @var \Berlioz\Form\View\TraversableView $view */
         $view = parent::buildView();
         $view->mergeVars(['type'         => $this->getOption('type', 'collection'),
+                          'id'           => $this->getId(),
+                          'name'         => $this->getFormName(),
                           'prototype'    => $this->getPrototype()->buildView()->setParentView($view),
                           'editable'     => $this->getOption('editable', true),
                           'min_elements' => $this->getOption('min_elements'),
