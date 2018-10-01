@@ -1,7 +1,7 @@
 {# Attributes #}
 
 {%- block widget_attributes -%}
-  id="{{ id }}" name="{{ name }}"
+  id="{{ id }}" name="{{ name ~ (multiple ? '[]' : '') }}"
   {%- if disabled %} disabled="disabled"{% endif -%}
   {%- if required %} required="required"{% endif -%}
   {%- if readonly %} readonly="readonly"{% endif -%}
@@ -16,10 +16,16 @@
         {{- block('attributes') -}}
       {% endwith %}
     {%- else -%}
-      {%- if attrv is same as(true) -%}
-        {{- " " ~ attrn }}="{{ attrn }}"
-      {%- elseif attrv is not same as(false) -%}
-        {{- " " ~ ( attrn_prefix is defined ? attrn_prefix ~ '-' : '' ) ~ attrn }}="{{ attrv }}"
+      {%- set attrn = ( attrn_prefix is defined ? attrn_prefix ~ '-' : '' ) ~ attrn -%}
+
+      {%- if attrn starts with 'data-' and (attrv is same as(true) or attrv is same as(false)) -%}
+          {{- " " ~ attrn }}="{{ attrv ? 'true' : 'false' }}"
+      {%- else -%}
+        {%- if attrv is same as(true) -%}
+          {{- " " ~ attrn }}="{{ attrn }}"
+        {%- elseif attrv is not same as(false) -%}
+          {{- " " ~ attrn }}="{{ attrv }}"
+        {%- endif -%}
       {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
@@ -67,13 +73,15 @@
 
 {%- block collection_row -%}
   {% if editable %}
-    <div data-prototype="{{ form_row(prototype)|spaceless|e }}" data-collection-min="{{ min_elements }}" data-collection-max="{{ max_elements }}">
+    <div id="{{ id }}" data-collection="{{ name }}" data-prototype="{{ form_row(prototype)|spaceless|e }}" data-collection-min="{{ min_elements }}" data-collection-max="{{ max_elements }}">
   {% else %}
     <div>
   {% endif %}
-  {% for element in form %}
-    {{ form_row(element) }}
-  {% endfor %}
+    {% for key, element in form %}
+      <div data-collection-key="{{ key }}">
+        {{ form_row(element) }}
+      </div>
+    {% endfor %}
   </div>
 {%- endblock -%}
 
@@ -82,6 +90,14 @@
   {{ form_errors(form) }}
 {%- endblock -%}
 
+{%- block button_row -%}
+  {{ form_widget(form) }}
+  {{ form_errors(form) }}
+{%- endblock -%}
+
+{%- block submit_row -%}
+  {{ block('button_row') }}
+{%- endblock -%}
 
 {# Label #}
 
@@ -155,4 +171,14 @@
       </optgroup>
     {% endif %}
   {% endfor %}
+{%- endblock -%}
+
+{%- block submit_widget -%}
+  {{ block('button_widget') }}
+{%- endblock -%}
+
+{%- block button_widget -%}
+  <button {{ block('widget_attributes') }} type="{{ type }}" {% if value is not empty %}value="{{ value }}" {% endif %} >
+    {% if label is not empty %}{{ label }}{% endif %}
+  </button>
 {%- endblock -%}

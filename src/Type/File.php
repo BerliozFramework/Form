@@ -12,8 +12,6 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\AbstractType;
-
 /**
  * Class File
  *
@@ -28,22 +26,6 @@ class File extends AbstractType
     public function getType(): string
     {
         return 'file';
-    }
-
-    /////////////
-    /// VALUE ///
-    /////////////
-
-    /**
-     * @inheritdoc
-     */
-    public function getValue(bool $raw = false)
-    {
-        if ($raw) {
-            return null;
-        }
-
-        return parent::getValue($raw);
     }
 
     /////////////

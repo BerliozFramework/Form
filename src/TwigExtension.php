@@ -73,6 +73,31 @@ if (class_exists('\Twig_Extension', true)) {
         }
 
         /**
+         * Returns a list of filters to add to the existing list.
+         *
+         * @return \Twig_Filter[]
+         */
+        public function getFilters()
+        {
+            $filters = [];
+            $filters[] = new \Twig_Filter('spaceless', [$this, 'filterSpaceless']);
+
+            return $filters;
+        }
+
+        /**
+         * Spaceless filter.
+         *
+         * @param string $str
+         *
+         * @return string
+         */
+        public function filterSpaceless(string $str)
+        {
+            return trim(preg_replace('/>\s+</', '><', $str));
+        }
+
+        /**
          * Returns a list of functions to add to the existing list.
          *
          * @return \Twig_Function[]

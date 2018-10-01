@@ -12,7 +12,7 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\AbstractType;
+use Berlioz\Form\View\ViewInterface;
 
 class Checkbox extends AbstractType
 {
@@ -22,5 +22,44 @@ class Checkbox extends AbstractType
     public function getType(): string
     {
         return 'checkbox';
+    }
+
+    /////////////
+    /// VALUE ///
+    /////////////
+
+    /**
+     * @inheritdoc
+     */
+    public function getValue(bool $raw = false)
+    {
+        $value = parent::getValue($raw);
+
+        // Transformer
+        if (!$raw && is_null($transformer = $this->getTransformer())) {
+            if (is_null($this->getOption('default_value', null))) {
+                return parent::getValue(true) == $this->getOption('default_value', 'on');
+            } else {
+                return parent::getValue() ?: null;
+            }
+        }
+
+        return $value;
+    }
+
+    /////////////
+    /// BUILD ///
+    /////////////
+
+    /**
+     * @inheritdoc
+     */
+    public function buildView(): ViewInterface
+    {
+        $view = parent::buildView();
+        $view->mergeVars(['attributes' => ['checked' => $this->getValue(true) == $this->getOption('default_value', 'on')],
+                          'value'      => $this->getOption('default_value', 'on')]);
+
+        return $view;
     }
 }

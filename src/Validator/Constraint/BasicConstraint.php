@@ -36,7 +36,7 @@ class BasicConstraint implements ConstraintInterface
      *
      * @return array
      */
-    protected function getContext(): array
+    public function getContext(): array
     {
         return $this->context ?? [];
     }

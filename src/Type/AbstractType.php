@@ -10,8 +10,10 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form;
+namespace Berlioz\Form\Type;
 
+use Berlioz\Form\Element;
+use Berlioz\Form\Transformer;
 use Berlioz\Form\Validator\NotEmptyValidator;
 use Berlioz\Form\View\BasicView;
 use Berlioz\Form\View\ViewInterface;
@@ -86,14 +88,28 @@ abstract class AbstractType extends Element
     public function getValue(bool $raw = false)
     {
         if (!$raw && !is_null($transformer = $this->getTransformer())) {
-            return $transformer->fromForm($this->getValue(true));
+            return $transformer->fromForm($this->getRawValue());
         }
 
+        return $this->getRawValue();
+    }
+
+    /**
+     * Get raw value.
+     *
+     * @return mixed
+     */
+    protected function getRawValue()
+    {
         if ($this->getOption('readonly', false, true)) {
             return $this->value;
         }
 
-        return $this->submittedValue ?? $this->value;
+        if ($this->getForm()->isSubmitted()) {
+            return $this->submittedValue;
+        }
+
+        return $this->value;
     }
 
     /**
@@ -102,12 +118,12 @@ abstract class AbstractType extends Element
     public function setValue($value, bool $submitted = false)
     {
         if ($submitted) {
+            $this->submittedValue = $value;
+        } else {
             if (!is_null($transformer = $this->getTransformer())) {
                 $value = $transformer->toForm($value);
             }
 
-            $this->submittedValue = $value;
-        } else {
             $this->value = $value;
         }
 
@@ -159,6 +175,7 @@ abstract class AbstractType extends Element
                               'name'             => $this->getFormName(),
                               'label'            => $this->getOption('label', false),
                               'label_attributes' => $this->getOption('label_attributes', []),
+                              'helper'           => $this->getOption('helper', false),
                               'value'            => $this->getValue(true),
                               'errors'           => $this->getConstraints(),
                               'required'         => $this->getOption('required', false, true),

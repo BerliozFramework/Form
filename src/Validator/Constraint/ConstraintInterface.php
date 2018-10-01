@@ -17,9 +17,16 @@ interface ConstraintInterface
     /**
      * ConstraintInterface constructor.
      *
-     * @param array       $context
+     * @param array $context
      */
     public function __construct(array $context = []);
+
+    /**
+     * Get context.
+     *
+     * @return array
+     */
+    public function getContext(): array;
 
     /**
      * __toString() PHP magic method.
