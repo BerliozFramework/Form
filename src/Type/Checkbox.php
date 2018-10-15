@@ -57,7 +57,10 @@ class Checkbox extends AbstractType
     public function buildView(): ViewInterface
     {
         $view = parent::buildView();
-        $view->mergeVars(['attributes' => ['checked' => $this->getValue(true) == $this->getOption('default_value', 'on')],
+        $attributes =  $this->getOption('attributes', []);
+        $attributes['checked'] = $this->getValue(true) == $this->getOption('default_value', 'on');
+
+        $view->mergeVars(['attributes' => $attributes,
                           'value'      => $this->getOption('default_value', 'on')]);
 
         return $view;
