@@ -185,7 +185,7 @@ class Form extends Group
                     $submittedData = [];
             }
 
-            if (($this->submitted = isset($submittedData[$this->getName()])) !== false) {
+            if (($this->submitted = array_key_exists($this->getName(), $submittedData)) !== false) {
                 $this->submittedData = $submittedData[$this->getName()];
                 $this->setValue($this->submittedData, true);
 
