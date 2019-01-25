@@ -12,6 +12,8 @@
 
 namespace Berlioz\Form\Type;
 
+use Berlioz\Form\View\ViewInterface;
+
 /**
  * Class File
  *
@@ -44,5 +46,16 @@ class File extends AbstractType
             $formAttributes['enctype'] = 'multipart/form-data';
             $form->setOption('attributes', $formAttributes);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function buildView(): ViewInterface
+    {
+        $view = parent::buildView();
+        $view->mergeVars(['value' => '']);
+
+        return $view;
     }
 }
