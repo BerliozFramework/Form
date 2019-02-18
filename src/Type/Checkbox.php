@@ -38,7 +38,9 @@ class Checkbox extends AbstractType
         // Transformer
         if (!$raw && is_null($transformer = $this->getTransformer())) {
             if (is_null($this->getOption('default_value', null))) {
-                return parent::getValue(true) == $this->getOption('default_value', 'on');
+                return in_array(parent::getValue(true),
+                                [$this->getOption('default_value', 'on'), 'true', true],
+                                true);
             } else {
                 return parent::getValue() ?: null;
             }
@@ -57,8 +59,10 @@ class Checkbox extends AbstractType
     public function buildView(): ViewInterface
     {
         $view = parent::buildView();
-        $attributes =  $this->getOption('attributes', []);
-        $attributes['checked'] = $this->getValue(true) == $this->getOption('default_value', 'on');
+        $attributes = $this->getOption('attributes', []);
+        $attributes['checked'] = in_array($this->getValue(true),
+                                          [$this->getOption('default_value', 'on'), 'true', true],
+                                          true);
 
         $view->mergeVars(['attributes' => $attributes,
                           'value'      => $this->getOption('default_value', 'on')]);
