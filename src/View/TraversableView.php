@@ -15,7 +15,7 @@ namespace Berlioz\Form\View;
 use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\TraversableElementInterface;
 
-class TraversableView extends BasicView implements \IteratorAggregate
+class TraversableView extends BasicView implements \IteratorAggregate, \ArrayAccess
 {
     /** @var array List of sub elements */
     private $list = [];
@@ -49,6 +49,26 @@ class TraversableView extends BasicView implements \IteratorAggregate
     public function getIterator()
     {
         return new \ArrayIterator($this->list);
+    }
+
+    public function offsetExists($offset): bool
+    {
+        return array_key_exists($offset, $this->list);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->list[$offset] ?? null;
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        throw new FormException('Not allowed to set element in view');
+    }
+
+    public function offsetUnset($offset)
+    {
+        throw new FormException('Not allowed to unset element in view');
     }
 
     /**
