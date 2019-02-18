@@ -17,27 +17,13 @@ use Berlioz\Form\Type\AbstractType;
 
 class Collector
 {
-    /** @var \Berlioz\Form\Form Form */
-    private $form;
-
     /**
      * Collector constructor.
      *
      * @param \Berlioz\Form\Form $form
      */
-    public function __construct(Form $form)
+    public function __construct()
     {
-        $this->form = $form;
-    }
-
-    /**
-     * Get form.
-     *
-     * @return \Berlioz\Form\Form
-     */
-    public function getForm(): Form
-    {
-        return $this->form;
     }
 
     /**
@@ -53,40 +39,44 @@ class Collector
     {
         $groupValues = [];
 
-        if ($group->getOption('mapped', false, true)) {
-            $subMapped = $mapped;
-            $transformer = $group->getTransformer();
+        if (!$group->getOption('mapped', false, true)) {
+            return $groupValues;
+        }
 
-            if (!$group instanceof Form && !is_null($group->getName())) {
-                $subMapped = $this->collectValue($mapped, $group->getName());
+        $subMapped = $mapped;
+        $transformer = $group->getTransformer();
+
+        if (!$group instanceof Form && !is_null($group->getName())) {
+            if (is_null($subMapped = $this->collectValue($mapped, $group->getName()))) {
+                throw new CollectorException(sprintf('Getter of property "%s" returns NULL in class "%s"', $group->getName(), get_class($mapped)));
             }
+        }
 
-            // Apply the group data transformer prior to collection if present
-            if(!empty($transformer)) {
-                $subMapped = $transformer->toForm($subMapped);
-            }
+        // Apply the group data transformer prior to collection if present
+        if (!empty($transformer)) {
+            $subMapped = $transformer->toForm($subMapped);
+        }
 
-            /** @var \Berlioz\Form\ElementInterface $item */
-            foreach ($group as $item) {
-                if (!is_null($item->getName())) {
-                    $value = null;
-                    if ($item instanceof AbstractType) {
-                        $value = $this->collectField($item, $subMapped);
-                    } elseif ($item instanceof Group) {
-                        $value = $this->collectGroup($item, $subMapped);
-                    } elseif ($item instanceof Collection) {
-                        $value = $this->collectCollection($item, $subMapped);
-                    }
+        /** @var \Berlioz\Form\ElementInterface $item */
+        foreach ($group as $item) {
+            if (!is_null($item->getName())) {
+                $value = null;
+                if ($item instanceof AbstractType) {
+                    $value = $this->collectField($item, $subMapped);
+                } elseif ($item instanceof Group) {
+                    $value = $this->collectGroup($item, $subMapped);
+                } elseif ($item instanceof Collection) {
+                    $value = $this->collectCollection($item, $subMapped);
+                }
 
-                    if (!is_null($value)) {
-                        $groupValues[$item->getName()] = $value;
-                    }
+                if (!is_null($value)) {
+                    $groupValues[$item->getName()] = $value;
+                }
+            } else {
+                if ($item instanceof Group) {
+                    $this->collectGroup($item, $mapped);
                 } else {
-                    if ($item instanceof Group) {
-                        $this->collectGroup($item, $mapped);
-                    } else {
-                        throw new CollectorException('Unable to collect data on item not named');
-                    }
+                    throw new CollectorException('Unable to collect data on item not named');
                 }
             }
         }
@@ -168,14 +158,14 @@ class Collector
     public function collectValue(&$mapped, string $property)
     {
         if (is_array($mapped)) {
-            $value = $mapped[$property];
-        } else {
-            $exists = false;
-            $value = b_property_get($mapped, $property, $exists);
+            return $mapped[$property];
+        }
 
-            if (!$exists) {
-                throw new CollectorException(sprintf('Missing getter for "%s" property in object "%s"', $property, get_class($mapped)));
-            }
+        $exists = false;
+        $value = b_property_get($mapped, $property, $exists);
+
+        if (!$exists) {
+            throw new CollectorException(sprintf('Missing getter for "%s" property in object "%s"', $property, get_class($mapped)));
         }
 
         return $value;
@@ -184,13 +174,20 @@ class Collector
     /**
      * Collect.
      *
+     * @param \Berlioz\Form\Form $form
+     *
+     * @return array
      * @throws \Berlioz\Form\Exception\CollectorException
      * @throws \Berlioz\Form\Exception\FormException
      */
-    public function collect()
+    public function collect(Form $form): array
     {
-        if (!is_null($mapped = $this->getForm()->getMappedObject())) {
-            $this->getForm()->setValue($this->collectGroup($this->getForm(), $mapped));
+        if (!is_null($mapped = $form->getMappedObject())) {
+            $formValues = $this->collectGroup($form, $mapped);
+
+            return $formValues;
         }
+
+        return [];
     }
 }

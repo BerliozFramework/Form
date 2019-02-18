@@ -166,8 +166,8 @@ class Form extends Group
         $this->submitted = false;
 
         // Collect data
-        $collector = new Collector($this);
-        $collector->collect();
+        $collector = new Collector();
+        $this->setValue($collector->collect($this));
 
         if (mb_strtolower($request->getMethod()) === mb_strtolower($this->getOption('method'))) {
             switch (mb_strtolower($request->getMethod())) {
