@@ -62,6 +62,35 @@ class BasicView implements ViewInterface
     /////////////////
 
     /**
+     * __isset() PHP magic method to test if variable exists.
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function __isset(string $name): bool
+    {
+        return array_key_exists($name, $this->variables);
+    }
+
+    /**
+     * Get variable.
+     *
+     * @param string $name
+     *
+     * @return mixed
+     * @throws \Berlioz\Form\Exception\FormException
+     */
+    public function __get(string $name)
+    {
+        if (!$this->__isset($name)) {
+            throw new FormException(sprintf('Variable "%s" doest not exists', $name));
+        }
+
+        return $this->variables[$name];
+    }
+
+    /**
      * @inheritdoc
      */
     public function getVar(string $name, $default = null)
