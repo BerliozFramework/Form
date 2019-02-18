@@ -105,11 +105,11 @@ abstract class AbstractType extends Element
             return $this->value;
         }
 
-        if ($this->getForm()->isSubmitted()) {
+        if (!is_null($this->getForm()) && $this->getForm()->isSubmitted()) {
             return $this->submittedValue;
         }
 
-        return $this->value;
+        return $this->value ?? $this->getOption('value');
     }
 
     /**
