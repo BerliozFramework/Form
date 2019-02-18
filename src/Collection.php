@@ -149,6 +149,9 @@ class Collection extends TraversableElement
 
         $i = 0;
 
+        // Sort values
+        ksort($values);
+
         foreach ($values as $value) {
             if (!is_int($this->getOption('max_elements')) || $i < $this->getOption('max_elements')) {
                 if (isset($this[$i])) {
