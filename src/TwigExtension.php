@@ -14,6 +14,7 @@ namespace Berlioz\Form;
 
 use Berlioz\Form\Exception\AlreadyInsertedException;
 use Berlioz\Form\View\BasicView;
+use Berlioz\Form\View\TraversableView;
 use Berlioz\Form\View\ViewInterface;
 
 if (class_exists('\Twig_Extension', true)) {
@@ -111,7 +112,7 @@ if (class_exists('\Twig_Extension', true)) {
             $functions[] = new \Twig_Function('form_start', [$this, 'functionFormStart'], ['is_safe' => ['html']]);
             $functions[] = new \Twig_Function('form_end', [$this, 'functionFormEnd'], ['is_safe' => ['html']]);
             $functions[] = new \Twig_Function('form_errors', [$this, 'functionFormErrors'], ['is_safe' => ['html']]);
-            $functions[] = new \Twig_Function('form_rest', [$this, 'functionFormRows'], ['is_safe' => ['html']]);
+            $functions[] = new \Twig_Function('form_rest', [$this, 'functionFormRest'], ['is_safe' => ['html']]);
             $functions[] = new \Twig_Function('form_label', [$this, 'functionFormLabel'], ['is_safe' => ['html']]);
             $functions[] = new \Twig_Function('form_widget', [$this, 'functionFormWidget'], ['is_safe' => ['html']]);
             $functions[] = new \Twig_Function('form_row', [$this, 'functionFormRow'], ['is_safe' => ['html']]);
@@ -235,6 +236,33 @@ if (class_exists('\Twig_Extension', true)) {
             }
 
             return $this->render('row', $formView, $options);
+        }
+
+        /**
+         * Function form rest.
+         *
+         * @param \Berlioz\Form\View\TraversableView $formView Form view
+         * @param array                              $options  Options
+         *
+         * @return string
+         * @throws \Berlioz\Form\Exception\AlreadyInsertedException
+         * @throws \Throwable Twig error
+         * @throws \Twig_Error Twig error
+         */
+        public function functionFormRest(TraversableView $formView, array $options = []): string
+        {
+            $rendering = '';
+
+            /** @var \Berlioz\Form\View\ViewInterface $aFormView */
+            foreach ($formView as $aFormView) {
+                if ($aFormView->isInserted()) {
+                    continue;
+                }
+
+                $rendering .= $this->functionFormRow($aFormView, $options);
+            }
+
+            return $rendering;
         }
     }
 }
