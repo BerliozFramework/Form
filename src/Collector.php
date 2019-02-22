@@ -154,6 +154,7 @@ class Collector
      *
      * @return mixed
      * @throws \Berlioz\Form\Exception\CollectorException
+     * @throws \ReflectionException
      */
     public function collectValue(&$mapped, string $property)
     {
@@ -162,7 +163,7 @@ class Collector
         }
 
         $exists = false;
-        $value = b_property_get($mapped, $property, $exists);
+        $value = b_get_property_value($mapped, $property, $exists);
 
         if (!$exists) {
             throw new CollectorException(sprintf('Missing getter for "%s" property in object "%s"', $property, get_class($mapped)));

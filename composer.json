@@ -1,5 +1,6 @@
 {
   "name": "berlioz/form",
+  "type": "library",
   "description": "Berlioz Form",
   "minimum-stability": "dev",
   "prefer-stable": true,
@@ -22,13 +23,13 @@
     }
   },
   "require": {
-    "php": ">=7.1",
-    "berlioz/utils": "@dev",
-    "psr/http-message": "~1.0.0"
+    "php": "^7.1",
+    "berlioz/helpers": "@dev",
+    "psr/http-message": "^1.0.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "~7.2",
+    "phpunit/phpunit": "^7.5",
     "berlioz/http-message": "@dev",
-    "twig/twig": "~2.4"
+    "twig/twig": "^2.6"
   }
 }

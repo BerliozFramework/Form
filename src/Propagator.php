@@ -45,20 +45,25 @@ class Propagator
      *
      * @param \Berlioz\Form\ElementInterface $formElement
      * @param object|array                   $mapped
+     * @param bool                           $created New element?
      *
      * @return mixed
      * @throws \Berlioz\Form\Exception\PropagationException
+     * @throws \ReflectionException
      */
-    private function getOrCreateMappedObject(ElementInterface $formElement, $mapped)
+    private function getOrCreateMappedObject(ElementInterface $formElement, $mapped, bool &$created = null)
     {
+        $created = false;
         $exists = false;
-        $value = b_property_get($mapped, $formElement->getName(), $exists);
+        $value = b_get_property_value($mapped, $formElement->getName(), $exists);
 
         if (!$exists) {
             throw new PropagationException(sprintf('Unable to find property "%s" in mapped object for "%s" form element', $formElement->getName(), $formElement->getName()));
         }
 
         if (is_null($value)) {
+            $created = true;
+
             return $this->createMappedObject($formElement);
         }
 
@@ -106,7 +111,7 @@ class Propagator
             $transformedMapped = null;
             $isTransformed = false;
 
-            if(!empty($transformer)) {
+            if (!empty($transformer)) {
                 $isTransformed = true;
                 $transformedMapped = $mapped;
                 $mapped = [];
@@ -114,12 +119,13 @@ class Propagator
 
             /** @var \Berlioz\Form\ElementInterface $item */
             foreach ($group as $key => $item) {
-                if($item instanceof Group) {
+                if ($item instanceof Group) {
+                    $mappedObjectCreated = false;
                     $subMapped = $mapped;
 
                     if (!is_null($item->getName())) {
-                        if(!$isTransformed) {
-                            $subMapped = $this->getOrCreateMappedObject($item, $subMapped);
+                        if (!$isTransformed) {
+                            $subMapped = $this->getOrCreateMappedObject($item, $subMapped, $mappedObjectCreated);
                         }
 
                         if (!isset($subMapped)) {
@@ -129,7 +135,7 @@ class Propagator
 
                     $this->propagateGroup($item, $subMapped);
 
-                    if (!is_null($item->getName())) {
+                    if (!is_null($item->getName()) && $mappedObjectCreated) {
                         $this->propagateValue($mapped, $item->getName(), $subMapped);
                     }
                 } elseif ($item instanceof Collection) {
@@ -141,7 +147,7 @@ class Propagator
                 }
             }
 
-            if($isTransformed) {
+            if ($isTransformed) {
                 $transformedMapped = $transformer->fromForm($mapped);
                 $mapped = $transformedMapped;
             }
@@ -163,8 +169,8 @@ class Propagator
                 $subMapped = [];
             } else {
                 $subMapped = $this->getOrCreateMappedObject($collection, $mapped);
-                
-                if(is_null($subMapped)) {
+
+                if (is_null($subMapped)) {
                     $subMapped = [];
                 }
             }
@@ -200,8 +206,7 @@ class Propagator
                     unset($subMapped[$i]);
                 }
             }
-
-            $this->propagateValue($mapped, $collection->getName(), $subMapped);
+            //$this->propagateValue($mapped, $collection->getName(), $subMapped);
         }
     }
 
@@ -229,14 +234,15 @@ class Propagator
      * @param mixed  $value
      *
      * @throws \Berlioz\Form\Exception\PropagationException
+     * @throws \ReflectionException
      */
     private function propagateValue(&$mapped, string $property, $value)
     {
         if (is_array($mapped)) {
             $mapped[$property] = $value;
         } else {
-            if (!b_property_set($mapped, $property, $value)) {
-                throw new PropagationException;
+            if (!b_set_property_value($mapped, $property, $value)) {
+                throw new PropagationException(sprintf('Unable to set property "%s" on object "%s"', $property, get_class($mapped)));
             }
         }
     }

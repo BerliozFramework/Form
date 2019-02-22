@@ -153,7 +153,7 @@ class Choice extends AbstractType
         if (is_string($callback) && !empty($callback)) {
             if (is_object($value)) {
                 $exists = false;
-                $result = b_property_get($value, $callback, $exists);
+                $result = b_get_property_value($value, $callback, $exists);
 
                 if ($exists) {
                     return $result;
