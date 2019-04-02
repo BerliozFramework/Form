@@ -16,20 +16,23 @@ use Berlioz\Form\Exception\AlreadyInsertedException;
 use Berlioz\Form\View\BasicView;
 use Berlioz\Form\View\TraversableView;
 use Berlioz\Form\View\ViewInterface;
+use Twig\Environment;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-if (class_exists('\Twig_Extension', true)) {
-    class TwigExtension extends \Twig_Extension
+if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
+    class TwigExtension extends AbstractExtension
     {
         const DEFAULT_TPL = '@Berlioz-Form/default.html.twig';
-        /** @var \Twig_Environment Twig */
+        /** @var \Twig\Environment Twig */
         private $twig;
 
         /**
          * TwigExtension constructor.
          *
-         * @param \Twig_Environment $twig
+         * @param \Twig\Environment $twig
          */
-        public function __construct(\Twig_Environment $twig)
+        public function __construct(Environment $twig)
         {
             $this->twig = $twig;
         }
@@ -37,9 +40,9 @@ if (class_exists('\Twig_Extension', true)) {
         /**
          * Get twig.
          *
-         * @return \Twig_Environment
+         * @return \Twig\Environment
          */
-        private function getTwig(): \Twig_Environment
+        private function getTwig(): Environment
         {
             return $this->twig;
         }
@@ -53,7 +56,7 @@ if (class_exists('\Twig_Extension', true)) {
          *
          * @return string
          * @throws \Throwable Twig error
-         * @throws \Twig_Error Twig error
+         * @throws \Twig\Error\Error
          */
         private function render(string $blockType, ViewInterface $formView, array $options = []): string
         {
@@ -74,48 +77,23 @@ if (class_exists('\Twig_Extension', true)) {
         }
 
         /**
-         * Returns a list of filters to add to the existing list.
-         *
-         * @return \Twig_Filter[]
-         */
-        public function getFilters()
-        {
-            $filters = [];
-            $filters[] = new \Twig_Filter('spaceless', [$this, 'filterSpaceless']);
-
-            return $filters;
-        }
-
-        /**
-         * Spaceless filter.
-         *
-         * @param string $str
-         *
-         * @return string
-         */
-        public function filterSpaceless(string $str)
-        {
-            return trim(preg_replace('/>\s+</', '><', $str));
-        }
-
-        /**
          * Returns a list of functions to add to the existing list.
          *
-         * @return \Twig_Function[]
+         * @return \Twig\TwigFunction[]
          */
         public function getFunctions()
         {
             $functions = [];
 
             // Forms
-            $functions[] = new \Twig_Function('form_render', [$this, 'functionFormRender'], ['is_safe' => ['html']]);
-            $functions[] = new \Twig_Function('form_start', [$this, 'functionFormStart'], ['is_safe' => ['html']]);
-            $functions[] = new \Twig_Function('form_end', [$this, 'functionFormEnd'], ['is_safe' => ['html']]);
-            $functions[] = new \Twig_Function('form_errors', [$this, 'functionFormErrors'], ['is_safe' => ['html']]);
-            $functions[] = new \Twig_Function('form_rest', [$this, 'functionFormRest'], ['is_safe' => ['html']]);
-            $functions[] = new \Twig_Function('form_label', [$this, 'functionFormLabel'], ['is_safe' => ['html']]);
-            $functions[] = new \Twig_Function('form_widget', [$this, 'functionFormWidget'], ['is_safe' => ['html']]);
-            $functions[] = new \Twig_Function('form_row', [$this, 'functionFormRow'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_render', [$this, 'functionFormRender'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_start', [$this, 'functionFormStart'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_end', [$this, 'functionFormEnd'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_errors', [$this, 'functionFormErrors'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_rest', [$this, 'functionFormRest'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_label', [$this, 'functionFormLabel'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_widget', [$this, 'functionFormWidget'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_row', [$this, 'functionFormRow'], ['is_safe' => ['html']]);
 
             return $functions;
         }
@@ -143,7 +121,7 @@ if (class_exists('\Twig_Extension', true)) {
          *
          * @return string
          * @throws \Throwable Twig error
-         * @throws \Twig_Error Twig error
+         * @throws \Twig\Error\Error
          */
         public function functionFormStart(BasicView $formView, array $options = []): string
         {
@@ -158,7 +136,7 @@ if (class_exists('\Twig_Extension', true)) {
          *
          * @return string
          * @throws \Throwable Twig error
-         * @throws \Twig_Error Twig error
+         * @throws \Twig\Error\Error
          */
         public function functionFormEnd(BasicView $formView, array $options = []): string
         {
@@ -173,7 +151,7 @@ if (class_exists('\Twig_Extension', true)) {
          *
          * @return string
          * @throws \Throwable Twig error
-         * @throws \Twig_Error Twig error
+         * @throws \Twig\Error\Error
          */
         public function functionFormErrors(ViewInterface $formView, array $options = []): string
         {
@@ -188,7 +166,7 @@ if (class_exists('\Twig_Extension', true)) {
          *
          * @return string
          * @throws \Throwable Twig error
-         * @throws \Twig_Error Twig error
+         * @throws \Twig\Error\Error
          */
         public function functionFormLabel(BasicView $formView, array $options = []): string
         {
@@ -204,7 +182,7 @@ if (class_exists('\Twig_Extension', true)) {
          * @return string
          * @throws \Berlioz\Form\Exception\AlreadyInsertedException
          * @throws \Throwable Twig error
-         * @throws \Twig_Error Twig error
+         * @throws \Twig\Error\Error
          */
         public function functionFormWidget(ViewInterface $formView, array $options = []): string
         {
@@ -227,7 +205,7 @@ if (class_exists('\Twig_Extension', true)) {
          * @return string
          * @throws \Berlioz\Form\Exception\AlreadyInsertedException
          * @throws \Throwable Twig error
-         * @throws \Twig_Error Twig error
+         * @throws \Twig\Error\Error
          */
         public function functionFormRow(ViewInterface $formView, array $options = []): string
         {
@@ -247,7 +225,7 @@ if (class_exists('\Twig_Extension', true)) {
          * @return string
          * @throws \Berlioz\Form\Exception\AlreadyInsertedException
          * @throws \Throwable Twig error
-         * @throws \Twig_Error Twig error
+         * @throws \Twig\Error\Error
          */
         public function functionFormRest(TraversableView $formView, array $options = []): string
         {
