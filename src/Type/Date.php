@@ -24,6 +24,7 @@ class Date extends AbstractType
 
     /**
      * @inheritdoc
+     * @throws \Exception
      */
     public function getValue(bool $raw = false)
     {
@@ -31,6 +32,10 @@ class Date extends AbstractType
             return parent::getValue($raw);
         }
 
-        return new \DateTime(parent::getValue(true));
+        if (is_null($this->getTransformer())) {
+            return new \DateTime(parent::getValue(true));
+        }
+
+        return parent::getValue();
     }
 }
