@@ -21,4 +21,22 @@ class Number extends AbstractType
     {
         return 'number';
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function getValue(bool $raw = false)
+    {
+        $value = parent::getValue($raw);
+
+        if (is_null($value)) {
+            return $value;
+        }
+
+        if ($value == '') {
+            return null;
+        }
+
+        return floatval($value);
+    }
 }
