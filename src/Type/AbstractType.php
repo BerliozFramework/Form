@@ -50,11 +50,13 @@ abstract class AbstractType extends Element
      */
     public function __debugInfo(): array
     {
-        return ['name'        => $this->getName(),
-                'value'       => $this->getValue(),
-                'parent'      => $this->getParent() ? $this->getParent()->getName() : null,
-                'options'     => $this->options,
-                'constraints' => $this->getConstraints()];
+        return [
+            'name' => $this->getName(),
+            'value' => $this->getValue(),
+            'parent' => $this->getParent() ? $this->getParent()->getName() : null,
+            'options' => $this->options,
+            'constraints' => $this->getConstraints(),
+        ];
     }
 
     /**
@@ -73,9 +75,13 @@ abstract class AbstractType extends Element
             $value = $this->getOption('value');
         }
 
-        return array_replace_recursive(parent::getOptions(),
-                                       ['type'  => $this->getType(),
-                                        'value' => $value]);
+        return array_replace_recursive(
+            parent::getOptions(),
+            [
+                'type' => $this->getType(),
+                'value' => $value,
+            ]
+        );
     }
 
     /////////////
@@ -109,7 +115,11 @@ abstract class AbstractType extends Element
             return $this->submittedValue;
         }
 
-        return $this->value ?? $this->getOption('value');
+        if (!is_null($this->value)) {
+            return $this->value;
+        }
+
+        return $this->getOption('value');
     }
 
     /**
@@ -169,18 +179,22 @@ abstract class AbstractType extends Element
      */
     public function buildView(): ViewInterface
     {
-        return new BasicView($this,
-                             ['type'             => $this->getType(),
-                              'id'               => $this->getId(),
-                              'name'             => $this->getFormName(),
-                              'label'            => $this->getOption('label', false),
-                              'label_attributes' => $this->getOption('label_attributes', []),
-                              'helper'           => $this->getOption('helper', false),
-                              'value'            => $this->getValue(true),
-                              'errors'           => $this->getConstraints(),
-                              'required'         => $this->getOption('required', false, true),
-                              'disabled'         => $this->getOption('disabled', false, true),
-                              'readonly'         => $this->getOption('readonly', false, true),
-                              'attributes'       => $this->getOption('attributes', [])]);
+        return new BasicView(
+            $this,
+            [
+                'type' => $this->getType(),
+                'id' => $this->getId(),
+                'name' => $this->getFormName(),
+                'label' => $this->getOption('label', false),
+                'label_attributes' => $this->getOption('label_attributes', []),
+                'helper' => $this->getOption('helper', false),
+                'value' => $this->getRawValue(),
+                'errors' => $this->getConstraints(),
+                'required' => $this->getOption('required', false, true),
+                'disabled' => $this->getOption('disabled', false, true),
+                'readonly' => $this->getOption('readonly', false, true),
+                'attributes' => $this->getOption('attributes', []),
+            ]
+        );
     }
 }
