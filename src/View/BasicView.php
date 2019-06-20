@@ -13,6 +13,7 @@
 namespace Berlioz\Form\View;
 
 use Berlioz\Form\ElementInterface;
+use Berlioz\Form\Exception\FormException;
 
 class BasicView implements ViewInterface
 {
