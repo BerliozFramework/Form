@@ -128,10 +128,11 @@ class Collector
      * Collect data for field.
      *
      * @param \Berlioz\Form\Type\AbstractType $type
-     * @param mixed                           $mapped
+     * @param mixed $mapped
      *
      * @return mixed|null
      * @throws \Berlioz\Form\Exception\CollectorException
+     * @throws \ReflectionException
      */
     public function collectField(AbstractType $type, &$mapped)
     {
