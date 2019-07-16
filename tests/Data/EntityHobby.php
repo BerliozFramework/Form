@@ -10,21 +10,19 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form\Type;
+namespace Berlioz\Form\Tests\Data;
 
-/**
- * Class Email
- *
- * @package Berlioz\Form\Type
- * @todo    Multiple emails
- */
-class Email extends Text
+class EntityHobby
 {
-    /**
-     * @inheritdoc
-     */
-    public function getType(): string
+    private $name;
+
+    public function getName()
     {
-        return 'email';
+        return $this->name;
+    }
+
+    public function setName($name): void
+    {
+        $this->name = $name;
     }
 }

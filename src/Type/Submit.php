@@ -12,19 +12,10 @@
 
 namespace Berlioz\Form\Type;
 
-/**
- * Class Email
- *
- * @package Berlioz\Form\Type
- * @todo    Multiple emails
- */
-class Email extends Text
+class Submit extends Button
 {
-    /**
-     * @inheritdoc
-     */
     public function getType(): string
     {
-        return 'email';
+        return 'submit';
     }
 }

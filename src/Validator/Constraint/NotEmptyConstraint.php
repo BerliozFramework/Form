@@ -10,21 +10,17 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form\Type;
+namespace Berlioz\Form\Validator\Constraint;
 
-/**
- * Class Email
- *
- * @package Berlioz\Form\Type
- * @todo    Multiple emails
- */
-class Email extends Text
+class NotEmptyConstraint extends BasicConstraint
 {
     /**
-     * @inheritdoc
+     * LengthConstraint constructor.
+     *
+     * @param array $context
      */
-    public function getType(): string
+    public function __construct(array $context = [])
     {
-        return 'email';
+        parent::__construct($context, 'The field is required.');
     }
 }

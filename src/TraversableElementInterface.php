@@ -10,21 +10,8 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form\Type;
+namespace Berlioz\Form;
 
-/**
- * Class Email
- *
- * @package Berlioz\Form\Type
- * @todo    Multiple emails
- */
-class Email extends Text
+interface TraversableElementInterface extends ElementInterface, \ArrayAccess, \Countable, \IteratorAggregate
 {
-    /**
-     * @inheritdoc
-     */
-    public function getType(): string
-    {
-        return 'email';
-    }
 }

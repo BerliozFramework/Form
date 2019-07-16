@@ -12,50 +12,61 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\FormType;
+use Berlioz\Form\View\ViewInterface;
 
-class Checkbox extends FormType
+class Checkbox extends AbstractType
 {
-    const TYPE = 'checkbox';
+    /**
+     * @inheritdoc
+     */
+    public function getType(): string
+    {
+        return 'checkbox';
+    }
+
+    /////////////
+    /// VALUE ///
+    /////////////
 
     /**
-     * Choice constructor.
-     *
-     * @param string $name    Name
-     * @param array  $options Options
+     * @inheritdoc
      */
-    public function __construct(string $name, array $options = [])
+    public function getValue(bool $raw = false)
     {
-        // Default required for checkbox (boolean)
-        if (!isset($options['required'])) {
-            $options['required'] = false;
+        $value = parent::getValue($raw);
+
+        // Transformer
+        if (!$raw && is_null($transformer = $this->getTransformer())) {
+            if (is_null($this->getOption('default_value', null))) {
+                return in_array(parent::getValue(true),
+                                [$this->getOption('default_value', 'on'), 'true', true],
+                                true);
+            } else {
+                return parent::getValue() ?: null;
+            }
         }
 
-        parent::__construct($name, $options);
+        return $value;
     }
 
-    /**
-     * Get template data.
-     *
-     * @param array $options Options
-     *
-     * @return array
-     */
-    public function getTemplateData(array $options = []): array
-    {
-        $fOptions = parent::getTemplateData($options);
-        $fOptions['checked'] = $this->getDefaultValue() == true;
-
-        return $fOptions;
-    }
+    /////////////
+    /// BUILD ///
+    /////////////
 
     /**
-     * Get value.
-     *
-     * @return bool
+     * @inheritdoc
      */
-    public function getValue()
+    public function buildView(): ViewInterface
     {
-        return parent::getValue() == true;
+        $view = parent::buildView();
+        $attributes = $this->getOption('attributes', []);
+        $attributes['checked'] = in_array($this->getValue(true),
+                                          [$this->getOption('default_value', 'on'), 'true', true],
+                                          true);
+
+        $view->mergeVars(['attributes' => $attributes,
+                          'value'      => $this->getOption('default_value', 'on')]);
+
+        return $view;
     }
 }

@@ -12,7 +12,13 @@
 
 namespace Berlioz\Form\Type;
 
-class Hidden extends Text
+class Hidden extends AbstractType
 {
-    const TYPE = 'hidden';
+    /**
+     * @inheritdoc
+     */
+    public function getType(): string
+    {
+        return 'hidden';
+    }
 }

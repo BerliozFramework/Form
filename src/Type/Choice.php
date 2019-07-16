@@ -12,246 +12,263 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\FormType;
+use Berlioz\Form\View\ViewInterface;
 
-class Choice extends FormType
+class Choice extends AbstractType
 {
-    const TYPE = 'choice';
-    /** @var ChoiceValue[] Choice values */
-    private $choices;
+    /** @var \Berlioz\Form\Type\ChoiceValue[] Choices value */
+    private $choicesForView = [];
+    /** @var \Berlioz\Form\Type\ChoiceValue[] Choices values */
+    private $choices = [];
 
     /**
      * Choice constructor.
      *
-     * @param string $name    Name
-     * @param array  $options Options
+     * @param array $options Options
      */
-    public function __construct(string $name, array $options = [])
+    public function __construct(array $options = [])
     {
-        $this->getOptions()->setOptions(['expanded'         => false,
-                                         'multiple'         => false,
-                                         'allow_clear'      => false,
-                                         'allow_all_values' => false,
-                                         'choices'          => []]);
+        parent::__construct($options);
 
-        parent::__construct($name, $options);
+        $this->value = [];
     }
 
     /**
-     * Get form name.
-     *
-     * @return string
+     * @inheritdoc
      */
-    public function getFormName(): string
+    public function getType(): string
     {
-        return parent::getFormName() . ($this->getOptions()->get('multiple') == true ? '[]' : '');
+        return 'choice';
     }
+
+    /////////////
+    /// VALUE ///
+    /////////////
 
     /**
-     * Get choices.
-     *
-     * @return \Berlioz\Form\Type\ChoiceValue[]|\Berlioz\Form\Type\ChoiceValue[][]
+     * @inheritdoc
      */
-    private function getChoices()
+    public function getValue(bool $raw = false)
     {
-        if (is_null($this->choices)) {
-            $this->choices = [];
+        $value = [];
 
-            if ($this->getOptions()->get('expanded') == true) {
-                if ($this->getOptions()->get('multiple') == false) {
-                    $choice_type = 'radio';
-                } else {
-                    $choice_type = 'checkbox';
-                }
+        $this->buildChoices();
+        $selectedChoicesValue = $this->getSelectedChoicesValue();
+
+        foreach ($selectedChoicesValue as $choiceValue) {
+            if ($raw) {
+                $value[] = $choiceValue->getValue();
             } else {
-                $choice_type = 'option';
-            }
-
-            $newChoice =
-                function ($choice_value, $choice_key, $index) use ($choice_type) {
-                    $label = $this->choiceCallback('choice_label', $choice_value, $choice_key, $index) ?? $choice_key;
-                    $value = $this->choiceCallback('choice_value', $choice_value, $choice_key, $index) ?? $choice_value;
-                    $attributes = $this->choiceCallback('choice_attributes', $choice_value, $choice_key, $index) ?? [];
-
-                    if (!is_null($label) && !is_null($value) && is_array($attributes)) {
-                        $choice = new ChoiceValue;
-                        $choice->setType($choice_type);
-                        $choice->setLabel($label);
-                        $choice->setValue($value);
-                        $choice->setAttributes($attributes);
-                        $choice->setOriginalData($choice_value);
-
-                        return $choice;
-                    } else {
-                        return null;
-                    }
-                };
-
-            if ($this->getOptions()->is_array('choices') || $this->getOptions()->is_a('choices', '\ArrayAccess')) {
-                $index = 0;
-                foreach ($this->getOptions()->get('choices') as $key => $value) {
-                    if (is_array($value)) {
-                        foreach ($value as $key2 => $value2) {
-                            if (!is_null($fChoice = $newChoice($value2, $key2, $index))) {
-                                $this->choices[$key][] = $fChoice;
-                            }
-
-                            $index++;
-                        }
-                    } else {
-                        if (!is_null($fChoice = $newChoice($value, $key, $index))) {
-                            $this->choices[] = $fChoice;
-                        }
-
-                        $index++;
-                    }
-                }
-            }
-
-
-            // Set selected !
-            // WARNING: Do not move this part before $this->choices completion
-            {
-                $values = $this->getSubmittedValue();
-
-                // Values
-                if (!is_array($values) && !is_a($values, '\ArrayAccess')) {
-                    $values = [$values];
-                }
-
-                foreach ($this->choices as $choice) {
-                    if (is_array($choice)) {
-                        foreach ($choice as $choice2) {
-                            $choice2->setSelected(false);
-
-                            foreach ($values as $value) {
-                                if ($choice2->getOriginalData() == $value || $choice2->getValue() == $value) {
-                                    $choice2->setSelected(true);
-                                }
-                            }
-                        }
-                    } else {
-                        $choice->setSelected(false);
-
-                        foreach ($values as $value) {
-                            if ($choice->getOriginalData() == $value || $choice->getValue() == $value) {
-                                $choice->setSelected(true);
-                            }
-                        }
-                    }
-                }
+                $value[] = $choiceValue->getFinalValue();
             }
         }
 
-        return $this->choices;
-    }
-
-    private function choiceCallback($callback_name, $choice_value, $choice_key, $index = null)
-    {
-        $result = null;
-
-        if ($this->getOptions()->is_callable($callback_name)) {
-            $result = $this->getOptions()->get($callback_name)($choice_value, $choice_key, $index);
-        } else {
-            if ($this->getOptions()->is_array($callback_name)) {
-                if (isset($this->getOptions()->get($callback_name)[$choice_key])) {
-                    $result = $this->getOptions()->get($callback_name)[$choice_key];
-                } else {
-                    $result = null;
-                }
-            } else {
-                if ($this->getOptions()->is_string($callback_name) && !$this->getOptions()->is_empty($callback_name)) {
-                    if (is_object($choice_value)) {
-                        $exists = false;
-                        $result = b_property_get($choice_value, $this->getOptions()->get($callback_name), $exists);
-
-                        if ($exists === false) {
-                            if (method_exists($choice_value, $this->getOptions()->get($callback_name))) {
-                                $result = call_user_func([$choice_value, $this->getOptions()->get($callback_name)]);
-                            } else {
-                                $result = null;
-                            }
-                        }
-                    } else {
-                        $result = $this->getOptions()->get($callback_name);
-                    }
-                } else {
-                    $result = null;
-                }
+        if (!$this->getOption('multiple', false)) {
+            if (($value = reset($value)) === false) {
+                $value = null;
             }
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get value.
-     *
-     * @return mixed
-     */
-    public function getValue()
-    {
-        $fValue = [];
-        $choices = $this->getChoices();
-
-        foreach ($choices as $key => $choice_group) {
-            if (is_array($choice_group)) {
-                /** @var array $choice_group */
-                /** @var \Berlioz\Form\Type\ChoiceValue $choice */
-                foreach ($choice_group as $choice) {
-                    if ($choice->isSelected()) {
-                        $fValue[] = $choice->getOriginalData();
-                    }
-                }
-            } else {
-                /** @var \Berlioz\Form\Type\ChoiceValue $choice */
-                $choice = $choice_group;
-
-                if ($choice->isSelected()) {
-                    $fValue[] = $choice->getOriginalData();
-                }
-            }
-        }
-
-        if (!$this->getOptions()->is_null('allow_all_values')) {
-            $parentValue = $this->getSubmittedValue();
-            is_array($parentValue) || $parentValue = [$parentValue];
-
-            foreach ($parentValue as $value) {
-                // If option is boolean, check if true value or check if it's an callable value for validation
-                if (($this->getOptions()->is_bool('allow_all_values') && $this->getOptions()->get('allow_all_values') === true) ||
-                    ($this->getOptions()->is_callable('allow_all_values') && call_user_func($this->getOptions()->get('allow_all_values'), $value) === true)) {
-                    if (!(in_array($value, $fValue, true) || in_array($value, $fValue, true))) {
-                        $fValue[] = $value;
-                    }
-                }
-            }
-        }
-
-        // Not multiple ?
-        if ($this->getOptions()->get('multiple') == false) {
-            $fValue = reset($fValue);
         }
 
         // Transformer
-        $fValue = $this->transformValue($fValue);
+        if (!$raw && !is_null($transformer = $this->getTransformer())) {
+            return $transformer->fromForm($value);
+        }
 
-        return $fValue;
+        return $value;
     }
 
     /**
-     * Get template data.
-     *
-     * @param array $options Options
-     *
-     * @return array
+     * @inheritdoc
      */
-    public function getTemplateData(array $options = []): array
+    public function setValue($value, bool $submitted = false)
     {
-        return parent::getTemplateData(b_array_merge_recursive($options,
-                                                               ['choices'     => $this->getChoices(),
-                                                                'expanded'    => $this->getOptions()->get('expanded'),
-                                                                'allow_clear' => $this->getOptions()->get('allow_clear'),
-                                                                'attributes'  => ['multiple' => $this->getOptions()->get('multiple') == true]]));
+        if (!is_array($value) && !$value instanceof \Traversable) {
+            $value = [$value];
+        }
+
+        return parent::setValue($value, $submitted);
+    }
+
+    /**
+     * Get selected choices value.
+     *
+     * @return \Berlioz\Form\Type\ChoiceValue[]
+     */
+    private function getSelectedChoicesValue(): array
+    {
+        $found = [];
+
+        $rawValue = parent::getValue(true);
+        if ($rawValue instanceof \Traversable) {
+            $rawValue = iterator_to_array($rawValue);
+        }
+
+        if (!is_null($rawValue)) {
+            foreach ($this->choices as $choiceValue) {
+                if (in_array($choiceValue->getValue(), $rawValue)
+                    || in_array($choiceValue->getFinalValue(), $rawValue, true)) {
+                    $found[] = $choiceValue->setSelected(true);
+                }
+            }
+        }
+
+        return $found;
+    }
+
+    /////////////
+    /// BUILD ///
+    /////////////
+
+    /**
+     * Callback for each choice.
+     *
+     * @param string     $callbackName Callback name
+     * @param int|string $key          Key of choice
+     * @param mixed      $value        Value of choice
+     * @param int        $index        Index of choice
+     *
+     * @return null|mixed
+     */
+    private function choiceCallback(string $callbackName, $key, $value, int $index)
+    {
+        if (is_null($callback = $this->getOption($callbackName))) {
+            return null;
+        }
+
+        // Callable?
+        if (is_callable($callback)) {
+            return $callback($key, $value, $index);
+        }
+
+        // Array?
+        if (is_array($callback)) {
+            if (!is_string($value) && !is_int($value)) {
+                return null;
+            }
+
+            return $callback[$value] ?? null;
+        }
+
+        // Value is object?
+        if (is_string($callback) && !empty($callback)) {
+            if (is_object($value)) {
+                $exists = false;
+                $result = b_get_property_value($value, $callback, $exists);
+
+                if ($exists) {
+                    return $result;
+                }
+
+                if (method_exists($value, $callback)) {
+                    return call_user_func([$value, $callback]);
+                }
+            }
+
+            return $callback;
+        }
+
+        return null;
+    }
+
+    /**
+     * Build choice value object.
+     *
+     * @param int|string $key   Key of choice
+     * @param mixed      $value Value of choice
+     * @param int        $index Index of choice
+     *
+     * @return \Berlioz\Form\Type\ChoiceValue
+     */
+    private function buildChoiceValue($key, $value, int $index): ChoiceValue
+    {
+        // Value
+        $valueIsObject = is_object($value);
+        if (is_null($rawValue = $this->choiceCallback('choice_value', $key, $value, $index))) {
+            if ($valueIsObject) {
+                $rawValue = $index;
+            } else {
+                $rawValue = $value;
+            }
+        }
+
+        // Label
+        if (is_null($label = $this->choiceCallback('choice_label', $key, $value, $index))) {
+            if (is_null($label = $this->choiceCallback('choice_label', $key, $rawValue, $index))) {
+                $label = $key;
+            }
+        }
+
+        // Attributes
+        if (is_null($attributes = $this->choiceCallback('choice_attributes', $key, $value, $index))) {
+            if (is_null($attributes = $this->choiceCallback('choice_attributes', $key, $rawValue, $index))) {
+                $attributes = [];
+            }
+        }
+
+        $choiceValue =
+            (new ChoiceValue())
+                ->setLabel($label)
+                ->setValue($rawValue)
+                ->setFinalValue($value)
+                ->setAttributes($attributes ?? []);
+
+        $this->choices[$choiceValue->getValue()] = $choiceValue;
+
+        return $choiceValue;
+    }
+
+    /**
+     * Build choices.
+     *
+     * @return \Berlioz\Form\Type\ChoiceValue[][]
+     */
+    private function buildChoices(): array
+    {
+        $choices = $this->getOption('choices', []);
+
+        $this->choicesForView = [];
+
+        $index = 0;
+        foreach ($choices as $key => $value) {
+            if (is_array($value) || $value instanceof \Traversable) {
+                foreach ($value as $key2 => $value2) {
+                    $this->choicesForView[$key][] = $this->buildChoiceValue($key2, $value2, $index);
+                    $index++;
+                }
+            } else {
+                $this->choicesForView[] = $this->buildChoiceValue($key, $value, $index);
+                $index++;
+            }
+        }
+
+        return $this->choicesForView;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function build()
+    {
+        parent::build();
+
+        $this->buildChoices();
+        $this->getSelectedChoicesValue();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function buildView(): ViewInterface
+    {
+        $this->buildChoices();
+        $this->getSelectedChoicesValue();
+
+        $view = parent::buildView();
+        $view->mergeVars(['allow_clear' => $this->getOption('allow_clear', false),
+                          'expanded'    => $this->getOption('expanded', false),
+                          'multiple'    => $this->getOption('multiple', false),
+                          'choices'     => $this->choicesForView ?? []]);
+
+        return $view;
     }
 }

@@ -10,21 +10,15 @@
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form\Type;
+namespace Berlioz\Form;
 
-/**
- * Class Email
- *
- * @package Berlioz\Form\Type
- * @todo    Multiple emails
- */
-class Email extends Text
+class View implements \IteratorAggregate
 {
     /**
      * @inheritdoc
      */
-    public function getType(): string
+    public function getIterator()
     {
-        return 'email';
+        return new \ArrayIterator($this);
     }
 }

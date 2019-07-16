@@ -12,19 +12,13 @@
 
 namespace Berlioz\Form\Type;
 
-/**
- * Class Email
- *
- * @package Berlioz\Form\Type
- * @todo    Multiple emails
- */
-class Email extends Text
+class Week extends AbstractType
 {
     /**
      * @inheritdoc
      */
     public function getType(): string
     {
-        return 'email';
+        return 'week';
     }
 }

@@ -12,214 +12,235 @@
 
 namespace Berlioz\Form;
 
+use Berlioz\Form\Exception\AlreadyInsertedException;
+use Berlioz\Form\View\BasicView;
+use Berlioz\Form\View\TraversableView;
+use Berlioz\Form\View\ViewInterface;
+use Twig\Environment;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFunction;
 
-use Berlioz\Core\Services\Template\TemplateInterface;
-
-class TwigExtension extends \Twig_Extension
-{
-    /** @var \Berlioz\Core\Services\Template\TemplateInterface Template engine */
-    private $templateEngine;
-
-    /**
-     * TwigExtension constructor
-     *
-     * @param \Berlioz\Core\Services\Template\TemplateInterface $templateEngine Template engine
-     */
-    public function __construct(TemplateInterface $templateEngine)
+if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
+    class TwigExtension extends AbstractExtension
     {
-        $this->templateEngine = $templateEngine;
-        $this->getTemplateEngine()->registerPath(__DIR__ , 'Berlioz-Form');
-    }
+        const DEFAULT_TPL = '@Berlioz-Form/default.html.twig';
+        /** @var \Twig\Environment Twig */
+        private $twig;
 
-    /**
-     * Get template engine
-     *
-     * @return \Berlioz\Core\Services\Template\TemplateInterface
-     */
-    public function getTemplateEngine(): TemplateInterface
-    {
-        return $this->templateEngine;
-    }
+        /**
+         * TwigExtension constructor.
+         *
+         * @param \Twig\Environment $twig
+         */
+        public function __construct(Environment $twig)
+        {
+            $this->twig = $twig;
+        }
 
-    /**
-     * Returns a list of functions to add to the existing list.
-     *
-     * @return \Twig_Function[]
-     */
-    public function getFunctions()
-    {
-        $functions = [];
+        /**
+         * Get twig.
+         *
+         * @return \Twig\Environment
+         */
+        private function getTwig(): Environment
+        {
+            return $this->twig;
+        }
 
-        // Forms
-        $functions[] = new \Twig_Function('form_render', [$this, 'functionFormRender'], ['is_safe' => ['html']]);
-        $functions[] = new \Twig_Function('form_start', [$this, 'functionFormStart'], ['is_safe' => ['html']]);
-        $functions[] = new \Twig_Function('form_end', [$this, 'functionFormEnd'], ['is_safe' => ['html']]);
-        $functions[] = new \Twig_Function('form_errors', [$this, 'functionFormErrors'], ['is_safe' => ['html']]);
-        $functions[] = new \Twig_Function('form_rst', [$this, 'functionFormRst'], ['is_safe' => ['html']]);
-        $functions[] = new \Twig_Function('form_rows', [$this, 'functionFormRows'], ['is_safe' => ['html']]);
-        $functions[] = new \Twig_Function('form_label', [$this, 'functionFormLabel'], ['is_safe' => ['html']]);
-        $functions[] = new \Twig_Function('form_widget', [$this, 'functionFormWidget'], ['is_safe' => ['html']]);
-        $functions[] = new \Twig_Function('form_row', [$this, 'functionFormRow'], ['is_safe' => ['html']]);
+        /**
+         * Render.
+         *
+         * @param string                           $blockType
+         * @param \Berlioz\Form\View\ViewInterface $formView
+         * @param array                            $options
+         *
+         * @return string
+         * @throws \Throwable Twig error
+         * @throws \Twig\Error\Error
+         */
+        private function render(string $blockType, ViewInterface $formView, array $options = []): string
+        {
+            $template = $this->getTwig()->load($formView->getRender() ?? self::DEFAULT_TPL);
 
-        return $functions;
-    }
+            // Variables
+            $variables = $formView->getVars();
+            $variables = array_replace_recursive($variables, $options);
+            $variables['form'] = $formView;
 
-    /**
-     * Function form render
-     *
-     * @param \Berlioz\Form\FormElement $formElement      Form element
-     * @param string|array              $templateFileName Template file
-     *
-     * @return string
-     */
-    public function functionFormRender(FormElement $formElement, $templateFileName): string
-    {
-        $formElement->setTemplateFilename($templateFileName);
+            $specificBlockType = sprintf('%s_%s', $formView->getVar('type', 'form'), $blockType);
 
-        return '';
-    }
+            if ($template->hasBlock($specificBlockType, $variables)) {
+                return $template->renderBlock($specificBlockType, $variables);
+            }
 
-    /**
-     * Function form start
-     *
-     * @param \Berlioz\Form\Form $form    Form
-     * @param array              $options Options
-     *
-     * @return string
-     */
-    public function functionFormStart(Form $form, array $options = []): string
-    {
-        if ($this->getTemplateEngine()->hasBlock($form->getTemplateFilename(), 'form_start')) {
-            return $this->getTemplateEngine()
-                        ->renderBlock($form->getTemplateFilename(),
-                                      'form_start',
-                                      $form->getTemplateData($options));
-        } else {
+            return $template->renderBlock(sprintf('form_%s', $blockType), $variables);
+        }
+
+        /**
+         * Returns a list of functions to add to the existing list.
+         *
+         * @return \Twig\TwigFunction[]
+         */
+        public function getFunctions()
+        {
+            $functions = [];
+
+            // Forms
+            $functions[] = new TwigFunction('form_render', [$this, 'functionFormRender'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_start', [$this, 'functionFormStart'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_end', [$this, 'functionFormEnd'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_errors', [$this, 'functionFormErrors'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_rest', [$this, 'functionFormRest'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_label', [$this, 'functionFormLabel'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_widget', [$this, 'functionFormWidget'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_row', [$this, 'functionFormRow'], ['is_safe' => ['html']]);
+
+            return $functions;
+        }
+
+        /**
+         * Function form render
+         *
+         * @param \Berlioz\Form\View\ViewInterface $formView         Form view
+         * @param string|array                     $templateFileName Template file
+         *
+         * @return string
+         */
+        public function functionFormRender(ViewInterface $formView, $templateFileName): string
+        {
+            $formView->setRender($templateFileName);
+
             return '';
         }
-    }
 
-    /**
-     * Function form end
-     *
-     * @param \Berlioz\Form\Form $form Form
-     *
-     * @return string
-     */
-    public function functionFormEnd(Form $form): string
-    {
-        if ($this->getTemplateEngine()->hasBlock($form->getTemplateFilename(), 'form_end')) {
-            return $this->getTemplateEngine()
-                        ->renderBlock($form->getTemplateFilename(),
-                                      'form_end',
-                                      $form->getTemplateData());
-        } else {
-            return '';
+        /**
+         * Function form start
+         *
+         * @param \Berlioz\Form\View\BasicView $formView Form view
+         * @param array                        $options  Options
+         *
+         * @return string
+         * @throws \Throwable Twig error
+         * @throws \Twig\Error\Error
+         */
+        public function functionFormStart(BasicView $formView, array $options = []): string
+        {
+            return $this->render('start', $formView, $options);
         }
-    }
 
-    /**
-     * Function form errors
-     *
-     * @param \Berlioz\Form\Form $form Form
-     *
-     * @return string
-     */
-    public function functionFormErrors(Form $form): string
-    {
-        if ($this->getTemplateEngine()->hasBlock($form->getTemplateFilename(), 'form_errors')) {
-            return $this->getTemplateEngine()
-                        ->renderBlock($form->getTemplateFilename(),
-                                      'form_errors',
-                                      $form->getTemplateData());
-        } else {
-            return '';
+        /**
+         * Function form end
+         *
+         * @param \Berlioz\Form\View\BasicView $formView Form view
+         * @param array                        $options  Options
+         *
+         * @return string
+         * @throws \Throwable Twig error
+         * @throws \Twig\Error\Error
+         */
+        public function functionFormEnd(BasicView $formView, array $options = []): string
+        {
+            return $this->render('end', $formView, $options);
         }
-    }
 
-    /**
-     * Function form rows
-     *
-     * @param \Berlioz\Form\Form $form    Form
-     * @param array              $options Options
-     *
-     * @return string
-     */
-    public function functionFormRows(Form $form, array $options = []): string
-    {
-        if ($this->getTemplateEngine()->hasBlock($form->getTemplateFilename(), 'form_rows')) {
-            return $this->getTemplateEngine()
-                        ->renderBlock($form->getTemplateFilename(),
-                                      'form_rows',
-                                      $form->getTemplateData($options));
-        } else {
-            return '';
+        /**
+         * Function form errors
+         *
+         * @param \Berlioz\Form\View\ViewInterface $formView Form view
+         * @param array                            $options  Options
+         *
+         * @return string
+         * @throws \Throwable Twig error
+         * @throws \Twig\Error\Error
+         */
+        public function functionFormErrors(ViewInterface $formView, array $options = []): string
+        {
+            return $this->render('errors', $formView, $options);
         }
-    }
 
-    /**
-     * Function form label
-     *
-     * @param \Berlioz\Form\FormType $formType Form type
-     * @param array                  $options  Options
-     *
-     * @return string
-     */
-    public function functionFormLabel(FormType $formType, array $options = []): string
-    {
-        if ($this->getTemplateEngine()->hasBlock($formType->getTemplateFilename(), 'form_label')) {
-            return $this->getTemplateEngine()
-                        ->renderBlock($formType->getTemplateFilename(),
-                                      'form_label',
-                                      $formType->getTemplateData($options));
-        } else {
-            return '';
+        /**
+         * Function form label
+         *
+         * @param \Berlioz\Form\View\BasicView $formView Form view
+         * @param array                        $options  Options
+         *
+         * @return string
+         * @throws \Throwable Twig error
+         * @throws \Twig\Error\Error
+         */
+        public function functionFormLabel(BasicView $formView, array $options = []): string
+        {
+            return $this->render('label', $formView, $options);
         }
-    }
 
-    /**
-     * Function form widget
-     *
-     * @param \Berlioz\Form\FormType $formType Form type
-     * @param array                  $options  Options
-     *
-     * @return string
-     */
-    public function functionFormWidget(FormType $formType, array $options = []): string
-    {
-        if ($this->getTemplateEngine()->hasBlock($formType->getTemplateFilename(), 'form_widget')) {
+        /**
+         * Function form widget
+         *
+         * @param \Berlioz\Form\View\ViewInterface $formView Form view
+         * @param array                            $options  Options
+         *
+         * @return string
+         * @throws \Berlioz\Form\Exception\AlreadyInsertedException
+         * @throws \Throwable Twig error
+         * @throws \Twig\Error\Error
+         */
+        public function functionFormWidget(ViewInterface $formView, array $options = []): string
+        {
+            if ($formView->isInserted()) {
+                throw new AlreadyInsertedException(sprintf('Element "%s" of form has already inserted', $formView->getVar('name', 'Unknown')));
+            }
+
             // Set inserted
-            $formType->setInserted(true);
+            $formView->setInserted();
 
-            return $this->getTemplateEngine()
-                        ->renderBlock($formType->getTemplateFilename(),
-                                      'form_widget',
-                                      $formType->getTemplateData($options));
-        } else {
-            return '';
+            return $this->render('widget', $formView, $options);
         }
-    }
 
-    /**
-     * Function form row
-     *
-     * @param \Berlioz\Form\FormType $formType Form type
-     * @param array                  $options  Options
-     *
-     * @return string
-     */
-    public function functionFormRow(FormType $formType, array $options = []): string
-    {
-        if ($this->getTemplateEngine()->hasBlock($formType->getTemplateFilename(), 'form_row')) {
-            // Set inserted
-            $formType->setInserted(true);
+        /**
+         * Function form row
+         *
+         * @param \Berlioz\Form\View\ViewInterface $formView Form view
+         * @param array                            $options  Options
+         *
+         * @return string
+         * @throws \Berlioz\Form\Exception\AlreadyInsertedException
+         * @throws \Throwable Twig error
+         * @throws \Twig\Error\Error
+         */
+        public function functionFormRow(ViewInterface $formView, array $options = []): string
+        {
+            if ($formView->isInserted()) {
+                throw new AlreadyInsertedException(sprintf('Element "%s" of form has already inserted', $formView->getVar('name', 'Unknown')));
+            }
 
-            return $this->getTemplateEngine()
-                        ->renderBlock($formType->getTemplateFilename(),
-                                      'form_row',
-                                      $formType->getTemplateData($options));
-        } else {
-            return '';
+            return $this->render('row', $formView, $options);
+        }
+
+        /**
+         * Function form rest.
+         *
+         * @param \Berlioz\Form\View\TraversableView $formView Form view
+         * @param array                              $options  Options
+         *
+         * @return string
+         * @throws \Berlioz\Form\Exception\AlreadyInsertedException
+         * @throws \Throwable Twig error
+         * @throws \Twig\Error\Error
+         */
+        public function functionFormRest(TraversableView $formView, array $options = []): string
+        {
+            $rendering = '';
+
+            /** @var \Berlioz\Form\View\ViewInterface $aFormView */
+            foreach ($formView as $aFormView) {
+                if ($aFormView->isInserted()) {
+                    continue;
+                }
+
+                $rendering .= $this->functionFormRow($aFormView, $options);
+            }
+
+            return $rendering;
         }
     }
 }

@@ -1,0 +1,184 @@
+{# Attributes #}
+
+{%- block widget_attributes -%}
+  id="{{ id }}" name="{{ name ~ (multiple ? '[]' : '') }}"
+  {%- if disabled %} disabled="disabled"{% endif -%}
+  {%- if required %} required="required"{% endif -%}
+  {%- if readonly %} readonly="readonly"{% endif -%}
+  {%- if multiple %} multiple="multiple"{% endif -%}
+  {{- block('attributes') -}}
+{%- endblock -%}
+
+{%- block attributes -%}
+  {%- for attrn, attrv in attributes -%}
+    {%- if attrv is iterable -%}
+      {% with { 'attributes': attrv, attrn_prefix: ( attrn_prefix is defined ? attrn_prefix ~ '-' : '' ) ~ attrn } only %}
+        {{- block('attributes') -}}
+      {% endwith %}
+    {%- else -%}
+      {%- set attrn = ( attrn_prefix is defined ? attrn_prefix ~ '-' : '' ) ~ attrn -%}
+
+      {%- if attrn starts with 'data-' and (attrv is same as(true) or attrv is same as(false)) -%}
+          {{- " " ~ attrn }}="{{ attrv ? 'true' : 'false' }}"
+      {%- else -%}
+        {%- if attrv is same as(true) -%}
+          {{- " " ~ attrn }}="{{ attrn }}"
+        {%- elseif attrv is not same as(false) -%}
+          {{- " " ~ attrn }}="{{ attrv }}"
+        {%- endif -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endblock -%}
+
+
+{# Form #}
+
+{%- block form_start -%}
+<form name="{{ name }}" method="{{ method }}" action="{{ action }}"{{- block('attributes') -}}>
+  {%- endblock -%}
+
+  {%- block form_end -%}
+</form>
+{%- endblock -%}
+
+{%- block form_errors -%}
+  {% if errors|length == 1 %}
+    <p>{{ errors[0] }}</p>
+  {% elseif errors|length > 1 %}
+    <ul>
+      {% for error in errors %}
+        <li>{{ error }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{%- endblock -%}
+
+
+{# Row #}
+
+{%- block form_row %}
+  {% if label is not same as(false) %}
+    {{ form_label(form) }}
+  {% endif %}
+  {{ form_widget(form) }}
+  {{ form_errors(form) }}
+{%- endblock -%}
+
+{%- block group_row -%}
+  {% for element in form %}
+    {{ form_row(element) }}
+  {% endfor %}
+{%- endblock -%}
+
+{%- block collection_row -%}
+  {% if editable %}
+    <div id="{{ id }}" data-collection="{{ name }}" data-prototype="{{ form_row(prototype)|spaceless|e }}" data-collection-min="{{ min_elements }}" data-collection-max="{{ max_elements }}">
+  {% else %}
+    <div>
+  {% endif %}
+    {% for key, element in form %}
+      <div data-collection-key="{{ key }}">
+        {{ form_row(element) }}
+      </div>
+    {% endfor %}
+  </div>
+{%- endblock -%}
+
+{%- block checkbox_row -%}
+  {{ form_widget(form) }}
+  {{ form_errors(form) }}
+{%- endblock -%}
+
+{%- block button_row -%}
+  {{ form_widget(form) }}
+  {{ form_errors(form) }}
+{%- endblock -%}
+
+{%- block submit_row -%}
+  {{ block('button_row') }}
+{%- endblock -%}
+
+{# Label #}
+
+{%- block form_label -%}
+  <label for="{{ id }}"{% if label_attributes is not empty %}{% with { 'attributes': label_attributes } only %}{{ block('attributes') }}{% endwith %}{% endif %}>
+    {{- label -}}
+  </label>
+{%- endblock -%}
+
+
+{# Widget #}
+
+{%- block form_widget -%}
+  <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+{%- endblock -%}
+
+{%- block textarea_widget -%}
+  <textarea {{ block('widget_attributes') }}>{% if value is not empty %}{{ value|escape }}{% endif %}</textarea>
+{%- endblock -%}
+
+{%- block checkbox_widget -%}
+  <label>
+    <input type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+    {{ label }}
+  </label>
+{%- endblock -%}
+
+{%- block choice_widget -%}
+  {% if expanded is same as(true) %}
+    {{ block('choice_widget_expanded') }}
+  {% else %}
+    {{ block('choice_widget_collapsed') }}
+  {% endif %}
+{%- endblock -%}
+
+{%- block choice_widget_expanded -%}
+  {% for choiceKey, choiceValue in choices %}
+    {% with { type: (multiple ? 'checkbox' : 'radio'),
+      id: id ~ '_' ~ choiceValue.value,
+      name: name ~ (multiple ? '[]' : ''),
+      disabled: disabled,
+      readonly: readonly,
+      label: choiceValue.label,
+      value: choiceValue.value,
+      attributes: choiceValue.attributes|merge({"checked": choiceValue.isSelected()}) } only %}
+      {{ block('checkbox_widget') }}
+    {% endwith %}
+  {% endfor %}
+{%- endblock -%}
+
+{%- block choice_widget_collapsed -%}
+  <select {{ block('widget_attributes') }}>
+    {% if allow_clear is not same as(false) and not multiple %}
+      <option value="">{% if allow_clear is same as(true) %}&nbsp;{% else %}{{ allow_clear }}{% endif %}</option>
+    {% endif %}
+    {{ block('choice_widget_collapsed_options') }}
+  </select>
+{%- endblock -%}
+
+{%- block choice_widget_collapsed_options -%}
+  {% for choiceKey, choiceValue in choices %}
+    {% if choiceValue is not iterable %}
+      {% with { choiceValue: choiceValue, attributes: choiceValue.attributes|merge({"selected": choiceValue.isSelected()}) } only %}
+        <option value="{{ choiceValue.value }}"{{- block('attributes') -}}>{{ choiceValue.label }}</option>
+      {% endwith %}
+    {% else %}
+      <optgroup label="{{ choiceKey }}">
+        {% with { choices: choiceValue } %}
+          {{ block('choice_widget_collapsed_options') }}
+        {% endwith %}
+      </optgroup>
+    {% endif %}
+  {% endfor %}
+{%- endblock -%}
+
+{%- block submit_widget -%}
+  {{ block('button_widget') }}
+{%- endblock -%}
+
+{%- block button_widget -%}
+  <button {{ block('widget_attributes') }} type="{{ type }}" {% if value is not empty %}value="{{ value }}" {% endif %} >
+    {% if label is not empty %}{{ label }}{% endif %}
+  </button>
+{%- endblock -%}

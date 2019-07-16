@@ -12,380 +12,187 @@
 
 namespace Berlioz\Form;
 
+use Berlioz\Form\Exception\FormException;
+use Berlioz\Form\View\ViewInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
-use Berlioz\Core\Exception\BerliozException;
-use Berlioz\Core\Http\ServerRequest;
-
-class Form extends FormElement implements FormTraversableInterface
+class Form extends Group
 {
-    private static $_b_initialized = false;
-    /** @var \Berlioz\Form\FormElement[] Elements */
-    private $elements;
-    /** @var \Berlioz\Core\Http\ServerRequest Server request */
-    private $serverRequest;
-    /** @var array|false Data of form */
-    private $formData;
-    /** @var mixed Mapped object */
-    private $mapped;
+    /** @var object|array|null Mapped object or array */
+    protected $mapped;
+    /** @var bool Submitted? */
+    protected $submitted = false;
+    /** @var array Submitted data */
+    protected $submittedData = [];
 
     /**
      * Form constructor.
      *
-     * @param string $name    Name
-     * @param mixed  $mapped  Mapped object
-     * @param array  $options Options
+     * @param string      $name    Name of form
+     * @param object|null $mapped  Mapped object
+     * @param array       $options Options
      *
-     * @throws \Berlioz\Core\Exception\BerliozException If $mapped parameter is not an object
+     * @throws \Berlioz\Form\Exception\FormException
      */
     public function __construct(string $name, $mapped = null, array $options = [])
     {
-        // Mapped object
-        if (!is_null($mapped)) {
-            if (is_object($mapped)) {
-                $this->mapped = $mapped;
-            } else {
-                throw new BerliozException('$mapped parameter must be an object');
-            }
+        $options['name'] = $name;
+        $options = array_replace_recursive(['method'   => 'post',
+                                            'mapped'   => !is_null($mapped),
+                                            'required' => true],
+                                           $options);
+
+        parent::__construct($options);
+
+        $this->mapObject($mapped);
+        $this->submitted = false;
+    }
+
+    /////////////
+    /// BUILD ///
+    /////////////
+
+    /**
+     * @inheritdoc
+     */
+    public function buildView(): ViewInterface
+    {
+        $view = parent::buildView();
+        $view->mergeVars(['type'       => is_null($this->getParent()) ? 'rootform' : 'form',
+                          'id'         => $this->getId(),
+                          'name'       => $this->getFormName(),
+                          'method'     => $this->getOption('method'),
+                          'action'     => $this->getOption('action'),
+                          'attributes' => $this->getOption('attributes', [])]);
+
+        return $view;
+    }
+
+    ///////////////
+    /// MAPPING ///
+    ///////////////
+
+    /**
+     * Map an object.
+     *
+     * @param object|null $object
+     *
+     * @throws \Berlioz\Form\Exception\FormException
+     */
+    public function mapObject($object = null)
+    {
+        if (!is_object($object) && !is_null($object)) {
+            throw new FormException(sprintf('Parameter given must be an object, "%s" given', gettype($object)));
         }
 
-        // Set name
-        $this->setName($name);
-
-        // Options
-        $this->getOptions()
-             ->setOptions(['method' => 'post'])
-             ->setOptions($options);
-
-        // Default data to false
-        $this->formData = false;
-    }
-
-    /**
-     * Get form name.
-     *
-     * @return string
-     */
-    public function getFormName(): string
-    {
-        if ($this->hasParent()) {
-            return $this->getParent()->getFormName() . sprintf('[%s]', $this->getName());
-        } else {
-            return $this->getName();
-        }
-    }
-
-    /**
-     * Retrieve an external iterator.
-     *
-     * @return \Traversable
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->elements);
-    }
-
-    /**
-     * Check if a form element exists.
-     *
-     * @param string $name Name of form element
-     *
-     * @return bool
-     */
-    public function __isset(string $name): bool
-    {
-        return isset($this->elements[$name]);
-    }
-
-    /**
-     * Get a form element.
-     *
-     * @param string $name Name of form element
-     *
-     * @return \Berlioz\Form\FormElement
-     * @throws \Berlioz\Core\Exception\BerliozException If element doesn't exists
-     */
-    public function __get(string $name): FormElement
-    {
-        if (isset($this->elements[$name])) {
-            return $this->elements[$name];
-        } else {
-            throw new BerliozException(sprintf('Element named "%s" does not exists', $name));
-        }
-    }
-
-    /**
-     * Add a form element.
-     *
-     * @param \Berlioz\Form\FormElement $element Form element
-     *
-     * @return static
-     * @throws \Berlioz\Core\Exception\BerliozException If element is not an acceptable object
-     * @throws \Berlioz\Core\Exception\BerliozException If the name of element is not valid
-     * @throws \Berlioz\Core\Exception\BerliozException If an another element already exists with the same name
-     */
-    public function add(FormElement $element)
-    {
-        if (!isset($this->elements[$element->getName()])) {
-            $this->elements[$element->getName()] = $element;
-            $element->setParent($this);
-        } else {
-            throw new BerliozException(sprintf('An element named "%s" already exists', $element->getName()));
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get template data.
-     *
-     * @param array $options Options
-     *
-     * @return array
-     */
-    public function getTemplateData(array $options = []): array
-    {
-        return b_array_merge_recursive($options,
-                                       ['form'       => $this,
-                                        'name'       => $this->getName(),
-                                        'full_name'  => $this->getFormName(),
-                                        'action'     => $this->getOptions()->get('action') ?? '',
-                                        'method'     => $this->getOptions()->get('method') ?? 'post',
-                                        'attributes' => $this->getOptions()->get('attributes') ?? []]);
+        $this->mapped = $object;
     }
 
     /**
      * Get mapped object.
      *
-     * @return mixed
+     * @return object|null
      */
-    public function getMapped()
+    public function getMappedObject()
     {
         return $this->mapped;
     }
 
-    /**
-     * Get server request.
-     *
-     * @return \Berlioz\Core\Http\ServerRequest
-     */
-    public function getServerRequest()
-    {
-        return $this->serverRequest;
-    }
+    //////////////////
+    /// SUBMISSION ///
+    //////////////////
 
     /**
-     * Get form data.
-     *
-     * @return array
-     * @throws \Berlioz\Core\Exception\BerliozException If it's a sub form
-     */
-    public function getData(): array
-    {
-        if (!$this->hasParent()) {
-            return $this->formData ?: [];
-        } else {
-            throw new BerliozException('Unable to do that, it is a sub form, not the main form');
-        }
-    }
-
-    /**
-     * Form is submitted ?
+     * Is submitted?
      *
      * @return bool
-     * @throws \Berlioz\Core\Exception\BerliozException If it's a sub form
      */
     public function isSubmitted(): bool
     {
-        if (!$this->hasParent()) {
-            return $this->formData !== false;
-        } else {
-            throw new BerliozException('Unable to do that, it is a sub form, not the main form');
-        }
+        return $this->submitted;
     }
 
     /**
-     * Form is valid ?
-     *
-     * @return bool
-     * @throws \Berlioz\Core\Exception\BerliozException If it's a sub form
-     * @todo Valid form
-     */
-    public function isValid(): bool
-    {
-        if (!$this->hasParent()) {
-            return $this->formData !== false;
-        } else {
-            throw new BerliozException('Unable to do that, it is a sub form, not the main form');
-        }
-    }
-
-    /**
-     * Handle.
-     *
-     * @param \Berlioz\Core\Http\ServerRequest $serverRequest Server request
-     *
-     * @throws \Berlioz\Core\Exception\BerliozException If it's a sub form
-     */
-    public function handle(ServerRequest $serverRequest)
-    {
-        if (!$this->hasParent()) {
-            // Save server request
-            $this->serverRequest = $serverRequest;
-
-            // Submission data
-            switch (mb_strtolower($this->getOptions()->get('method'))) {
-                case 'get':
-                case 'delete':
-                    $queryParams = $serverRequest->getQueryParams();
-                    $inputData = $queryParams[$this->getName()] ?? false;
-                    break;
-                case 'post':
-                case 'put':
-                    $parsedBody = $serverRequest->getParsedBody();
-                    if (is_array($parsedBody)) {
-                        $inputData = $parsedBody[$this->getName()] ?? false;
-                    } else {
-                        $inputData = false;
-                    }
-                    break;
-                default:
-                    throw new BerliozException(sprintf('Unknown method "%s" for form submission', $this->getOptions()->get('method')));
-            }
-
-            // Treat
-            if ($inputData !== false) {
-                // Add files upload
-                $uploadedFiles = $serverRequest->getUploadedFiles();
-                $inputData = array_merge($uploadedFiles[$this->getName()] ?? [], $inputData);
-
-                // Treat data
-                $this->formData = $this->getInputData($this, $inputData, $this->mapped);
-                $this->mapData($this, $this->mapped);
-            } else {
-                $this->formData = false;
-            }
-        } else {
-            throw new BerliozException('Unable to do that, it is a sub form, not the main form');
-        }
-    }
-
-    /**
-     * Complete data.
-     *
-     * @param \Berlioz\Form\FormTraversableInterface $formTraversable
-     * @param array                                  $inputData
-     * @param object                                 $mapped
+     * Get submitted data.
      *
      * @return array
-     * @throws \Berlioz\Core\Exception\BerliozException If it's a sub form
+     * @throws \Berlioz\Form\Exception\FormException
      */
-    private function getInputData(FormTraversableInterface $formTraversable, array &$inputData = [], &$mapped = null)
+    public function getSubmittedData(): array
     {
-        if (!$this->hasParent()) {
-            $data = [];
-
-            /** @var \Berlioz\Form\FormElementInterface $formElement */
-            foreach ($formTraversable as $formElement) {
-                $inputDataExists = isset($inputData[$formElement->getName()]);
-
-                if ($formElement instanceof FormTraversableInterface) {
-                    // Get object to map
-                    if (!is_null($mapped)) {
-                        $subMapped = b_property_get($mapped, $formElement->getName());
-                    }
-
-                    // Complete data
-                    if ($inputDataExists) {
-                        $data[$formElement->getName()] = $this->getInputData($formElement, $inputData[$formElement->getName()], $subMapped);
-                    } else {
-                        $null = [];
-                        $data[$formElement->getName()] = $this->getInputData($formElement, $null, $subMapped);
-                    }
-                } else {
-                    if ($formElement instanceof FormCollectionInterface) {
-                        // @toto Collection treatment
-                    } else {
-                        if ($formElement instanceof FormType) {
-                            if ($inputDataExists) {
-                                // Add data
-                                if ($formElement->getOptions()->get('trim') == true && is_string($inputData[$formElement->getName()])) {
-                                    if (is_array($inputData[$formElement->getName()])) {
-                                        $data[$formElement->getName()] = array_map('trim', $inputData[$formElement->getName()]);
-                                    } else {
-                                        $data[$formElement->getName()] = trim($inputData[$formElement->getName()]);
-                                    }
-                                } else {
-                                    $data[$formElement->getName()] = $inputData[$formElement->getName()];
-                                }
-                            } else {
-                                // Add data
-                                $data[$formElement->getName()] = $formElement->getOptions()->get('empty_data');
-                            }
-                        }
-                    }
-                }
-            }
-
-            return $data;
-        } else {
-            throw new BerliozException('Unable to do that, it is a sub form, not the main form');
+        if (!$this->isSubmitted()) {
+            throw new FormException(sprintf('Form "%s" is not submitted', $this->getName()));
         }
+
+        return $this->submittedData;
     }
 
     /**
-     * Map data to mapped object.
+     * Set submitted data.
      *
-     * @param \Berlioz\Form\FormTraversableInterface $formTraversable
-     * @param object                                 $mapped
+     * @param array $data  Data
+     * @param bool  $merge Merge with already submitted data? If no, replace values.
      *
-     * @return void
-     * @throws \Berlioz\Core\Exception\BerliozException If it's a sub form
+     * @return static
      */
-    private function mapData(FormTraversableInterface $formTraversable, &$mapped = null)
+    public function setSubmittedData(array $data, bool $merge = false): Form
     {
-        if (!$this->hasParent()) {
-            if (!empty($this->getData())) {
-                /** @var \Berlioz\Form\FormElementInterface $formElement */
-                foreach ($formTraversable as $formElement) {
-                    if ($formElement instanceof FormTraversableInterface) {
-                        // Get object to map
-                        if (!is_null($mapped)) {
-                            $subMapped = b_property_get($mapped, $formElement->getName());
-                        }
-
-                        // Map data
-                        $this->mapData($formElement, $subMapped);
-                    } else {
-                        if ($formElement instanceof FormCollectionInterface) {
-                            // @toto Collection treatment
-                        } else {
-                            if ($formElement instanceof FormType) {
-                                // Update mapped
-                                if (!is_null($mapped)) {
-                                    $mappedValue = b_property_get($mapped, $formElement->getName());
-                                    $value = $formElement->getValue();
-
-                                    // For array or ArrayAccess properties
-                                    if (is_array($value) && $mappedValue instanceof \ArrayAccess) {
-                                        // Clear array
-                                        foreach ($mappedValue as $mKey => $mValue) {
-                                            unset($mappedValue[$mKey]);
-                                        }
-
-                                        foreach ($value as $fValue) {
-                                            $mappedValue[] = $fValue;
-                                        }
-                                    } else {
-                                        b_property_set($mapped, $formElement->getName(), $formElement->getValue());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        if ($merge) {
+            $this->submittedData = array_replace_recursive($this->submittedData ?? [], $data);
         } else {
-            throw new BerliozException('Unable to do that, it is a sub form, not the main form');
+            $this->submittedData = $data;
+        }
+
+        return $this;
+    }
+
+    ////////////////
+    /// HANDLING ///
+    ////////////////
+
+    /**
+     * Handle form.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request
+     *
+     * @throws \Berlioz\Form\Exception\FormException
+     * @throws \Berlioz\Form\Exception\PropagationException
+     */
+    public function handle(ServerRequestInterface $request)
+    {
+        // Build
+        $this->build();
+
+        $this->submitted = false;
+
+        // Collect data
+        $collector = new Collector();
+        $this->setValue($collector->collect($this));
+
+        if (mb_strtolower($request->getMethod()) === mb_strtolower($this->getOption('method'))) {
+            switch (mb_strtolower($request->getMethod())) {
+                case 'get':
+                    $submittedData = $request->getQueryParams();
+                    break;
+                case 'post':
+                    if (!is_array($parsedBody = $request->getParsedBody())) {
+                        $parsedBody = [];
+                    }
+
+                    $submittedData = array_replace_recursive($parsedBody, $request->getUploadedFiles());
+                    break;
+                default:
+                    $submittedData = [];
+            }
+
+            if (($this->submitted = array_key_exists($this->getName(), $submittedData)) !== false) {
+                $this->submittedData = $submittedData[$this->getName()];
+                $this->setValue($this->submittedData, true);
+
+                // Propagate data
+                $propagator = new Propagator($this);
+                $propagator->propagate();
+            }
         }
     }
 }

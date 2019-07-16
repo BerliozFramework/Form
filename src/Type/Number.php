@@ -12,50 +12,31 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\FormValidation;
-
-class Number extends Text
+class Number extends AbstractType
 {
-    const TYPE = 'number';
-
     /**
-     * Email constructor.
-     *
-     * @param string $name    Name
-     * @param array  $options Options
+     * @inheritdoc
      */
-    public function __construct(string $name, array $options = [])
+    public function getType(): string
     {
-        parent::__construct($name, $options);
-
-        // Validation
-        $this->addValidation(new FormValidation([$this, 'validation']));
+        return 'number';
     }
 
     /**
-     * Get value.
-     *
-     * @return int
+     * @inheritdoc
      */
-    public function getValue()
+    public function getValue(bool $raw = false)
     {
-        $value = parent::getValue();
-        $attributes = $this->getOptions()->get('attributes');
+        $value = parent::getValue($raw);
 
-        if (!empty($attributes['step']) && $attributes['step'] == (string) (float) $attributes['step']) {
-            return floatval($value);
-        } else {
-            return intval($value);
+        if (is_null($value)) {
+            return $value;
         }
-    }
 
-    /**
-     * Validation.
-     *
-     * @return bool
-     */
-    public function validation()
-    {
-        return preg_match('/^[0-9]+(\.[0-9]+)?$/', $this->getValue()) == 1;
+        if ($value == '') {
+            return null;
+        }
+
+        return floatval($value);
     }
 }
