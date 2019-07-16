@@ -3,16 +3,16 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form;
+namespace Berlioz\Form\Element;
 
-use Berlioz\Form\Validator\ValidatorInterface;
+use Berlioz\Form\Form;
 use Berlioz\Form\View\ViewInterface;
 
 interface ElementInterface
@@ -20,9 +20,9 @@ interface ElementInterface
     /**
      * Get id.
      *
-     * @return string
+     * @return string|null
      */
-    public function getId(): string;
+    public function getId(): ?string;
 
     /**
      * Get name.
@@ -34,9 +34,9 @@ interface ElementInterface
     /**
      * Get form name.
      *
-     * @return string
+     * @return string|null
      */
-    public function getFormName(): string;
+    public function getFormName(): ?string;
 
     ///////////////
     /// OPTIONS ///
@@ -53,8 +53,8 @@ interface ElementInterface
      * Get option.
      *
      * @param string $name
-     * @param mixed  $default Default value
-     * @param bool   $inherit Inherit option? (default: false)
+     * @param mixed $default Default value
+     * @param bool $inherit Inherit option? (default: false)
      *
      * @return mixed|null
      */
@@ -64,9 +64,9 @@ interface ElementInterface
      * Set option.
      *
      * @param string $name
-     * @param mixed  $value
+     * @param mixed $value
      *
-     * @return static
+     * @return \Berlioz\Form\Element\ElementInterface
      */
     public function setOption(string $name, $value);
 
@@ -77,14 +77,14 @@ interface ElementInterface
     /**
      * Get parent.
      *
-     * @return \Berlioz\Form\ElementInterface|null
+     * @return \Berlioz\Form\Element\ElementInterface|null
      */
     public function getParent(): ?ElementInterface;
 
     /**
      * Set parent.
      *
-     * @param \Berlioz\Form\ElementInterface $parent
+     * @param \Berlioz\Form\Element\ElementInterface $parent
      *
      * @return static
      */
@@ -103,24 +103,45 @@ interface ElementInterface
 
     /**
      * Get value.
+     * Value for form.
      *
      * Returns null if no value found.
      *
-     * @param bool $raw Raw value? (default: false)
+     * @return mixed|null
+     */
+    public function getValue();
+
+    /**
+     * Get final value.
+     * Value for user application.
+     *
+     * Returns null if no value found.
      *
      * @return mixed|null
      */
-    public function getValue(bool $raw = false);
+    public function getFinalValue();
 
     /**
      * Set value.
+     * Value from user application.
      *
      * @param mixed $value
-     * @param bool  $submitted Submitted value? (default: false)
      *
      * @return static
+     * @throws \Berlioz\Form\Exception\FormException If given value is invalid
      */
-    public function setValue($value, bool $submitted = false);
+    public function setValue($value);
+
+    /**
+     * Submit value.
+     * Value from user submission.
+     *
+     * @param mixed $value
+     *
+     * @return static
+     * @throws \Berlioz\Form\Exception\FormException If given value is invalid
+     */
+    public function submitValue($value);
 
     /////////////
     /// BUILD ///
@@ -139,40 +160,4 @@ interface ElementInterface
      * @return \Berlioz\Form\View\ViewInterface
      */
     public function buildView(): ViewInterface;
-
-    //////////////////
-    /// VALIDATION ///
-    //////////////////
-
-    /**
-     * Is valid?
-     *
-     * @return bool
-     */
-    public function isValid(): bool;
-
-    /**
-     * Add validator.
-     *
-     * @param \Berlioz\Form\Validator\ValidatorInterface $validator
-     *
-     * @return $this
-     */
-    public function addValidator(ValidatorInterface $validator);
-
-    /**
-     * Has validator?
-     *
-     * @param string $validatorClass
-     *
-     * @return mixed|false
-     */
-    public function hasValidator(string $validatorClass);
-
-    /**
-     * Get not respected constraints.
-     *
-     * @return \Berlioz\Form\Validator\Constraint\ConstraintInterface[]
-     */
-    public function getConstraints(): array;
 }

@@ -15,9 +15,9 @@ $ composer require berlioz/form
 
 ### Dependencies
 
-* **PHP** >= 7.1
+* **PHP** >= 7.2
 * Packages:
-  * **berlioz/utils**
+  * **berlioz/helpers**
   * **psr/http-message**
 
 

@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,10 +12,16 @@
 
 namespace Berlioz\Form\View;
 
+use ArrayIterator;
+use Berlioz\Form\Element\TraversableElementInterface;
 use Berlioz\Form\Exception\FormException;
-use Berlioz\Form\TraversableElementInterface;
 
-class TraversableView extends BasicView implements \IteratorAggregate, \ArrayAccess
+/**
+ * Class TraversableView.
+ *
+ * @package Berlioz\Form\View
+ */
+class TraversableView extends BasicView implements TraversableViewInterface
 {
     /** @var array List of sub elements */
     private $list = [];
@@ -23,7 +29,7 @@ class TraversableView extends BasicView implements \IteratorAggregate, \ArrayAcc
     /**
      * TraversableView constructor.
      *
-     * @param \Berlioz\Form\TraversableElementInterface $src
+     * @param \Berlioz\Form\Element\TraversableElementInterface $src
      * @param array $options
      * @param \Berlioz\Form\View\ViewInterface[] $list
      */
@@ -48,24 +54,38 @@ class TraversableView extends BasicView implements \IteratorAggregate, \ArrayAcc
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->list);
+        return new ArrayIterator($this->list);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->list);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function offsetGet($offset)
     {
         return $this->list[$offset] ?? null;
     }
 
+    /**
+     * @inheritdoc
+     * @throws \Berlioz\Form\Exception\FormException
+     */
     public function offsetSet($offset, $value)
     {
         throw new FormException('Not allowed to set element in view');
     }
 
+    /**
+     * @inheritdoc
+     * @throws \Berlioz\Form\Exception\FormException
+     */
     public function offsetUnset($offset)
     {
         throw new FormException('Not allowed to unset element in view');

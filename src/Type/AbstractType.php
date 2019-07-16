@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,28 +12,24 @@
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\Element;
-use Berlioz\Form\Transformer;
+use Berlioz\Form\Element\AbstractElement;
 use Berlioz\Form\Validator\NotEmptyValidator;
 use Berlioz\Form\View\BasicView;
 use Berlioz\Form\View\ViewInterface;
 
-abstract class AbstractType extends Element
+/**
+ * Class AbstractType.
+ *
+ * @package Berlioz\Form\Type
+ */
+abstract class AbstractType extends AbstractElement
 {
-    /** @var mixed Default value */
+    /** @var bool Submitted? */
+    protected $submitted = false;
+    /** @var mixed Submitted value */
     protected $submittedValue;
     /** @var mixed Value */
     protected $value;
-
-    /**
-     * AbstractType constructor.
-     *
-     * @param array $options Options
-     */
-    public function __construct(array $options = [])
-    {
-        parent::__construct(array_replace_recursive(['label' => false], $options));
-    }
 
     /**
      * __clone() magic method.
@@ -66,24 +62,6 @@ abstract class AbstractType extends Element
      */
     abstract public function getType(): string;
 
-    /**
-     * @inheritdoc
-     */
-    public function getOptions(): array
-    {
-        if (is_null($value = $this->getValue())) {
-            $value = $this->getOption('value');
-        }
-
-        return array_replace_recursive(
-            parent::getOptions(),
-            [
-                'type' => $this->getType(),
-                'value' => $value,
-            ]
-        );
-    }
-
     /////////////
     /// VALUE ///
     /////////////
@@ -91,69 +69,36 @@ abstract class AbstractType extends Element
     /**
      * @inheritdoc
      */
-    public function getValue(bool $raw = false)
+    public function getValue()
     {
-        if (!$raw && !is_null($transformer = $this->getTransformer())) {
-            return $transformer->fromForm($this->getRawValue());
+        if ($form = $this->getForm()) {
+            if ($form->isSubmitted()) {
+                return $this->submittedValue;
+            }
         }
 
-        return $this->getRawValue();
-    }
-
-    /**
-     * Get raw value.
-     *
-     * @return mixed
-     */
-    protected function getRawValue()
-    {
-        if ($this->getOption('readonly', false, true)) {
-            return $this->value;
-        }
-
-        if (!is_null($this->getForm()) && $this->getForm()->isSubmitted()) {
-            return $this->submittedValue;
-        }
-
-        if (!is_null($this->value)) {
-            return $this->value;
-        }
-
-        return $this->getOption('value');
+        return $this->value;
     }
 
     /**
      * @inheritdoc
      */
-    public function setValue($value, bool $submitted = false)
+    public function submitValue($value)
     {
-        if ($submitted) {
-            $this->submittedValue = $value;
-        } else {
-            if (!is_null($transformer = $this->getTransformer())) {
-                $value = $transformer->toForm($value);
-            }
-
-            $this->value = $value;
-        }
+        $this->submitted = true;
+        $this->submittedValue = $value;
 
         return $this;
     }
 
     /**
-     * Get transformer.
-     *
-     * @return \Berlioz\Form\Transformer|null
+     * @inheritdoc
      */
-    protected function getTransformer(): ?Transformer
+    public function setValue($value)
     {
-        if (!is_null($transformer = $this->getOption('transformer'))) {
-            if ($transformer instanceof Transformer) {
-                return $transformer;
-            }
-        }
+        $this->value = $this->getTransformer()->toForm($value, $this);
 
-        return null;
+        return $this;
     }
 
     /////////////
@@ -188,7 +133,7 @@ abstract class AbstractType extends Element
                 'label' => $this->getOption('label', false),
                 'label_attributes' => $this->getOption('label_attributes', []),
                 'helper' => $this->getOption('helper', false),
-                'value' => $this->getRawValue(),
+                'value' => $this->getValue(),
                 'errors' => $this->getConstraints(),
                 'required' => $this->getOption('required', false, true),
                 'disabled' => $this->getOption('disabled', false, true),

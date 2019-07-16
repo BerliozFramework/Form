@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,8 +12,26 @@
 
 namespace Berlioz\Form\Type;
 
+use Berlioz\Form\Transformer\NumberTransformer;
+
+/**
+ * Class Number.
+ *
+ * @package Berlioz\Form\Type
+ */
 class Number extends AbstractType
 {
+    /**
+     * Number constructor.
+     *
+     * @param array $options
+     */
+    public function __construct(array $options = [])
+    {
+        $this->setTransformer(new NumberTransformer());
+        parent::__construct($options);
+    }
+
     /**
      * @inheritdoc
      */
@@ -25,15 +43,11 @@ class Number extends AbstractType
     /**
      * @inheritdoc
      */
-    public function getValue(bool $raw = false)
+    public function getValue()
     {
-        $value = parent::getValue($raw);
+        $value = parent::getValue();
 
-        if (is_null($value)) {
-            return $value;
-        }
-
-        if ($value == '') {
+        if (is_null($value) || $value == '') {
             return null;
         }
 

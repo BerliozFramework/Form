@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,13 +12,19 @@
 
 namespace Berlioz\Form;
 
+use Berlioz\Form\Element\AbstractTraversableElement;
+use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\FormException;
-use Berlioz\Form\View\TraversableView;
 use Berlioz\Form\View\ViewInterface;
 
-class Collection extends TraversableElement
+/**
+ * Class Collection.
+ *
+ * @package Berlioz\Form
+ */
+class Collection extends AbstractTraversableElement
 {
-    /** @var \Berlioz\Form\ElementInterface Prototype element */
+    /** @var \Berlioz\Form\Element\ElementInterface Prototype */
     protected $prototype;
 
     /**
@@ -73,7 +79,7 @@ class Collection extends TraversableElement
             'children' => [],
         ];
 
-        /** @var \Berlioz\Form\ElementInterface $element */
+        /** @var \Berlioz\Form\Element\ElementInterface $element */
         foreach ($this as $element) {
             $data['children'][] = $element;
         }
@@ -81,17 +87,34 @@ class Collection extends TraversableElement
         return $data;
     }
 
-    public function getPrototype(): ElementInterface
+    /**
+     * Get index of form element.
+     *
+     * @param \Berlioz\Form\Element\ElementInterface $element
+     *
+     * @return false|int|string
+     */
+    public function indexOf(ElementInterface $element)
     {
-        return $this->prototype;
+        if (($index = array_search($element, $this->list, true)) === false) {
+            if ($this->getPrototype() === $element) {
+                return '___name___';
+            }
+
+            return false;
+        }
+
+        return $index;
     }
 
     /**
      * Complete collection.
      *
      * @param int|null $nb Number
+     *
+     * @return void
      */
-    protected function completeCollection(int $nb = null)
+    protected function completeCollection(int $nb = null): void
     {
         // Complete by elements
         $nbElements = count($this);
@@ -106,24 +129,18 @@ class Collection extends TraversableElement
         }
     }
 
+    /////////////////
+    /// PROTOTYPE ///
+    /////////////////
+
     /**
-     * Get index of form element.
+     * Get prototype.
      *
-     * @param \Berlioz\Form\ElementInterface $formElement
-     *
-     * @return false|int|string
+     * @return \Berlioz\Form\Element\ElementInterface
      */
-    public function indexOf(ElementInterface $formElement)
+    public function getPrototype(): ElementInterface
     {
-        if (($index = array_search($formElement, $this->list, true)) === false) {
-            if ($this->getPrototype() === $formElement) {
-                return '___name___';
-            }
-
-            return false;
-        }
-
-        return $index;
+        return $this->prototype;
     }
 
     /////////////
@@ -133,13 +150,13 @@ class Collection extends TraversableElement
     /**
      * @inheritdoc
      */
-    public function getValue(bool $raw = false)
+    public function getValue()
     {
         $values = [];
 
-        /** @var \Berlioz\Form\ElementInterface $element */
+        /** @var \Berlioz\Form\Element\ElementInterface $element */
         foreach ($this as $element) {
-            $values[] = $element->getValue($raw);
+            $values[] = $element->getValue();
         }
 
         return $values;
@@ -148,36 +165,96 @@ class Collection extends TraversableElement
     /**
      * @inheritdoc
      */
-    public function setValue($values, bool $submitted = false)
+    public function getFinalValue()
+    {
+        $values = [];
+
+        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        foreach ($this as $element) {
+            $values[] = $element->getFinalValue();
+        }
+
+        return $values;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setValue($values)
     {
         // Complete collection
         $this->completeCollection(count($values));
 
+        $max = $this->getOption('max_elements');
         $i = 0;
 
         // Sort values
         ksort($values);
 
-        foreach ($values as $value) {
-            if (!is_int($this->getOption('max_elements')) || $i < $this->getOption('max_elements')) {
-                if (isset($this[$i])) {
-                    /** @var \Berlioz\Form\ElementInterface $element */
-                    $element = $this[$i];
-                } else {
-                    $this[$i] = $element = clone $this->prototype;
-                    $element->setParent($this);
-                }
-
-                $element->setValue($value, $submitted);
-                $i++;
+        foreach ($values as $key => $value) {
+            if (is_int($max) && $i > $max) {
+                continue;
             }
+
+            /** @var \Berlioz\Form\Element\ElementInterface $element */
+            if (isset($this[$key])) {
+                $element = $this[$key];
+            } else {
+                $this[$key] = $element = clone $this->prototype;
+                $element->setParent($this);
+
+                // Callback
+                $this->callCallback('complete', $this, $this[$key]);
+            }
+
+            $element->setValue($value);
+            $i++;
         }
 
-        // Delete others elements
+        // Complete collection
+        $this->completeCollection(count($values));
 
-        foreach ($this as $j => $element) {
-            if ($j >= $i && count($this) > $this->getOption('min_elements', 0)) {
-                unset($this[$j]);
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function submitValue($values)
+    {
+        // Complete collection
+        $this->completeCollection(count($values));
+
+        // Sort values
+        ksort($values);
+
+        // Add
+        foreach ($values as $key => $value) {
+            /** @var \Berlioz\Form\Element\ElementInterface $element */
+            if (isset($this[$key])) {
+                $element = $this[$key];
+                $element->submitValue($value);
+                continue;
+            }
+
+            $this[$key] = $element = clone $this->prototype;
+            $element->setParent($this);
+            $element->submitValue($value);
+
+            // Callback
+            $this->callCallback('add', $this, $element);
+        }
+
+        // Delete elements not found
+        $diff = array_diff_key($this->getValue(), $values);
+        foreach ($diff as $key => $value) {
+            if (isset($this[$key])) {
+                $this[$key]->setParent(null);
+
+                // Callback
+                $this->callCallback('remove', $this, $this[$key]);
+
+                unset($this[$key]);
             }
         }
 

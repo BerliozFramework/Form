@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -14,15 +14,34 @@ namespace Berlioz\Form\Type;
 
 use Berlioz\Form\View\ViewInterface;
 
+/**
+ * Class Button.
+ *
+ * @package Berlioz\Form\Type
+ */
 class Button extends AbstractType
 {
+    /**
+     * Button constructor.
+     *
+     * @param array $options
+     */
     public function __construct(array $options = [])
     {
-        parent::__construct(array_replace_recursive(['required' => false,
-                                                     'mapped'   => false,
-                                                     'value'    => null], $options));
+        parent::__construct(
+            array_replace_recursive(
+                [
+                    'required' => false,
+                    'mapped' => false,
+                    'value' => null,
+                ], $options
+            )
+        );
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getType(): string
     {
         return 'button';
@@ -35,7 +54,7 @@ class Button extends AbstractType
      */
     public function isClicked(): bool
     {
-        return !is_null($this->getValue(true));
+        return !is_null($this->getValue());
     }
 
     /////////////
@@ -48,7 +67,7 @@ class Button extends AbstractType
     public function buildView(): ViewInterface
     {
         $view = parent::buildView();
-        $view->mergeVars(['value' => $this->getValue(true) ?? $this->getOption('value')]);
+        $view->mergeVars(['value' => $this->getValue() ?? $this->getOption('value')]);
 
         return $view;
     }

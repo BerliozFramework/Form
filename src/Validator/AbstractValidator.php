@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -14,6 +14,11 @@ namespace Berlioz\Form\Validator;
 
 use Berlioz\Form\Exception\ValidatorException;
 
+/**
+ * Class AbstractValidator.
+ *
+ * @package Berlioz\Form\Validator
+ */
 abstract class AbstractValidator implements ValidatorInterface
 {
     /** @var string Constraint class */

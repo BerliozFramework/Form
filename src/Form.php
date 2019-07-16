@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,10 +12,17 @@
 
 namespace Berlioz\Form;
 
+use Berlioz\Form\Collector\FormCollector;
 use Berlioz\Form\Exception\FormException;
+use Berlioz\Form\Hydrator\FormHydrator;
 use Berlioz\Form\View\ViewInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Class Form.
+ *
+ * @package Berlioz\Form
+ */
 class Form extends Group
 {
     /** @var object|array|null Mapped object or array */
@@ -28,19 +35,23 @@ class Form extends Group
     /**
      * Form constructor.
      *
-     * @param string      $name    Name of form
-     * @param object|null $mapped  Mapped object
-     * @param array       $options Options
+     * @param string $name Name of form
+     * @param object|null $mapped Mapped object
+     * @param array $options Options
      *
      * @throws \Berlioz\Form\Exception\FormException
      */
-    public function __construct(string $name, $mapped = null, array $options = [])
+    public function __construct(string $name, object $mapped = null, array $options = [])
     {
         $options['name'] = $name;
-        $options = array_replace_recursive(['method'   => 'post',
-                                            'mapped'   => !is_null($mapped),
-                                            'required' => true],
-                                           $options);
+        $options = array_replace_recursive(
+            [
+                'method' => 'post',
+                'mapped' => !is_null($mapped),
+                'required' => true,
+            ],
+            $options
+        );
 
         parent::__construct($options);
 
@@ -58,12 +69,16 @@ class Form extends Group
     public function buildView(): ViewInterface
     {
         $view = parent::buildView();
-        $view->mergeVars(['type'       => is_null($this->getParent()) ? 'rootform' : 'form',
-                          'id'         => $this->getId(),
-                          'name'       => $this->getFormName(),
-                          'method'     => $this->getOption('method'),
-                          'action'     => $this->getOption('action'),
-                          'attributes' => $this->getOption('attributes', [])]);
+        $view->mergeVars(
+            [
+                'type' => is_null($this->getParent()) ? 'rootform' : 'form',
+                'id' => $this->getId(),
+                'name' => $this->getFormName(),
+                'method' => $this->getOption('method'),
+                'action' => $this->getOption('action'),
+                'attributes' => $this->getOption('attributes', []),
+            ]
+        );
 
         return $view;
     }
@@ -112,40 +127,6 @@ class Form extends Group
         return $this->submitted;
     }
 
-    /**
-     * Get submitted data.
-     *
-     * @return array
-     * @throws \Berlioz\Form\Exception\FormException
-     */
-    public function getSubmittedData(): array
-    {
-        if (!$this->isSubmitted()) {
-            throw new FormException(sprintf('Form "%s" is not submitted', $this->getName()));
-        }
-
-        return $this->submittedData;
-    }
-
-    /**
-     * Set submitted data.
-     *
-     * @param array $data  Data
-     * @param bool  $merge Merge with already submitted data? If no, replace values.
-     *
-     * @return static
-     */
-    public function setSubmittedData(array $data, bool $merge = false): Form
-    {
-        if ($merge) {
-            $this->submittedData = array_replace_recursive($this->submittedData ?? [], $data);
-        } else {
-            $this->submittedData = $data;
-        }
-
-        return $this;
-    }
-
     ////////////////
     /// HANDLING ///
     ////////////////
@@ -156,7 +137,6 @@ class Form extends Group
      * @param \Psr\Http\Message\ServerRequestInterface $request
      *
      * @throws \Berlioz\Form\Exception\FormException
-     * @throws \Berlioz\Form\Exception\PropagationException
      */
     public function handle(ServerRequestInterface $request)
     {
@@ -165,9 +145,14 @@ class Form extends Group
 
         $this->submitted = false;
 
-        // Collect data
-        $collector = new Collector();
-        $this->setValue($collector->collect($this));
+        // Get mapped object
+        $mappedObject = $this->getMappedObject();
+
+        // Collect mapped object
+        if (!is_null($mappedObject)) {
+            $collector = new FormCollector($this);
+            $this->setValue($collector->collect($mappedObject));
+        }
 
         if (mb_strtolower($request->getMethod()) === mb_strtolower($this->getOption('method'))) {
             switch (mb_strtolower($request->getMethod())) {
@@ -187,11 +172,13 @@ class Form extends Group
 
             if (($this->submitted = array_key_exists($this->getName(), $submittedData)) !== false) {
                 $this->submittedData = $submittedData[$this->getName()];
-                $this->setValue($this->submittedData, true);
+                $this->submitValue($this->submittedData);
 
-                // Propagate data
-                $propagator = new Propagator($this);
-                $propagator->propagate();
+                // Hydrate mapped object
+                if (!is_null($mappedObject)) {
+                    $hydrator = new FormHydrator($this);
+                    $hydrator->hydrate($mappedObject);
+                }
             }
         }
     }

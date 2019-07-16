@@ -19,7 +19,7 @@
       {%- set attrn = ( attrn_prefix is defined ? attrn_prefix ~ '-' : '' ) ~ attrn -%}
 
       {%- if attrn starts with 'data-' and (attrv is same as(true) or attrv is same as(false)) -%}
-          {{- " " ~ attrn }}="{{ attrv ? 'true' : 'false' }}"
+        {{- " " ~ attrn }}="{{ attrv ? 'true' : 'false' }}"
       {%- else -%}
         {%- if attrv is same as(true) -%}
           {{- " " ~ attrn }}="{{ attrn }}"
@@ -72,16 +72,18 @@
 {%- endblock -%}
 
 {%- block collection_row -%}
-  {% if editable %}
-    <div id="{{ id }}" data-collection="{{ name }}" data-prototype="{{ form_row(prototype)|spaceless|e }}" data-collection-min="{{ min_elements }}" data-collection-max="{{ max_elements }}">
-  {% else %}
-    <div>
-  {% endif %}
-    {% for key, element in form %}
-      <div data-collection-key="{{ key }}">
-        {{ form_row(element) }}
-      </div>
-    {% endfor %}
+  {% filter spaceless %}
+    <div
+    {% if editable %}
+      id="{{ id }}" data-collection="{{ name }}" data-prototype="{{ form_row(prototype)|spaceless|e }}" data-collection-min="{{ min_elements }}" data-collection-max="{{ max_elements }}"
+    {% endif %}
+    >
+  {% endfilter %}
+  {% for key, element in form %}
+    <div data-collection-key="{{ key }}">
+      {{ form_row(element) }}
+    </div>
+  {% endfor %}
   </div>
 {%- endblock -%}
 

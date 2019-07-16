@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,10 +12,18 @@
 
 namespace Berlioz\Form;
 
+use Berlioz\Form\Element\AbstractTraversableElement;
+use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\View\ViewInterface;
+use InvalidArgumentException;
 
-class Group extends TraversableElement
+/**
+ * Class Group.
+ *
+ * @package Berlioz\Form
+ */
+class Group extends AbstractTraversableElement
 {
     /**
      * __clone() magic method.
@@ -35,10 +43,12 @@ class Group extends TraversableElement
      */
     public function __debugInfo(): array
     {
-        $data = ['parent'   => $this->getParent() ? $this->getParent()->getName() : null,
-                 'children' => []];
+        $data = [
+            'parent' => $this->getParent() ? $this->getParent()->getName() : null,
+            'children' => [],
+        ];
 
-        /** @var \Berlioz\Form\ElementInterface $element */
+        /** @var \Berlioz\Form\Element\ElementInterface $element */
         foreach ($this as $element) {
             $data['children'][$element->getName()] = $element;
         }
@@ -52,11 +62,11 @@ class Group extends TraversableElement
     public function offsetSet($offset, $value): void
     {
         if (!($value instanceof ElementInterface)) {
-            throw new \InvalidArgumentException(sprintf('Form group accept only "%s" class', ElementInterface::class));
+            throw new InvalidArgumentException(sprintf('Form group accept only "%s" class', ElementInterface::class));
         }
 
         if (!is_string($offset)) {
-            throw new \InvalidArgumentException('Elements in form group must be named');
+            throw new InvalidArgumentException('Elements in form group must be named');
         }
 
         parent::offsetSet($offset, $value);
@@ -66,23 +76,23 @@ class Group extends TraversableElement
     /**
      * Add an element to group.
      *
-     * @param string        $name    Name of element
-     * @param string|object $class   Class name of element
-     * @param array         $options Options of element
+     * @param string $name Name of element
+     * @param string|object $class Class name of element
+     * @param array $options Options of element
      *
      * @return static
      */
     public function add(string $name, $class, array $options = [])
     {
         if (!(is_a($class, ElementInterface::class, true))) {
-            throw new \InvalidArgumentException(sprintf('Class name must be a valid class/object and must be implements "%s" interface', ElementInterface::class));
+            throw new InvalidArgumentException(sprintf('Class name must be a valid class/object and must be implements "%s" interface', ElementInterface::class));
         }
 
         if (!is_object($class)) {
             $options['name'] = $name;
             $this[$name] = new $class($options);
         } else {
-            /** @var \Berlioz\Form\ElementInterface $class */
+            /** @var \Berlioz\Form\Element\ElementInterface $class */
             foreach ($options as $optName => $optValue) {
                 $class->setOption($optName, $optValue);
             }
@@ -93,22 +103,6 @@ class Group extends TraversableElement
         return $this;
     }
 
-    /**
-     * Get transformer.
-     *
-     * @return \Berlioz\Form\Transformer|null
-     */
-    public function getTransformer(): ?Transformer
-    {
-        if (!is_null($transformer = $this->getOption('transformer'))) {
-            if ($transformer instanceof Transformer) {
-                return $transformer;
-            }
-        }
-
-        return null;
-    }
-
     /////////////
     /// VALUE ///
     /////////////
@@ -116,13 +110,13 @@ class Group extends TraversableElement
     /**
      * @inheritdoc
      */
-    public function getValue(bool $raw = false)
+    public function getValue()
     {
         $values = [];
 
-        /** @var \Berlioz\Form\ElementInterface $element */
+        /** @var \Berlioz\Form\Element\ElementInterface $element */
         foreach ($this as $element) {
-            $values[$element->getName()] = $element->getValue($raw);
+            $values[$element->getName()] = $element->getValue();
         }
 
         return $values;
@@ -130,19 +124,51 @@ class Group extends TraversableElement
 
     /**
      * @inheritdoc
-     * @throws \Berlioz\Form\Exception\FormException
      */
-    public function setValue($values, bool $submitted = false)
+    public function getFinalValue()
     {
-        if (!is_array($values)) {
-            throw new FormException('Invalid form submission');
+        $values = [];
+
+        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        foreach ($this as $element) {
+            $values[$element->getName()] = $element->getFinalValue();
         }
 
+        return $values;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function submitValue($values)
+    {
+        if (!is_array($values)) {
+            throw new FormException('Invalid type of value, array attempted');
+        }
+
+        /** @var \Berlioz\Form\Element\ElementInterface[] $this */
         foreach ($values as $name => $value) {
             if (isset($this[$name])) {
-                /** @var \Berlioz\Form\ElementInterface $element */
-                $element = $this[$name];
-                $element->setValue($value, $submitted);
+                $this[$name]->submitValue($value);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setValue($values)
+    {
+        if (!is_array($values)) {
+            throw new FormException('Invalid type of value, array attempted');
+        }
+
+        /** @var \Berlioz\Form\Element\ElementInterface[] $this */
+        foreach ($values as $name => $value) {
+            if (isset($this[$name])) {
+                $this[$name]->setValue($value);
             }
         }
 

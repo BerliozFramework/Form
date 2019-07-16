@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,12 +12,20 @@
 
 namespace Berlioz\Form\Type;
 
+use Berlioz\Form\Exception\TypeException;
 use Berlioz\Form\View\ViewInterface;
+use Exception;
+use Traversable;
 
+/**
+ * Class Choice.
+ *
+ * @package Berlioz\Form\Type
+ */
 class Choice extends AbstractType
 {
     /** @var \Berlioz\Form\Type\ChoiceValue[] Choices value */
-    private $choicesForView = [];
+    private $choicesForView;
     /** @var \Berlioz\Form\Type\ChoiceValue[] Choices values */
     private $choices = [];
 
@@ -47,8 +55,9 @@ class Choice extends AbstractType
 
     /**
      * @inheritdoc
+     * @throws \Berlioz\Form\Exception\TypeException
      */
-    public function getValue(bool $raw = false)
+    public function getValue()
     {
         $value = [];
 
@@ -56,11 +65,7 @@ class Choice extends AbstractType
         $selectedChoicesValue = $this->getSelectedChoicesValue();
 
         foreach ($selectedChoicesValue as $choiceValue) {
-            if ($raw) {
-                $value[] = $choiceValue->getValue();
-            } else {
-                $value[] = $choiceValue->getFinalValue();
-            }
+            $value[] = $choiceValue->getValue();
         }
 
         if (!$this->getOption('multiple', false)) {
@@ -69,24 +74,31 @@ class Choice extends AbstractType
             }
         }
 
-        // Transformer
-        if (!$raw && !is_null($transformer = $this->getTransformer())) {
-            return $transformer->fromForm($value);
-        }
-
         return $value;
     }
 
     /**
      * @inheritdoc
      */
-    public function setValue($value, bool $submitted = false)
+    public function setValue($value)
     {
-        if (!is_array($value) && !$value instanceof \Traversable) {
+        if (!is_array($value) && !$value instanceof Traversable) {
             $value = [$value];
         }
 
-        return parent::setValue($value, $submitted);
+        return parent::setValue($value);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function submitValue($value)
+    {
+        if (!is_array($value) && !$value instanceof Traversable) {
+            $value = [$value];
+        }
+
+        return parent::submitValue($value);
     }
 
     /**
@@ -98,15 +110,15 @@ class Choice extends AbstractType
     {
         $found = [];
 
-        $rawValue = parent::getValue(true);
-        if ($rawValue instanceof \Traversable) {
-            $rawValue = iterator_to_array($rawValue);
+        $value = parent::getValue();
+        if ($value instanceof Traversable) {
+            $value = iterator_to_array($value);
         }
 
-        if (!is_null($rawValue)) {
+        if (!is_null($value)) {
             foreach ($this->choices as $choiceValue) {
-                if (in_array($choiceValue->getValue(), $rawValue)
-                    || in_array($choiceValue->getFinalValue(), $rawValue, true)) {
+                if (in_array($choiceValue->getValue(), $value)
+                    || in_array($choiceValue->getFinalValue(), $value, true)) {
                     $found[] = $choiceValue->setSelected(true);
                 }
             }
@@ -122,12 +134,13 @@ class Choice extends AbstractType
     /**
      * Callback for each choice.
      *
-     * @param string     $callbackName Callback name
-     * @param int|string $key          Key of choice
-     * @param mixed      $value        Value of choice
-     * @param int        $index        Index of choice
+     * @param string $callbackName Callback name
+     * @param int|string $key Key of choice
+     * @param mixed $value Value of choice
+     * @param int $index Index of choice
      *
      * @return null|mixed
+     * @throws \Berlioz\Form\Exception\TypeException
      */
     private function choiceCallback(string $callbackName, $key, $value, int $index)
     {
@@ -153,7 +166,11 @@ class Choice extends AbstractType
         if (is_string($callback) && !empty($callback)) {
             if (is_object($value)) {
                 $exists = false;
-                $result = b_get_property_value($value, $callback, $exists);
+                try {
+                    $result = b_get_property_value($value, $callback, $exists);
+                } catch (Exception $e) {
+                    throw new TypeException(sprintf('Unable to found getter of "%s" property of "%s" class', $callback, get_class($value)));
+                }
 
                 if ($exists) {
                     return $result;
@@ -173,11 +190,12 @@ class Choice extends AbstractType
     /**
      * Build choice value object.
      *
-     * @param int|string $key   Key of choice
-     * @param mixed      $value Value of choice
-     * @param int        $index Index of choice
+     * @param int|string $key Key of choice
+     * @param mixed $value Value of choice
+     * @param int $index Index of choice
      *
      * @return \Berlioz\Form\Type\ChoiceValue
+     * @throws \Berlioz\Form\Exception\TypeException
      */
     private function buildChoiceValue($key, $value, int $index): ChoiceValue
     {
@@ -221,23 +239,26 @@ class Choice extends AbstractType
      * Build choices.
      *
      * @return \Berlioz\Form\Type\ChoiceValue[][]
+     * @throws \Berlioz\Form\Exception\TypeException
      */
     private function buildChoices(): array
     {
-        $choices = $this->getOption('choices', []);
+        if (is_null($this->choicesForView)) {
+            $choices = $this->getOption('choices', []);
 
-        $this->choicesForView = [];
+            $this->choicesForView = [];
 
-        $index = 0;
-        foreach ($choices as $key => $value) {
-            if (is_array($value) || $value instanceof \Traversable) {
-                foreach ($value as $key2 => $value2) {
-                    $this->choicesForView[$key][] = $this->buildChoiceValue($key2, $value2, $index);
+            $index = 0;
+            foreach ($choices as $key => $value) {
+                if (is_array($value) || $value instanceof Traversable) {
+                    foreach ($value as $key2 => $value2) {
+                        $this->choicesForView[$key][] = $this->buildChoiceValue($key2, $value2, $index);
+                        $index++;
+                    }
+                } else {
+                    $this->choicesForView[] = $this->buildChoiceValue($key, $value, $index);
                     $index++;
                 }
-            } else {
-                $this->choicesForView[] = $this->buildChoiceValue($key, $value, $index);
-                $index++;
             }
         }
 
@@ -246,6 +267,7 @@ class Choice extends AbstractType
 
     /**
      * @inheritdoc
+     * @throws \Berlioz\Form\Exception\TypeException
      */
     public function build()
     {
@@ -257,6 +279,7 @@ class Choice extends AbstractType
 
     /**
      * @inheritdoc
+     * @throws \Berlioz\Form\Exception\TypeException
      */
     public function buildView(): ViewInterface
     {
@@ -264,10 +287,14 @@ class Choice extends AbstractType
         $this->getSelectedChoicesValue();
 
         $view = parent::buildView();
-        $view->mergeVars(['allow_clear' => $this->getOption('allow_clear', false),
-                          'expanded'    => $this->getOption('expanded', false),
-                          'multiple'    => $this->getOption('multiple', false),
-                          'choices'     => $this->choicesForView ?? []]);
+        $view->mergeVars(
+            [
+                'allow_clear' => $this->getOption('allow_clear', false),
+                'expanded' => $this->getOption('expanded', false),
+                'multiple' => $this->getOption('multiple', false),
+                'choices' => $this->choicesForView ?? [],
+            ]
+        );
 
         return $view;
     }

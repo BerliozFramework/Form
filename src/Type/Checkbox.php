@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,10 +12,27 @@
 
 namespace Berlioz\Form\Type;
 
+use Berlioz\Form\Transformer\CheckboxTransformer;
 use Berlioz\Form\View\ViewInterface;
 
+/**
+ * Class Checkbox.
+ *
+ * @package Berlioz\Form\Type
+ */
 class Checkbox extends AbstractType
 {
+    /**
+     * Checkbox constructor.
+     *
+     * @param array $options
+     */
+    public function __construct(array $options = [])
+    {
+        $this->setTransformer(new CheckboxTransformer());
+        parent::__construct($options);
+    }
+
     /**
      * @inheritdoc
      */
@@ -28,26 +45,19 @@ class Checkbox extends AbstractType
     /// VALUE ///
     /////////////
 
-    /**
-     * @inheritdoc
-     */
-    public function getValue(bool $raw = false)
-    {
-        $value = parent::getValue($raw);
-
-        // Transformer
-        if (!$raw && is_null($transformer = $this->getTransformer())) {
-            if (is_null($this->getOption('default_value', null))) {
-                return in_array(parent::getValue(true),
-                                [$this->getOption('default_value', 'on'), 'true', true],
-                                true);
-            } else {
-                return parent::getValue() ?: null;
-            }
-        }
-
-        return $value;
-    }
+//    /**
+//     * @inheritdoc
+//     */
+//    public function getValue()
+//    {
+//        if ($form = $this->getForm()) {
+//            if ($form->isSubmitted()) {
+//                return $this->submittedValue;
+//            }
+//        }
+//
+//        return $this->value;
+//    }
 
     /////////////
     /// BUILD ///
@@ -60,9 +70,7 @@ class Checkbox extends AbstractType
     {
         $view = parent::buildView();
         $attributes = $this->getOption('attributes', []);
-        $attributes['checked'] = in_array($this->getValue(true),
-                                          [$this->getOption('default_value', 'on'), 'true', true],
-                                          true);
+        $attributes['checked'] = $this->getValue();
 
         $view->mergeVars(['attributes' => $attributes,
                           'value'      => $this->getOption('default_value', 'on')]);

@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,30 +12,22 @@
 
 namespace Berlioz\Form\Type;
 
+use Berlioz\Form\Transformer\DateTimeTransformer;
+
+/**
+ * Class Date.
+ *
+ * @package Berlioz\Form\Type
+ */
 class Date extends AbstractType
 {
+    const DEFAULT_TRANSFORMER = DateTimeTransformer::class;
+
     /**
      * @inheritdoc
      */
     public function getType(): string
     {
         return 'date';
-    }
-
-    /**
-     * @inheritdoc
-     * @throws \Exception
-     */
-    public function getValue(bool $raw = false)
-    {
-        if ($raw) {
-            return parent::getValue($raw);
-        }
-
-        if (is_null($this->getTransformer())) {
-            return new \DateTime(parent::getValue(true));
-        }
-
-        return parent::getValue();
     }
 }

@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -21,6 +21,11 @@ use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
+    /**
+     * Class TwigExtension.
+     *
+     * @package Berlioz\Form
+     */
     class TwigExtension extends AbstractExtension
     {
         const DEFAULT_TPL = '@Berlioz-Form/default.html.twig';
@@ -50,9 +55,9 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Render.
          *
-         * @param string                           $blockType
+         * @param string $blockType
          * @param \Berlioz\Form\View\ViewInterface $formView
-         * @param array                            $options
+         * @param array $options
          *
          * @return string
          * @throws \Throwable Twig error
@@ -101,8 +106,8 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Function form render
          *
-         * @param \Berlioz\Form\View\ViewInterface $formView         Form view
-         * @param string|array                     $templateFileName Template file
+         * @param \Berlioz\Form\View\ViewInterface $formView Form view
+         * @param string|array $templateFileName Template file
          *
          * @return string
          */
@@ -117,7 +122,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
          * Function form start
          *
          * @param \Berlioz\Form\View\BasicView $formView Form view
-         * @param array                        $options  Options
+         * @param array $options Options
          *
          * @return string
          * @throws \Throwable Twig error
@@ -132,7 +137,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
          * Function form end
          *
          * @param \Berlioz\Form\View\BasicView $formView Form view
-         * @param array                        $options  Options
+         * @param array $options Options
          *
          * @return string
          * @throws \Throwable Twig error
@@ -147,7 +152,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
          * Function form errors
          *
          * @param \Berlioz\Form\View\ViewInterface $formView Form view
-         * @param array                            $options  Options
+         * @param array $options Options
          *
          * @return string
          * @throws \Throwable Twig error
@@ -162,7 +167,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
          * Function form label
          *
          * @param \Berlioz\Form\View\BasicView $formView Form view
-         * @param array                        $options  Options
+         * @param array $options Options
          *
          * @return string
          * @throws \Throwable Twig error
@@ -177,7 +182,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
          * Function form widget
          *
          * @param \Berlioz\Form\View\ViewInterface $formView Form view
-         * @param array                            $options  Options
+         * @param array $options Options
          *
          * @return string
          * @throws \Berlioz\Form\Exception\AlreadyInsertedException
@@ -200,7 +205,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
          * Function form row
          *
          * @param \Berlioz\Form\View\ViewInterface $formView Form view
-         * @param array                            $options  Options
+         * @param array $options Options
          *
          * @return string
          * @throws \Berlioz\Form\Exception\AlreadyInsertedException
@@ -220,7 +225,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
          * Function form rest.
          *
          * @param \Berlioz\Form\View\TraversableView $formView Form view
-         * @param array                              $options  Options
+         * @param array $options Options
          *
          * @return string
          * @throws \Berlioz\Form\Exception\AlreadyInsertedException

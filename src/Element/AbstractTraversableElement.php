@@ -3,21 +3,23 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code, to the root.
  */
 
-namespace Berlioz\Form;
+namespace Berlioz\Form\Element;
 
+use ArrayIterator;
 use Berlioz\Form\View\TraversableView;
 use Berlioz\Form\View\ViewInterface;
+use InvalidArgumentException;
 
-abstract class TraversableElement extends Element implements TraversableElementInterface
+abstract class AbstractTraversableElement extends AbstractElement implements TraversableElementInterface
 {
-    /** @var \Berlioz\Form\ElementInterface[] Form elements */
+    /** @var \Berlioz\Form\Element\ElementInterface[] Form elements */
     protected $list = [];
 
     /**
@@ -31,9 +33,9 @@ abstract class TraversableElement extends Element implements TraversableElementI
     /**
      * @inheritdoc
      */
-    public function getIterator(): \ArrayIterator
+    public function getIterator(): ArrayIterator
     {
-        return new \ArrayIterator($this->list);
+        return new ArrayIterator($this->list);
     }
 
     /**
@@ -72,7 +74,7 @@ abstract class TraversableElement extends Element implements TraversableElementI
                 $this->list[$offset] = $value;
             }
         } else {
-            throw new \InvalidArgumentException(sprintf('Form collection accept only "%s" class', ElementInterface::class));
+            throw new InvalidArgumentException(sprintf('Form collection accept only "%s" class', ElementInterface::class));
         }
     }
 
@@ -93,7 +95,7 @@ abstract class TraversableElement extends Element implements TraversableElementI
      */
     public function build()
     {
-        /** @var \Berlioz\Form\ElementInterface $element */
+        /** @var \Berlioz\Form\Element\ElementInterface $element */
         foreach ($this as $element) {
             $element->build();
         }

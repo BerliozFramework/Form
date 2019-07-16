@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,30 +12,22 @@
 
 namespace Berlioz\Form\Transformer;
 
-use Berlioz\Form\Transformer;
+use Berlioz\Form\Element\ElementInterface;
 
-class DefaultTransformer implements Transformer
+class DefaultTransformer implements TransformerInterface
 {
     /**
-     * Transform data to form.
-     *
-     * @param mixed $data
-     *
-     * @return mixed
+     * @inheritdoc
      */
-    public function toForm($data)
+    public function toForm($data, ElementInterface $element)
     {
         return $data;
     }
 
     /**
-     * Transform data from form.
-     *
-     * @param mixed $data
-     *
-     * @return mixed
+     * @inheritdoc
      */
-    public function fromForm($data)
+    public function fromForm($data, ElementInterface $element)
     {
         return $data;
     }

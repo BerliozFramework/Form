@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,6 +12,11 @@
 
 namespace Berlioz\Form\View;
 
+/**
+ * Interface ViewInterface.
+ *
+ * @package Berlioz\Form\View
+ */
 interface ViewInterface
 {
     /**
@@ -34,7 +39,7 @@ interface ViewInterface
      * Get variable.
      *
      * @param string $name
-     * @param mixed  $default Default returned value
+     * @param mixed $default Default returned value
      *
      * @return mixed
      */

@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,12 +12,17 @@
 
 namespace Berlioz\Form\View;
 
-use Berlioz\Form\ElementInterface;
+use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\FormException;
 
+/**
+ * Class BasicView.
+ *
+ * @package Berlioz\Form\View
+ */
 class BasicView implements ViewInterface
 {
-    /** @var \Berlioz\Form\ElementInterface Source element */
+    /** @var \Berlioz\Form\Element\ElementInterface Source element */
     private $src;
     /** @var \Berlioz\Form\View\ViewInterface Parent view */
     private $parentView;
@@ -31,8 +36,8 @@ class BasicView implements ViewInterface
     /**
      * BasicView constructor.
      *
-     * @param \Berlioz\Form\ElementInterface $src
-     * @param array                          $variables
+     * @param \Berlioz\Form\Element\ElementInterface $src
+     * @param array $variables
      */
     public function __construct(ElementInterface $src, array $variables = [])
     {

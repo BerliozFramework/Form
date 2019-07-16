@@ -1,69 +1,156 @@
 <?php
-/**
- * This file is part of Berlioz framework.
- *
- * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
- * @author    Ronan GIRON <https://github.com/ElGigi>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code, to the root.
- */
 
 namespace Berlioz\Form\Tests;
 
-use Berlioz\Form\Collection;
 use Berlioz\Form\Form;
-use Berlioz\Form\Group;
-use Berlioz\Form\Propagator;
-use Berlioz\Form\Tests\Data\Entity;
-use Berlioz\Form\Tests\Data\EntityAddress;
-use Berlioz\Form\Tests\Data\EntityHobby;
+use Berlioz\Form\Tests\Fake\Entity\FakePerson;
+use Berlioz\Form\Type\Checkbox;
+use Berlioz\Form\Type\Date;
 use Berlioz\Form\Type\Text;
+use Berlioz\Http\Message\ServerRequest;
+use Berlioz\Http\Message\Stream;
+use Berlioz\Http\Message\Uri;
+use DateTime;
 use PHPUnit\Framework\TestCase;
 
 class FormTest extends TestCase
 {
-    private function getForm($mapped = null)
+    public function testNotMapped()
     {
-        return
-            (new Form('form', $mapped, ['required' => false]))
-                ->add('firstname', Text::class)
-                ->add('lastname', Text::class)
-                ->add('address',
-                      (new Group(['data_type' => EntityAddress::class]))
-                          ->add('address', Text::class)
-                          ->add('address_next', Text::class)
-                          ->add('postal_code', Text::class)
-                          ->add('city', Text::class))
-                ->add('hobbies',
-                      new Collection(['data_type' => \ArrayObject::class,
-                                         'prototype' =>
-                                          (new Group(['data_type' => EntityHobby::class]))
-                                              ->add('name', Text::class)]))
-                ->add('tags',
-                      new Collection(['prototype' => Text::class]),
-                      ['mapped' => true]);
+        // Form
+        $form = new Form('foo');
+        $form
+            ->add('text1', Text::class)
+            ->add(
+                'checkbox1',
+                Checkbox::class,
+                ['default_value' => 'bar']
+            )
+            ->add('checkbox2', Checkbox::class);
+
+        // Form not submitted
+        $this->assertFalse($form->isSubmitted());
+        $this->assertSame(
+            [
+                'text1' => null,
+                'checkbox1' => null,
+                'checkbox2' => null,
+            ],
+            $form->getValue()
+        );
+
+        // Form submission
+        {
+            $_POST = [
+                'foo' => [
+                    'text1' => 'bar',
+                    'checkbox1' => 'bar',
+                    'checkbox2' => 'on',
+                ],
+            ];
+
+            $form->handle(
+                new ServerRequest(
+                    'POST',
+                    new Uri('https', 'getberlioz.com'),
+                    [
+                        'Content-Type' => 'multipart/form-data',
+                    ],
+                    [],
+                    [],
+                    new Stream()
+                )
+            );
+        }
+
+        // Form submitted
+        $this->assertTrue($form->isSubmitted());
+        $this->assertSame(
+            [
+                'text1' => 'bar',
+                'checkbox1' => 'bar',
+                'checkbox2' => 'on',
+            ],
+            $form->getValue()
+        );
+        $this->assertSame(
+            [
+                'text1' => 'bar',
+                'checkbox1' => 'bar',
+                'checkbox2' => true,
+            ],
+            $form->getFinalValue()
+        );
     }
 
-    public function test()
+    public function testMapped()
     {
-        $entity = new Entity;
-        $entity->setLastname('Giron');
-        $entity->setTags(['tag1', 'tag2', 'tag3']);
-        $form = $this->getForm($entity);
+        // Mapped
+        $entity = new FakePerson();
 
-        $form->setValue(['lastname'  => 'Giron',
-                         'firstname' => 'Ronan',
-                         'address'   => ['address'     => '1 rue Théodore Botrel',
-                                         'postal_code' => '44360',
-                                         'city'        => 'Saint Etienne de Montluc'],
-                         'hobbies'   => [['name' => 'Movies'], ['name' => 'Dogs'], ['name' => 'Friends']],
-                         'tags'      => ['tag1', 'tag2']]);
+        // Form
+        $form = new Form('person', $entity);
+        $form
+            ->add('last_name', Text::class)
+            ->add('first_name', Text::class)
+            ->add('birthday', Date::class);
 
-        $propagator = new Propagator($form);
-        $propagator->propagate();
+        // Form not submitted
+        $this->assertFalse($form->isSubmitted());
+        $this->assertSame(
+            [
+                'last_name' => null,
+                'first_name' => null,
+                'birthday' => null,
+            ],
+            $form->getValue()
+        );
 
-        var_dump($entity);
+        // Form submission
+        {
+            $_POST = [
+                'person' => [
+                    'last_name' => 'Giron',
+                    'first_name' => 'Ronan',
+                    'birthday' => '1980-01-01',
+                ],
+            ];
+
+            $form->handle(
+                new ServerRequest(
+                    'POST',
+                    new Uri(
+                        'https',
+                        'getberlioz.com'
+                    ),
+                    ['Content-Type' => 'multipart/form-data'],
+                    [],
+                    [],
+                    new Stream()
+                )
+            );
+        }
+
+        // Form submitted
+        $this->assertTrue($form->isSubmitted());
+        $this->assertEquals(
+            [
+                'last_name' => 'Giron',
+                'first_name' => 'Ronan',
+                'birthday' => '1980-01-01',
+            ],
+            $form->getValue()
+        );
+        $this->assertEquals(
+            [
+                'last_name' => 'Giron',
+                'first_name' => 'Ronan',
+                'birthday' => new DateTime('1980-01-01'),
+            ],
+            $form->getFinalValue()
+        );
+        $this->assertEquals($entity->getLastName(), 'Giron');
+        $this->assertEquals($entity->getFirstName(), 'Ronan');
+        $this->assertEquals($entity->getBirthday(), new DateTime('1980-01-01'));
     }
 }

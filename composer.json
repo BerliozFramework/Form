@@ -23,7 +23,7 @@
     }
   },
   "require": {
-    "php": "^7.1",
+    "php": "^7.2",
     "berlioz/helpers": "@dev",
     "psr/http-message": "^1.0.0"
   },

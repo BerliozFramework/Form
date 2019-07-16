@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,9 +12,14 @@
 
 namespace Berlioz\Form\Validator;
 
-use Berlioz\Form\ElementInterface;
+use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Validator\Constraint\NotEmptyConstraint;
 
+/**
+ * Class NotEmptyValidator.
+ *
+ * @package Berlioz\Form\Validator
+ */
 class NotEmptyValidator extends AbstractValidator implements ValidatorInterface
 {
     /**
@@ -34,14 +39,19 @@ class NotEmptyValidator extends AbstractValidator implements ValidatorInterface
      */
     public function validate(ElementInterface $element): array
     {
-        $value = $element->getValue(true);
+        $value = $element->getValue();
+
+        // Null?
+        if (is_null($value)) {
+            return [new $this->constraint()];
+        }
 
         // String?
         if (is_string($value)) {
-            $value = trim((string) $element->getValue(true));
+            $value = trim((string)$element->getValue());
 
             if (mb_strlen($value) == 0) {
-                return [new $this->constraint(['string' => (string) $element->getValue()])];
+                return [new $this->constraint(['string' => (string)$element->getValue()])];
             }
         }
 

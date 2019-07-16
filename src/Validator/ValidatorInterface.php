@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2019 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,8 +12,13 @@
 
 namespace Berlioz\Form\Validator;
 
-use Berlioz\Form\ElementInterface;
+use Berlioz\Form\Element\ElementInterface;
 
+/**
+ * Interface ValidatorInterface.
+ *
+ * @package Berlioz\Form\Validator
+ */
 interface ValidatorInterface
 {
     /**
@@ -26,7 +31,7 @@ interface ValidatorInterface
     /**
      * Validate.
      *
-     * @param \Berlioz\Form\ElementInterface $value
+     * @param \Berlioz\Form\Element\ElementInterface $value
      *
      * @return \Berlioz\Form\Validator\Constraint\ConstraintInterface[]
      * @throws \Berlioz\Form\Exception\ValidatorException
