@@ -37,7 +37,8 @@ class FormTest extends TestCase
                           ->add('postal_code', Text::class)
                           ->add('city', Text::class))
                 ->add('hobbies',
-                      new Collection(['prototype' =>
+                      new Collection(['data_type' => \ArrayObject::class,
+                                         'prototype' =>
                                           (new Group(['data_type' => EntityHobby::class]))
                                               ->add('name', Text::class)]))
                 ->add('tags',
