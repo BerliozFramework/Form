@@ -44,8 +44,8 @@ class Propagator
      * Get or create mapped object.
      *
      * @param \Berlioz\Form\ElementInterface $formElement
-     * @param object|array                   $mapped
-     * @param bool                           $created New element?
+     * @param object|array $mapped
+     * @param bool $created New element?
      *
      * @return mixed
      * @throws \Berlioz\Form\Exception\PropagationException
@@ -95,7 +95,7 @@ class Propagator
      * Propagate values of group to mapped object given.
      *
      * @param \Berlioz\Form\Group $group
-     * @param object|array        $mapped
+     * @param object|array $mapped
      *
      * @throws \Berlioz\Form\Exception\PropagationException
      */
@@ -158,7 +158,7 @@ class Propagator
      * Propagate values of collection to mapped object given.
      *
      * @param \Berlioz\Form\Collection $collection
-     * @param object|array             $mapped
+     * @param object|array $mapped
      *
      * @throws \Berlioz\Form\Exception\PropagationException
      */
@@ -183,6 +183,7 @@ class Propagator
                 throw new PropagationException;
             }
 
+            $treatedChildren = [];
             /** @var \Berlioz\Form\ElementInterface $item */
             foreach ($collection as $i => $item) {
                 if (!is_null($item->getValue())) {
@@ -205,8 +206,17 @@ class Propagator
                 } else {
                     unset($subMapped[$i]);
                 }
+
+                $treatedChildren[] = $i;
             }
             //$this->propagateValue($mapped, $collection->getName(), $subMapped);
+
+            // Unset old elements from sub mapped
+            foreach ($subMapped as $i => $subSubMapped) {
+                if (!in_array($i, $treatedChildren)) {
+                    unset($subMapped[$i]);
+                }
+            }
         }
     }
 
@@ -214,8 +224,8 @@ class Propagator
      * Propagate value to mapped object given.
      *
      * @param \Berlioz\Form\Type\AbstractType $type
-     * @param object|array                    $mapped
-     * @param mixed|null                      $value
+     * @param object|array $mapped
+     * @param mixed|null $value
      *
      * @throws \Berlioz\Form\Exception\PropagationException
      */
@@ -231,7 +241,7 @@ class Propagator
      *
      * @param object $mapped
      * @param string $property
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @throws \Berlioz\Form\Exception\PropagationException
      * @throws \ReflectionException
