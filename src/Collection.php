@@ -45,10 +45,14 @@ class Collection extends TraversableElement
         $this->prototype->setParent($this);
 
         // Default options
-        $options = array_replace_recursive(['editable'     => true,
-                                            'min_elements' => 1,
-                                            'max_elements' => null],
-                                           $options);
+        $options = array_replace_recursive(
+            [
+                'editable' => true,
+                'min_elements' => 1,
+                'max_elements' => null,
+            ],
+            $options
+        );
 
         parent::__construct($options);
 
@@ -63,9 +67,11 @@ class Collection extends TraversableElement
      */
     public function __debugInfo(): array
     {
-        $data = ['parent'    => $this->getParent() ? $this->getParent()->getName() : null,
-                 'prototype' => $this->prototype,
-                 'children'  => []];
+        $data = [
+            'parent' => $this->getParent() ? $this->getParent()->getName() : null,
+            'prototype' => $this->prototype,
+            'children' => [],
+        ];
 
         /** @var \Berlioz\Form\ElementInterface $element */
         foreach ($this as $element) {
@@ -167,6 +173,14 @@ class Collection extends TraversableElement
             }
         }
 
+        // Delete others elements
+
+        foreach ($this as $j => $element) {
+            if ($j >= $i && count($this) > $this->getOption('min_elements', 0)) {
+                unset($this[$j]);
+            }
+        }
+
         return $this;
     }
 
@@ -181,13 +195,17 @@ class Collection extends TraversableElement
     {
         /** @var \Berlioz\Form\View\TraversableView $view */
         $view = parent::buildView();
-        $view->mergeVars(['type'         => $this->getOption('type', 'collection'),
-                          'id'           => $this->getId(),
-                          'name'         => $this->getFormName(),
-                          'prototype'    => $this->getPrototype()->buildView()->setParentView($view),
-                          'editable'     => $this->getOption('editable', true),
-                          'min_elements' => $this->getOption('min_elements'),
-                          'max_elements' => $this->getOption('max_elements')]);
+        $view->mergeVars(
+            [
+                'type' => $this->getOption('type', 'collection'),
+                'id' => $this->getId(),
+                'name' => $this->getFormName(),
+                'prototype' => $this->getPrototype()->buildView()->setParentView($view),
+                'editable' => $this->getOption('editable', true),
+                'min_elements' => $this->getOption('min_elements'),
+                'max_elements' => $this->getOption('max_elements'),
+            ]
+        );
 
         return $view;
     }
