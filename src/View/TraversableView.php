@@ -24,8 +24,8 @@ class TraversableView extends BasicView implements \IteratorAggregate, \ArrayAcc
      * TraversableView constructor.
      *
      * @param \Berlioz\Form\TraversableElementInterface $src
-     * @param array                                     $options
-     * @param \Berlioz\Form\View\ViewInterface[]        $list
+     * @param array $options
+     * @param \Berlioz\Form\View\ViewInterface[] $list
      */
     public function __construct(TraversableElementInterface $src, array $options = [], array $list = [])
     {
@@ -111,6 +111,10 @@ class TraversableView extends BasicView implements \IteratorAggregate, \ArrayAcc
      */
     public function isInserted(): bool
     {
+        if (count($this->list) == 0) {
+            return false;
+        }
+
         /** @var \Berlioz\Form\View\ViewInterface $view */
         foreach ($this as $view) {
             if (!$view->isInserted()) {
