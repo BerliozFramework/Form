@@ -22,16 +22,7 @@ use Berlioz\Form\View\ViewInterface;
  */
 class Checkbox extends AbstractType
 {
-    /**
-     * Checkbox constructor.
-     *
-     * @param array $options
-     */
-    public function __construct(array $options = [])
-    {
-        $this->setTransformer(new CheckboxTransformer());
-        parent::__construct($options);
-    }
+    const DEFAULT_TRANSFORMER = CheckboxTransformer::class;
 
     /**
      * @inheritdoc
@@ -40,24 +31,6 @@ class Checkbox extends AbstractType
     {
         return 'checkbox';
     }
-
-    /////////////
-    /// VALUE ///
-    /////////////
-
-//    /**
-//     * @inheritdoc
-//     */
-//    public function getValue()
-//    {
-//        if ($form = $this->getForm()) {
-//            if ($form->isSubmitted()) {
-//                return $this->submittedValue;
-//            }
-//        }
-//
-//        return $this->value;
-//    }
 
     /////////////
     /// BUILD ///
@@ -72,8 +45,12 @@ class Checkbox extends AbstractType
         $attributes = $this->getOption('attributes', []);
         $attributes['checked'] = $this->getValue();
 
-        $view->mergeVars(['attributes' => $attributes,
-                          'value'      => $this->getOption('default_value', 'on')]);
+        $view->mergeVars(
+            [
+                'attributes' => $attributes,
+                'value' => $this->getOption('default_value', 'on'),
+            ]
+        );
 
         return $view;
     }

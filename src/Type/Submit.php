@@ -19,6 +19,9 @@ namespace Berlioz\Form\Type;
  */
 class Submit extends Button
 {
+    /**
+     * @inheritdoc
+     */
     public function getType(): string
     {
         return 'submit';

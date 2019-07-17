@@ -21,16 +21,7 @@ use Berlioz\Form\Transformer\NumberTransformer;
  */
 class Number extends AbstractType
 {
-    /**
-     * Number constructor.
-     *
-     * @param array $options
-     */
-    public function __construct(array $options = [])
-    {
-        $this->setTransformer(new NumberTransformer());
-        parent::__construct($options);
-    }
+    const DEFAULT_TRANSFORMER = NumberTransformer::class;
 
     /**
      * @inheritdoc
@@ -38,19 +29,5 @@ class Number extends AbstractType
     public function getType(): string
     {
         return 'number';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getValue()
-    {
-        $value = parent::getValue();
-
-        if (is_null($value) || $value == '') {
-            return null;
-        }
-
-        return floatval($value);
     }
 }
