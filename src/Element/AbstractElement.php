@@ -86,18 +86,19 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
      */
     public function getFormName(): ?string
     {
-        if (is_null($this->getName())) {
-            return null;
-        }
+        $parent = $this->getParent();
 
-        // No parent?
-        if (is_null($parent = $this->getParent())) {
+        if (is_null($parent)) {
             return $this->getName();
         }
 
         // Parent collection?
         if ($parent instanceof Collection) {
             return sprintf('%s[%s]', $parent->getFormName(), $parent->indexOf($this));
+        }
+
+        if (is_null($this->getName())) {
+            return $parent->getFormName();
         }
 
         return sprintf('%s[%s]', $parent->getFormName(), $this->getName());
