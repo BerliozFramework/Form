@@ -75,16 +75,24 @@
   {% filter spaceless %}
     <div
     {% if editable %}
-      id="{{ id }}" data-collection="{{ name }}" data-prototype="{{ form_row(prototype)|spaceless|e }}" data-collection-min="{{ min_elements }}" data-collection-max="{{ max_elements }}"
+      id="{{ id }}"
+      data-collection="{{ name }}"
+      data-prototype="{% with { 'element': prototype } only %}{{ block('collection_item')|spaceless|e }}{% endwith %}"
+      data-collection-min="{{ min_elements }}"
+      data-collection-max="{{ max_elements }}"
     {% endif %}
     >
   {% endfilter %}
   {% for key, element in form %}
     <div data-collection-key="{{ key }}">
-      {{ form_row(element) }}
+      {% with { 'element': element } only %}{{ block('collection_item') }}{% endwith %}
     </div>
   {% endfor %}
   </div>
+{%- endblock -%}
+
+{%- block collection_item -%}
+  {{ form_row(element) }}
 {%- endblock -%}
 
 {%- block checkbox_row -%}
