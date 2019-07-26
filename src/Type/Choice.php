@@ -79,6 +79,30 @@ class Choice extends AbstractType
 
     /**
      * @inheritdoc
+     * @throws \Berlioz\Form\Exception\TypeException
+     */
+    public function getFinalValue()
+    {
+        $value = [];
+
+        $this->buildChoices();
+        $selectedChoicesValue = $this->getSelectedChoicesValue();
+
+        foreach ($selectedChoicesValue as $choiceValue) {
+            $value[] = $choiceValue->getFinalValue();
+        }
+
+        if (!$this->getOption('multiple', false)) {
+            if (($value = reset($value)) === false) {
+                $value = null;
+            }
+        }
+
+        return $this->getTransformer()->fromForm($value, $this);
+    }
+
+    /**
+     * @inheritdoc
      */
     public function setValue($value)
     {
