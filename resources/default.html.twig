@@ -72,7 +72,7 @@
 {%- endblock -%}
 
 {%- block collection_row -%}
-  {% filter spaceless %}
+  {% apply spaceless %}
     <div
     {% if editable %}
       id="{{ id }}"
@@ -82,7 +82,7 @@
       data-collection-max="{{ max_elements }}"
     {% endif %}
     >
-  {% endfilter %}
+  {% endapply %}
   {% for key, element in form %}
     <div data-collection-key="{{ key }}">
       {% with { 'element': element } only %}{{ block('collection_item') }}{% endwith %}
