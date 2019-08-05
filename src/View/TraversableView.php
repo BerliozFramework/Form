@@ -30,12 +30,12 @@ class TraversableView extends BasicView implements TraversableViewInterface
      * TraversableView constructor.
      *
      * @param \Berlioz\Form\Element\TraversableElementInterface $src
-     * @param array $options
+     * @param array $variables
      * @param \Berlioz\Form\View\ViewInterface[] $list
      */
-    public function __construct(TraversableElementInterface $src, array $options = [], array $list = [])
+    public function __construct(TraversableElementInterface $src, array $variables = [], array $list = [])
     {
-        parent::__construct($src, $options);
+        parent::__construct($src, $variables);
 
         $this->list =
             array_filter(
