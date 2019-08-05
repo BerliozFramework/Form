@@ -114,6 +114,15 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
                 $this->list
             );
 
-        return new TraversableView($this, [], $list);
+        return new TraversableView(
+            $this,
+            [
+                'errors' => $this->getConstraints(),
+                'required' => $this->getOption('required', false, true),
+                'disabled' => $this->getOption('disabled', false, true),
+                'readonly' => $this->getOption('readonly', false, true),
+            ],
+            $list
+        );
     }
 }
