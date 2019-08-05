@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2017 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -13,25 +13,30 @@
 namespace Berlioz\Form\Validator;
 
 use Berlioz\Form\Element\ElementInterface;
-use Berlioz\Form\Validator\Constraint\LengthConstraint;
+use Berlioz\Form\Validator\Constraint\FormatConstraint;
 
 /**
- * Class LengthValidator.
+ * Class FormatValidator.
  *
  * @package Berlioz\Form\Validator
  */
-class LengthValidator extends AbstractValidator implements ValidatorInterface
+class FormatValidator extends AbstractValidator implements ValidatorInterface
 {
+    /** @var string Format */
+    private $format;
+
     /**
-     * LengthValidator constructor.
+     * FormatValidator constructor.
      *
+     * @param string $format Format (REGEX)
      * @param string $constraint Constraint class
      *
      * @throws \Berlioz\Form\Exception\ValidatorException
      */
-    public function __construct(string $constraint = LengthConstraint::class)
+    public function __construct(string $format, string $constraint = FormatConstraint::class)
     {
         parent::__construct($constraint);
+        $this->format = $format;
     }
 
     /**
@@ -39,22 +44,17 @@ class LengthValidator extends AbstractValidator implements ValidatorInterface
      */
     public function validate(ElementInterface $element): array
     {
-        $value = trim((string)$element->getValue());
-        $valueLength = mb_strlen($value);
-        $attributes = $element->getOption('attributes', []);
-        $minLength = $attributes['minlength'] ?? 0;
-        $maxLength = $attributes['maxlength'] ?? null;
+        $value = (string)$element->getValue();
 
         if (is_null($value) || $value == '') {
             return [];
         }
 
-        if (($valueLength < $minLength) || (!is_null($maxLength) && $valueLength > $maxLength)) {
+        if (preg_match($this->format, $value) !== 1) {
             return [
                 new $this->constraint(
                     [
-                        'maxlength' => $maxLength,
-                        'minlength' => $minLength,
+                        'format' => $this->format,
                     ]
                 ),
             ];

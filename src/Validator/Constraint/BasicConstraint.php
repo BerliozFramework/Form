@@ -27,7 +27,7 @@ class BasicConstraint implements ConstraintInterface
     /**
      * BasicConstraint constructor.
      *
-     * @param array       $context
+     * @param array $context
      * @param string|null $message
      */
     public function __construct(array $context = [], ?string $message = null)
@@ -56,7 +56,7 @@ class BasicConstraint implements ConstraintInterface
         $message = $this->message ?? 'An error occurred.';
 
         foreach ($this->getContext() as $name => $value) {
-            $message = str_replace(sprintf('%%%s%%', $name), $value, $message);
+            $message = str_replace(sprintf('%%%s%%', $name), (string)$value, $message);
         }
 
         return $message;

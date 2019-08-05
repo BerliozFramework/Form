@@ -12,6 +12,8 @@
 
 namespace Berlioz\Form\Type;
 
+use Berlioz\Form\Validator\FormatValidator;
+
 /**
  * Class Email
  *
@@ -26,5 +28,19 @@ class Email extends Text
     public function getType(): string
     {
         return 'email';
+    }
+
+    /**
+     * @inheritdoc
+     * @throws \Berlioz\Form\Exception\ValidatorException
+     */
+    public function build()
+    {
+        parent::build();
+
+        // Format validator
+        if ($this->hasValidator(FormatValidator::class) === false) {
+            $this->addValidator(new FormatValidator('/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/'));
+        }
     }
 }

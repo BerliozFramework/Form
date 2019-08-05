@@ -60,7 +60,7 @@ trait ValidatorHandlerTrait
                 $constraints = $validator->validate($this);
             }
 
-            $this->constraints = array_merge($this->constraints ?? [], $constraints);
+            $this->constraints = array_merge($this->constraints, $constraints);
         }
 
         if ($this instanceof TraversableElementInterface) {

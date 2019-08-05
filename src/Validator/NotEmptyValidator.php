@@ -41,6 +41,11 @@ class NotEmptyValidator extends AbstractValidator implements ValidatorInterface
     {
         $value = $element->getValue();
 
+        // Not required?
+        if ($element->getOption('required') === false) {
+            return [];
+        }
+
         // Null?
         if (is_null($value)) {
             return [new $this->constraint()];

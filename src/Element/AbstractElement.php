@@ -23,6 +23,7 @@ use Berlioz\Form\Transformer\TransformerInterface;
 abstract class AbstractElement implements ElementInterface, ValidatorHandlerInterface
 {
     const DEFAULT_TRANSFORMER = DefaultTransformer::class;
+    const DEFAULT_VALIDATORS = [];
     use ValidatorHandlerTrait;
     /** @var array Options */
     protected $options;
@@ -44,6 +45,19 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
         if (isset($this->options['transformer'])) {
             $this->setTransformer($this->options['transformer']);
             unset($this->options['transformer']);
+        }
+
+        // Validators?
+        if (isset($this->options['validators'])) {
+            if (!is_array($this->options['validators'])) {
+                $this->options['validators'] = [$this->options['validators']];
+            }
+
+            foreach ($this->options['validators'] as $validator) {
+                $this->addValidator($validator);
+            }
+
+            unset($this->options['validators']);
         }
     }
 

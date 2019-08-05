@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2017 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -13,23 +13,23 @@
 namespace Berlioz\Form\Validator;
 
 use Berlioz\Form\Element\ElementInterface;
-use Berlioz\Form\Validator\Constraint\LengthConstraint;
+use Berlioz\Form\Validator\Constraint\IntervalConstraint;
 
 /**
- * Class LengthValidator.
+ * Class IntervalValidator.
  *
  * @package Berlioz\Form\Validator
  */
-class LengthValidator extends AbstractValidator implements ValidatorInterface
+class IntervalValidator extends AbstractValidator implements ValidatorInterface
 {
     /**
-     * LengthValidator constructor.
+     * IntervalValidator constructor.
      *
      * @param string $constraint Constraint class
      *
      * @throws \Berlioz\Form\Exception\ValidatorException
      */
-    public function __construct(string $constraint = LengthConstraint::class)
+    public function __construct(string $constraint = IntervalConstraint::class)
     {
         parent::__construct($constraint);
     }
@@ -39,22 +39,23 @@ class LengthValidator extends AbstractValidator implements ValidatorInterface
      */
     public function validate(ElementInterface $element): array
     {
-        $value = trim((string)$element->getValue());
-        $valueLength = mb_strlen($value);
+        $value = $element->getValue();
         $attributes = $element->getOption('attributes', []);
-        $minLength = $attributes['minlength'] ?? 0;
-        $maxLength = $attributes['maxlength'] ?? null;
+        $minValue = $attributes['min'] ?? null;
+        $maxValue = $attributes['max'] ?? null;
 
-        if (is_null($value) || $value == '') {
+        if (is_null($value) || $value === '') {
             return [];
         }
 
-        if (($valueLength < $minLength) || (!is_null($maxLength) && $valueLength > $maxLength)) {
+        if ((!is_null($minValue) && (string)$value < (string)$minValue) ||
+            (!is_null($maxValue) && (string)$value > (string)$maxValue)) {
             return [
                 new $this->constraint(
                     [
-                        'maxlength' => $maxLength,
-                        'minlength' => $minLength,
+                        'value' => $value,
+                        'max' => $maxValue,
+                        'min' => $minValue,
                     ]
                 ),
             ];

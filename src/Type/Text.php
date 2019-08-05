@@ -38,8 +38,8 @@ class Text extends AbstractType
         parent::build();
 
         // Length validator
-        if (isset($this->options['attributes']['maxlength']) || isset($this->options['attributes']['maxlength'])) {
-            $this->options['validators'][] = new LengthValidator;
+        if ($this->hasValidator(LengthValidator::class) === false) {
+            $this->addValidator(new LengthValidator);
         }
     }
 }

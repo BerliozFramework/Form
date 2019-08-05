@@ -112,10 +112,8 @@ abstract class AbstractType extends AbstractElement
     public function build()
     {
         // Validator
-        if ($this->getOption('required', false, true)) {
-            if ($this->hasValidator(NotEmptyValidator::class) === false) {
-                $this->options['validators'][] = new NotEmptyValidator;
-            }
+        if ($this->hasValidator(NotEmptyValidator::class) === false) {
+            $this->addValidator(new NotEmptyValidator());
         }
     }
 

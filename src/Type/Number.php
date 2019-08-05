@@ -13,6 +13,8 @@
 namespace Berlioz\Form\Type;
 
 use Berlioz\Form\Transformer\NumberTransformer;
+use Berlioz\Form\Validator\FormatValidator;
+use Berlioz\Form\Validator\IntervalValidator;
 
 /**
  * Class Number.
@@ -29,5 +31,24 @@ class Number extends AbstractType
     public function getType(): string
     {
         return 'number';
+    }
+
+    /**
+     * @inheritdoc
+     * @throws \Berlioz\Form\Exception\ValidatorException
+     */
+    public function build()
+    {
+        parent::build();
+
+        // Format validator
+        if ($this->hasValidator(FormatValidator::class) === false) {
+            $this->addValidator(new FormatValidator('/^-?[0-9]+(\.[0-9]+)?$/'));
+        }
+
+        // Interval validator
+        if ($this->hasValidator(IntervalValidator::class) === false) {
+            $this->addValidator(new IntervalValidator());
+        }
     }
 }
