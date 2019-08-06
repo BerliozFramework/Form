@@ -74,4 +74,160 @@ class HydratorTest extends AbstractFormTest
         $this->assertEquals('Paris', $person->getJob()->getAddress()->getCity());
         $this->assertEquals('FR', $person->getJob()->getAddress()->getCountry());
     }
+
+    public function testHydrateCollectionWithAbstractType()
+    {
+        $person = new FakePerson();
+        $person->setHobbies(new \ArrayObject(['pony', 'swimming pool', 'tennis', 'basket']));
+
+        $form = new FakeForm('person', $person);
+        $form
+            ->add(
+                'hobbies',
+                new Collection(
+                    [
+                        'data_type' => ArrayObject::class,
+                        'prototype' => new Text(),
+                    ]
+                )
+            );
+
+        $form->setSubmitted(true);
+        $form->submitValue(
+            [
+                'hobbies' => [
+                    0 => 'pony',
+                    2 => 'tennis',
+                    4 => 'football',
+                ],
+            ]
+        );
+
+        $hydrator = new FormHydrator($form);
+        $hydrator->hydrate($person);
+
+        $this->assertInstanceOf(ArrayObject::class, $person->getHobbies());
+        $this->assertEquals(['pony', 'tennis', 'football'], array_values($person->getHobbies()->getArrayCopy()));
+    }
+
+    public function testHydrateCollectionWithGroup()
+    {
+        $person = new FakePerson();
+        $person
+            ->setAddresses(
+                [
+                    $address1 = (new FakeAddress())
+                        ->setAddress('2 avenue Paris')
+                        ->setAddressNext('BP 12345')
+                        ->setZipCode('75001')
+                        ->setCity('Paris')
+                        ->setCountry('FR'),
+                    $address2 = (new FakeAddress())
+                        ->setAddress('3 avenue Paris')
+                        ->setAddressNext('BP 12345')
+                        ->setZipCode('75002')
+                        ->setCity('Paris')
+                        ->setCountry('FR'),
+                    $address3 = (new FakeAddress())
+                        ->setAddress('4 avenue Paris')
+                        ->setAddressNext('BP 12345')
+                        ->setZipCode('75002')
+                        ->setCity('Paris')
+                        ->setCountry('FR'),
+                ]
+            );
+
+        // Form
+        $address = new Group(['data_type' => FakeAddress::class]);
+        $address
+            ->add('address', Text::class)
+            ->add('address_next', Text::class)
+            ->add('zip_code', Text::class)
+            ->add('city', Text::class)
+            ->add('country', Text::class);
+
+        $form = new FakeForm('person', $person);
+        $form
+            ->add(
+                'addresses',
+                new Collection(
+                    [
+                        'data_type' => ArrayObject::class,
+                        'prototype' => clone $address,
+                    ]
+                )
+            );
+
+        $form->setSubmitted(true);
+        $form->submitValue(
+            [
+                'addresses' => [
+                    0 => [
+                        'address' => '2 avenue Paris',
+                        'address_next' => 'BP 12345',
+                        'zip_code' => '75001',
+                        'city' => 'Paris',
+                        'country' => 'FR',
+                    ],
+                    2 => [
+                        'address' => '4 avenue Paris',
+                        'address_next' => 'BP 12345',
+                        'zip_code' => '75002',
+                        'city' => 'Paris',
+                        'country' => 'FR',
+                    ],
+                ],
+            ]
+        );
+
+        $hydrator = new FormHydrator($form);
+        $hydrator->hydrate($person);
+
+        $this->assertEquals([0 => $address1, 2 => $address3], $person->getAddresses());
+    }
+
+    public function testHydrateCollectionWithGroupEmpty()
+    {
+        $person = new FakePerson();
+        $person
+            ->setAddresses(
+                [
+                    (new FakeAddress())
+                        ->setAddress('2 avenue Paris')
+                        ->setAddressNext('BP 12345')
+                        ->setZipCode('75001')
+                        ->setCity('Paris')
+                        ->setCountry('FR'),
+                ]
+            );
+
+        // Form
+        $address = new Group(['data_type' => FakeAddress::class]);
+        $address
+            ->add('address', Text::class)
+            ->add('address_next', Text::class)
+            ->add('zip_code', Text::class)
+            ->add('city', Text::class)
+            ->add('country', Text::class);
+
+        $form = new FakeForm('person', $person);
+        $form
+            ->add(
+                'addresses',
+                new Collection(
+                    [
+                        'data_type' => ArrayObject::class,
+                        'prototype' => clone $address,
+                    ]
+                )
+            );
+
+        $form->setSubmitted(true);
+        $form->submitValue([]);
+
+        $hydrator = new FormHydrator($form);
+        $hydrator->hydrate($person);
+
+        $this->assertEquals([], $person->getAddresses());
+    }
 }

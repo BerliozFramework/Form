@@ -16,6 +16,7 @@ use ArrayAccess;
 use Berlioz\Form\Collection;
 use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\HydratorException;
+use Berlioz\Form\Group;
 use Exception;
 
 /**
@@ -63,8 +64,20 @@ class CollectionHydrator extends AbstractHydrator
         // Prototype
         $prototype = $this->collection->getPrototype();
 
+        // Delete old values
+        $submittedKeys = array_keys($this->collection->getValue());
+        foreach ($subMapped as $key=>$value) {
+            if (!in_array($key, $submittedKeys)) {
+                unset($subMapped[$key]);
+            }
+        }
+
         /** @var \Berlioz\Form\Element\ElementInterface $element */
         foreach ($this->collection as $key => $element) {
+            if (!in_array($key, $submittedKeys)) {
+                continue;
+            }
+
             if (!isset($subMapped[$key])) {
                 if (is_null($subMapped[$key] = $this->createObject($prototype))) {
                     $subMapped[$key] = $element->getFinalValue();
@@ -73,7 +86,10 @@ class CollectionHydrator extends AbstractHydrator
             }
 
             $hydrator = $this->locateHydrator($element);
-            $hydrator->hydrate($subMapped[$key]);
+            if (!$hydrator instanceof TypeHydrator) {
+                $hydrator->hydrate($subMapped[$key]);
+                continue;
+            }
         }
 
         // Is array? Need to set array, because no reference on arrays.

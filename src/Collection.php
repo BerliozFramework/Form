@@ -26,6 +26,8 @@ class Collection extends AbstractTraversableElement
 {
     /** @var \Berlioz\Form\Element\ElementInterface Prototype */
     protected $prototype;
+    /** @var array Submitted keys */
+    protected $submittedKeys = [];
 
     /**
      * Collection constructor.
@@ -155,8 +157,14 @@ class Collection extends AbstractTraversableElement
         $values = [];
 
         /** @var \Berlioz\Form\Element\ElementInterface $element */
-        foreach ($this as $element) {
-            $values[] = $element->getValue();
+        foreach ($this as $key => $element) {
+            if (($form = $this->getForm()) &&
+                $form->isSubmitted() &&
+                !in_array($key, $this->submittedKeys)) {
+                continue;
+            }
+
+            $values[$key] = $element->getValue();
         }
 
         return $values;
@@ -170,8 +178,14 @@ class Collection extends AbstractTraversableElement
         $values = [];
 
         /** @var \Berlioz\Form\Element\ElementInterface $element */
-        foreach ($this as $element) {
-            $values[] = $element->getFinalValue();
+        foreach ($this as $key => $element) {
+            if (($form = $this->getForm()) &&
+                $form->isSubmitted() &&
+                !in_array($key, $this->submittedKeys)) {
+                continue;
+            }
+
+            $values[$key] = $element->getFinalValue();
         }
 
         return $values;
@@ -228,6 +242,20 @@ class Collection extends AbstractTraversableElement
         // Sort values
         ksort($values);
 
+        // Submitted keys
+        $this->submittedKeys = array_keys($values);
+
+        // Delete old elements
+        $diff = array_diff(array_keys($this->list), $this->submittedKeys);
+        foreach ($diff as $keyToDelete) {
+            $this[$keyToDelete]->setParent(null);
+
+            // Callback
+            $this->callCallback('remove', $this, $this[$keyToDelete]);
+
+            unset($this[$keyToDelete]);
+        }
+
         // Add
         foreach ($values as $key => $value) {
             /** @var \Berlioz\Form\Element\ElementInterface $element */
@@ -243,19 +271,6 @@ class Collection extends AbstractTraversableElement
 
             // Callback
             $this->callCallback('add', $this, $element);
-        }
-
-        // Delete elements not found
-        $diff = array_diff_key($this->getValue(), $values);
-        foreach ($diff as $key => $value) {
-            if (isset($this[$key])) {
-                $this[$key]->setParent(null);
-
-                // Callback
-                $this->callCallback('remove', $this, $this[$key]);
-
-                unset($this[$key]);
-            }
         }
 
         return $this;

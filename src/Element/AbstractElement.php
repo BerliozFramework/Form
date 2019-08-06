@@ -236,7 +236,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     protected function callCallback(string $type, ...$args): AbstractElement
     {
         if (is_array($allCallbacks = $this->getOption('callbacks'))) {
-            if (!empty($callbacks = $allCallbacks[$type])) {
+            if (isset($allCallbacks[$type]) && !empty($callbacks = $allCallbacks[$type])) {
                 if (!is_array($callbacks)) {
                     $callbacks = [$callbacks];
                 }
