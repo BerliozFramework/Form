@@ -40,7 +40,7 @@ class Email extends Text
 
         // Format validator
         if ($this->hasValidator(FormatValidator::class) === false) {
-            $this->addValidator(new FormatValidator('/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/'));
+            $this->addValidator(new FormatValidator('/^[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/'));
         }
     }
 }
