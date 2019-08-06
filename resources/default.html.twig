@@ -77,7 +77,7 @@
     {% if editable %}
       id="{{ id }}"
       data-collection="{{ name }}"
-      data-prototype="{% with { 'element': prototype } only %}{{ block('collection_item')|spaceless|e }}{% endwith %}"
+      data-prototype="{% with { 'element': prototype } %}{{ block('collection_item')|spaceless|e }}{% endwith %}"
       data-collection-min="{{ min_elements }}"
       data-collection-max="{{ max_elements }}"
     {% endif %}
@@ -85,7 +85,7 @@
   {% endapply %}
   {% for key, element in form %}
     <div data-collection-key="{{ key }}">
-      {% with { 'element': element } only %}{{ block('collection_item') }}{% endwith %}
+      {% with { 'element': element } %}{{ block('collection_item') }}{% endwith %}
     </div>
   {% endfor %}
   </div>
