@@ -20,6 +20,13 @@ namespace Berlioz\Form\View;
 interface ViewInterface
 {
     /**
+     * Get mapped object.
+     *
+     * @return object|null
+     */
+    public function getMapped(): ?object;
+
+    /**
      * Get source form element class name.
      *
      * @return string

@@ -48,6 +48,18 @@ class BasicView implements ViewInterface
     /**
      * @inheritdoc
      */
+    public function getMapped(): ?object
+    {
+        if (is_null($this->src->getForm())) {
+            return null;
+        }
+
+        return $this->src->getForm()->getMappedObject();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getSrcType(): string
     {
         return get_class($this->src);
@@ -117,7 +129,7 @@ class BasicView implements ViewInterface
      */
     public function mergeVars(array $variables)
     {
-        $this->variables = array_merge($this->variables, $variables);
+        $this->variables = array_replace_recursive($this->variables, $variables);
 
         return $this;
     }
