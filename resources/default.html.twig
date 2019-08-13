@@ -85,14 +85,14 @@
   {% endapply %}
   {% for key, element in form %}
     <div data-collection-key="{{ key }}">
-      {% with { 'element': element } %}{{ block('collection_item') }}{% endwith %}
+      {% with { 'element': element, 'index': key } %}{{ block('collection_item') }}{% endwith %}
     </div>
   {% endfor %}
   </div>
 {%- endblock -%}
 
 {%- block collection_item -%}
-  {{ form_row(element) }}
+  {{ form_row(element, {index: index}) }}
 {%- endblock -%}
 
 {%- block checkbox_row -%}
