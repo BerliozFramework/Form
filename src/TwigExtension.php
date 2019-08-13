@@ -68,8 +68,8 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
             $template = $this->getTwig()->load($formView->getRender() ?? self::DEFAULT_TPL);
 
             // Variables
+            $formView->mergeVars($options);
             $variables = $formView->getVars();
-            $variables = array_replace_recursive($variables, $options);
             $variables['form'] = $formView;
 
             $specificBlockType = sprintf('%s_%s', $formView->getVar('type', 'form'), $blockType);
