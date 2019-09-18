@@ -13,6 +13,7 @@
 namespace Berlioz\Form\Validator;
 
 use Berlioz\Form\Exception\ValidatorException;
+use Berlioz\Form\Validator\Constraint\ConstraintInterface;
 
 /**
  * Class AbstractValidator.
@@ -33,8 +34,8 @@ abstract class AbstractValidator implements ValidatorInterface
      */
     public function __construct(string $constraint)
     {
-        if (is_a($constraint, ValidatorInterface::class, true)) {
-            throw new ValidatorException(sprintf('Constraint must be implements %s class', ValidatorInterface::class));
+        if (!is_a($constraint, ConstraintInterface::class, true)) {
+            throw new ValidatorException(sprintf('Constraint must be implements %s class', ConstraintInterface::class));
         }
 
         $this->constraint = $constraint;
