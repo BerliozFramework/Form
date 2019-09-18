@@ -70,7 +70,6 @@ class Group extends AbstractTraversableElement
         }
 
         parent::offsetSet($offset, $value);
-        $value->setParent($this);
     }
 
     /**

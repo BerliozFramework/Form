@@ -76,6 +76,8 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
         } else {
             $this->list[$offset] = $value;
         }
+
+        $value->setParent($this);
     }
 
     /**
