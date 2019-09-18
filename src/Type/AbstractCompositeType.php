@@ -32,6 +32,5 @@ abstract class AbstractCompositeType extends Group implements TypeInterface
     public function getFinalValue()
     {
         return AbstractElement::getFinalValue();
-//        return $this->getTransformer()->fromForm($this->getValue(), $this);
     }
 }
