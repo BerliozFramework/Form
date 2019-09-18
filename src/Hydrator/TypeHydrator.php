@@ -14,7 +14,7 @@ namespace Berlioz\Form\Hydrator;
 
 use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\HydratorException;
-use Berlioz\Form\Type\AbstractType;
+use Berlioz\Form\Type\TypeInterface;
 use Exception;
 
 /**
@@ -24,15 +24,15 @@ use Exception;
  */
 class TypeHydrator extends AbstractHydrator
 {
-    /** @var \Berlioz\Form\Type\AbstractType Type */
+    /** @var \Berlioz\Form\Type\TypeInterface Type */
     private $type;
 
     /**
      * TypeHydrator constructor.
      *
-     * @param \Berlioz\Form\Type\AbstractType $type
+     * @param \Berlioz\Form\Type\TypeInterface $type
      */
-    public function __construct(AbstractType $type)
+    public function __construct(TypeInterface $type)
     {
         $this->type = $type;
     }

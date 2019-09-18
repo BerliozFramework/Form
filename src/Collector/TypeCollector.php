@@ -12,10 +12,9 @@
 
 namespace Berlioz\Form\Collector;
 
-use Berlioz\Form\Collection;
 use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\CollectorException;
-use Berlioz\Form\Type\AbstractType;
+use Berlioz\Form\Type\TypeInterface;
 use Exception;
 
 /**
@@ -25,22 +24,22 @@ use Exception;
  */
 class TypeCollector extends AbstractCollector
 {
-    /** @var \Berlioz\Form\Type\AbstractType Type */
+    /** @var \Berlioz\Form\Type\TypeInterface Type */
     private $type;
 
     /**
      * TypeCollector constructor.
      *
-     * @param \Berlioz\Form\Type\AbstractType $type
+     * @param \Berlioz\Form\Type\TypeInterface $type
      */
-    public function __construct(AbstractType $type)
+    public function __construct(TypeInterface $type)
     {
         $this->type = $type;
     }
 
     /**
      * @inheritdoc
-     * @return \Berlioz\Form\Type\AbstractType
+     * @return \Berlioz\Form\Type\TypeInterface
      */
     public function getElement(): ElementInterface
     {

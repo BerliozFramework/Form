@@ -22,7 +22,7 @@ use Berlioz\Form\View\ViewInterface;
  *
  * @package Berlioz\Form\Type
  */
-abstract class AbstractType extends AbstractElement
+abstract class AbstractType extends AbstractElement implements SimpleTypeInterface
 {
     /** @var bool Submitted? */
     protected $submitted = false;
@@ -54,13 +54,6 @@ abstract class AbstractType extends AbstractElement
             'constraints' => $this->getConstraints(),
         ];
     }
-
-    /**
-     * Get type.
-     *
-     * @return string
-     */
-    abstract public function getType(): string;
 
     /////////////
     /// VALUE ///

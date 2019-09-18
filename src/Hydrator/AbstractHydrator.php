@@ -16,7 +16,7 @@ use Berlioz\Form\Collection;
 use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\HydratorException;
 use Berlioz\Form\Group;
-use Berlioz\Form\Type\AbstractType;
+use Berlioz\Form\Type\TypeInterface;
 use Exception;
 use ReflectionClass;
 use ReflectionException;
@@ -38,16 +38,16 @@ abstract class AbstractHydrator implements HydratorInterface
      */
     protected function locateHydrator(ElementInterface $element): HydratorInterface
     {
+        if ($element instanceof TypeInterface) {
+            return new TypeHydrator($element);
+        }
+
         if ($element instanceof Group) {
             return new GroupHydrator($element);
         }
 
         if ($element instanceof Collection) {
             return new CollectionHydrator($element);
-        }
-
-        if ($element instanceof AbstractType) {
-            return new TypeHydrator($element);
         }
 
         throw new HydratorException(sprintf('Hydrator not found for "%s"', get_class($element)));

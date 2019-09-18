@@ -16,7 +16,7 @@ use Berlioz\Form\Collection;
 use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\CollectorException;
 use Berlioz\Form\Group;
-use Berlioz\Form\Type\AbstractType;
+use Berlioz\Form\Type\TypeInterface;
 use Exception;
 
 /**
@@ -67,16 +67,16 @@ abstract class AbstractCollector implements CollectorInterface
      */
     protected function locateCollector(ElementInterface $element): CollectorInterface
     {
+        if ($element instanceof TypeInterface) {
+            return new TypeCollector($element);
+        }
+
         if ($element instanceof Group) {
             return new GroupCollector($element);
         }
 
         if ($element instanceof Collection) {
             return new CollectionCollector($element);
-        }
-
-        if ($element instanceof AbstractType) {
-            return new TypeCollector($element);
         }
 
         throw new CollectorException(sprintf('Hydrator not found for "%s"', get_class($element)));
