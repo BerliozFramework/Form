@@ -67,14 +67,14 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
      */
     public function offsetSet($offset, $value): void
     {
-        if ($value instanceof ElementInterface) {
-            if (is_null($offset) || mb_strlen($offset) == 0) {
-                $this->list[] = $value;
-            } else {
-                $this->list[$offset] = $value;
-            }
-        } else {
+        if (!$value instanceof ElementInterface) {
             throw new InvalidArgumentException(sprintf('Form collection accept only "%s" class', ElementInterface::class));
+        }
+
+        if (is_null($offset) || mb_strlen($offset) == 0) {
+            $this->list[] = $value;
+        } else {
+            $this->list[$offset] = $value;
         }
     }
 
