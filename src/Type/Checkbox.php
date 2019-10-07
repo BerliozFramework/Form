@@ -43,7 +43,7 @@ class Checkbox extends AbstractType
     {
         $view = parent::buildView();
         $attributes = $this->getOption('attributes', []);
-        $attributes['checked'] = $this->getValue();
+        $attributes['checked'] = $this->getValue() == $this->getOption('default_value', 'on');
 
         $view->mergeVars(
             [
