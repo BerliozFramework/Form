@@ -18,16 +18,66 @@ use Berlioz\Form\View\ViewInterface;
  * Class File
  *
  * @package Berlioz\Form\Type
- * @todo    Multiple files
  */
 class File extends AbstractType
 {
+    /**
+     * Is multiple?
+     *
+     * @return bool
+     */
+    protected function isMultiple(): bool
+    {
+        $attributes = $this->getOption('attributes', []);
+
+        return in_array($attributes['multiple'] ?? false, [true, 'multiple']);
+    }
+
     /**
      * @inheritdoc
      */
     public function getType(): string
     {
         return 'file';
+    }
+
+    /////////////////
+    /// ID & NAME ///
+    /////////////////
+
+    /**
+     * @inheritdoc
+     */
+    public function getFormName(): ?string
+    {
+        // Multiple?
+        if ($this->isMultiple()) {
+            return sprintf('%s[]', parent::getFormName());
+        }
+
+        return parent::getFormName();
+    }
+
+    /////////////
+    /// VALUE ///
+    /////////////
+
+    /**
+     * @inheritdoc
+     */
+    public function getValue()
+    {
+        $value = parent::getValue();
+
+        if (!$this->isMultiple()) {
+            return $value;
+        }
+
+        if (is_array($value)) {
+            return $value;
+        }
+
+        return array_filter([$value]);
     }
 
     /////////////
