@@ -50,6 +50,10 @@ class TypeHydrator extends AbstractHydrator
      */
     public function hydrate(&$mapped)
     {
+        if (!$this->type->getOption('mapped', true, true)) {
+            return;
+        }
+
         $propertyName = $this->type->getName();
         $value = $this->type->getFinalValue();
 
