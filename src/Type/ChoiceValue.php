@@ -25,6 +25,8 @@ class ChoiceValue
     private $value;
     /** @var mixed Final value */
     private $finalValue;
+    /** @var string|null Group */
+    private $group;
     /** @var array Attributes */
     private $attributes = [];
     /** @var bool Selected? */
@@ -103,6 +105,30 @@ class ChoiceValue
     }
 
     /**
+     * Get group.
+     *
+     * @return string|null
+     */
+    public function getGroup(): ?string
+    {
+        return $this->group;
+    }
+
+    /**
+     * Set group.
+     *
+     * @param string|null $group
+     *
+     * @return static
+     */
+    public function setGroup(?string $group): ChoiceValue
+    {
+        $this->group = $group;
+
+        return $this;
+    }
+
+    /**
      * Get attributes.
      *
      * @return array
@@ -115,8 +141,8 @@ class ChoiceValue
     /**
      * Get attribute.
      *
-     * @param string $name    Attribute name
-     * @param null   $default Default value if not exists
+     * @param string $name Attribute name
+     * @param null $default Default value if not exists
      *
      * @return mixed|null
      */

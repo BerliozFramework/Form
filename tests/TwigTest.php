@@ -57,7 +57,7 @@ class TwigTest extends AbstractFormTest
     public function testFunctionStart()
     {
         $entity = new FakePerson();
-        $form = $this->getForm($entity);
+        $form = $this->getFormTest($entity);
 
         $this->assertEquals(
             '<form name="person" method="post" action="">',
@@ -75,7 +75,7 @@ class TwigTest extends AbstractFormTest
     public function testFunctionEnd()
     {
         $entity = new FakePerson();
-        $form = $this->getForm($entity);
+        $form = $this->getFormTest($entity);
 
         $this->assertEquals(
             '</form>',

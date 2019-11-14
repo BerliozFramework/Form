@@ -22,7 +22,7 @@ class HydratorTest extends AbstractFormTest
     public function testHydrate()
     {
         $person = new FakePerson();
-        $form = $this->getForm($person);
+        $form = $this->getFormTest($person);
         $form->setSubmitted(true);
         $form->submitValue(
             [

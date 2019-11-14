@@ -7,13 +7,9 @@ use Berlioz\Form\Tests\Fake\Entity\FakePerson;
 use Berlioz\Form\Type\Checkbox;
 use Berlioz\Form\Type\Date;
 use Berlioz\Form\Type\Text;
-use Berlioz\Http\Message\ServerRequest;
-use Berlioz\Http\Message\Stream;
-use Berlioz\Http\Message\Uri;
 use DateTime;
-use PHPUnit\Framework\TestCase;
 
-class FormTest extends TestCase
+class FormTest extends AbstractFormTest
 {
     public function testNotMapped()
     {
@@ -41,24 +37,15 @@ class FormTest extends TestCase
 
         // Form submission
         {
-            $_POST = [
-                'foo' => [
-                    'text1' => 'bar',
-                    'checkbox1' => 'bar',
-                    'checkbox2' => 'on',
-                ],
-            ];
-
             $form->handle(
-                new ServerRequest(
-                    'POST',
-                    new Uri('https', 'getberlioz.com'),
+                $this->getServerRequest(
                     [
-                        'Content-Type' => 'multipart/form-data',
-                    ],
-                    [],
-                    [],
-                    new Stream()
+                        'foo' => [
+                            'text1' => 'bar',
+                            'checkbox1' => 'bar',
+                            'checkbox2' => 'on',
+                        ],
+                    ]
                 )
             );
         }
@@ -108,25 +95,15 @@ class FormTest extends TestCase
 
         // Form submission
         {
-            $_POST = [
-                'person' => [
-                    'last_name' => 'Giron',
-                    'first_name' => 'Ronan',
-                    'birthday' => '1980-01-01',
-                ],
-            ];
-
             $form->handle(
-                new ServerRequest(
-                    'POST',
-                    new Uri(
-                        'https',
-                        'getberlioz.com'
-                    ),
-                    ['Content-Type' => 'multipart/form-data'],
-                    [],
-                    [],
-                    new Stream()
+                $this->getServerRequest(
+                    [
+                        'person' => [
+                            'last_name' => 'Giron',
+                            'first_name' => 'Ronan',
+                            'birthday' => '1980-01-01',
+                        ],
+                    ]
                 )
             );
         }

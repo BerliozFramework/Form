@@ -58,7 +58,7 @@ class CollectorTest extends AbstractFormTest
                             ->setCountry('FR')
                     )
             );
-        $form = $this->getForm($person);
+        $form = $this->getFormTest($person);
 
         $collector = new FormCollector($form);
         $collected = $collector->collect($person);

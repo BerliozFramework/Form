@@ -13,11 +13,14 @@ use Berlioz\Form\Transformer\DateTimeTransformer;
 use Berlioz\Form\Type\Choice;
 use Berlioz\Form\Type\Date;
 use Berlioz\Form\Type\Text;
+use Berlioz\Http\Message\ServerRequest;
+use Berlioz\Http\Message\Stream;
+use Berlioz\Http\Message\Uri;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractFormTest extends TestCase
 {
-    protected function getForm(object $mapped): Form
+    protected function getFormTest(object $mapped): Form
     {
         $address = new Group(['data_type' => FakeAddress::class]);
         $address
@@ -57,10 +60,10 @@ abstract class AbstractFormTest extends TestCase
                         'data_type' => ArrayObject::class,
                         'prototype' => clone $address,
                         'callbacks' => [
-                            'delete' => function() {
+                            'delete' => function () {
                                 print 'Callback deletion';
-                            }
-                        ]
+                            },
+                        ],
                     ]
                 )
             )
@@ -76,5 +79,25 @@ abstract class AbstractFormTest extends TestCase
             ->add('job', clone $job);
 
         return $form;
+    }
+
+    protected function getServerRequest(array $postData = []): ServerRequest
+    {
+        $_POST = $postData;
+
+        $serverRequest =
+            new ServerRequest(
+                'POST',
+                new Uri(
+                    'https',
+                    'getberlioz.com'
+                ),
+                ['Content-Type' => 'multipart/form-data'],
+                [],
+                [],
+                new Stream()
+            );
+
+        return $serverRequest;
     }
 }

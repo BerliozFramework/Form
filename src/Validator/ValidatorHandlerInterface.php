@@ -12,6 +12,8 @@
 
 namespace Berlioz\Form\Validator;
 
+use Berlioz\Form\Validator\Constraint\ConstraintInterface;
+
 /**
  * Interface ValidatorHandlerInterface.
  *
@@ -50,4 +52,13 @@ interface ValidatorHandlerInterface
      * @return \Berlioz\Form\Validator\Constraint\ConstraintInterface[]
      */
     public function getConstraints(): array;
+
+    /**
+     * Invalid.
+     *
+     * @param \Berlioz\Form\Validator\Constraint\ConstraintInterface $constraint
+     *
+     * @return $this
+     */
+    public function invalid(ConstraintInterface $constraint);
 }

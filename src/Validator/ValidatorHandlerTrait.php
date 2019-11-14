@@ -16,6 +16,7 @@ use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Element\TraversableElementInterface;
 use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\Constraint\BasicConstraint;
+use Berlioz\Form\Validator\Constraint\ConstraintInterface;
 
 /**
  * Trait ValidatorHandlerTrait.
@@ -26,6 +27,8 @@ trait ValidatorHandlerTrait
 {
     /** @var \Berlioz\Form\Validator\ValidatorInterface[] Validators */
     protected $validators = [];
+    /** @var \Berlioz\Form\Validator\Constraint\ConstraintInterface[] Constraints */
+    protected $invalidated = [];
     /** @var \Berlioz\Form\Validator\Constraint\ConstraintInterface[] Constraints */
     protected $constraints = [];
 
@@ -41,7 +44,7 @@ trait ValidatorHandlerTrait
             throw new ValidatorException(sprintf('Trait must be used with "%s" objects', ElementInterface::class));
         }
 
-        $this->constraints = [];
+        $this->constraints = $this->invalidated ?? [];
 
         foreach ($this->validators as $validator) {
             $constraints = [];
@@ -123,5 +126,19 @@ trait ValidatorHandlerTrait
     public function getConstraints(): array
     {
         return $this->constraints;
+    }
+
+    /**
+     * Invalid.
+     *
+     * @param \Berlioz\Form\Validator\Constraint\ConstraintInterface $constraint
+     *
+     * @return $this
+     */
+    public function invalid(ConstraintInterface $constraint)
+    {
+        $this->invalidated[] = $constraint;
+
+        return $this;
     }
 }
