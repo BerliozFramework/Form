@@ -17,12 +17,12 @@ use Berlioz\Form\Element\ElementInterface;
 interface ChoiceTransformerInterface
 {
     /**
-     * Transform data from form.
+     * Transform unknown choice values to ChoiceValue objects to add.
      *
      * @param array $choices
      * @param \Berlioz\Form\Element\ElementInterface $element
      *
      * @return \Berlioz\Form\Type\ChoiceValue[]
      */
-    public function fromForm(array $choices, ElementInterface $element): array;
+    public function toForm(array $choices, ElementInterface $element): array;
 }

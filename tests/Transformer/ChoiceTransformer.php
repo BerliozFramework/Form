@@ -23,7 +23,7 @@ class ChoiceTransformer implements ChoiceTransformerInterface
     /**
      * @inheritDoc
      */
-    public function fromForm(array $choices, ElementInterface $element): array
+    public function toForm(array $choices, ElementInterface $element): array
     {
         $choices = array_intersect($choices, array_values(static::ADDITIONAL_CHOICES));
         $choices =

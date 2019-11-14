@@ -152,6 +152,7 @@ class Choice extends AbstractType
      */
     private function treatUnknownValues()
     {
+        /** @var \Berlioz\Form\Transformer\ChoiceTransformerInterface $choiceTransformer */
         if (!(($choiceTransformer = $this->getOption('choice_transformer')) instanceof ChoiceTransformerInterface)) {
             return;
         }
@@ -168,7 +169,7 @@ class Choice extends AbstractType
             $unknownChoices[] = $value;
         }
 
-        $this->additionalChoices = $choiceTransformer->fromForm($unknownChoices, $this);
+        $this->additionalChoices = $choiceTransformer->toForm($unknownChoices, $this);
         $this->additionalChoices = array_filter(
             $this->additionalChoices,
             function ($choiceValue) {
