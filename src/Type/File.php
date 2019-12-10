@@ -22,18 +22,6 @@ use Berlioz\Form\View\ViewInterface;
 class File extends AbstractType
 {
     /**
-     * Is multiple?
-     *
-     * @return bool
-     */
-    protected function isMultiple(): bool
-    {
-        $attributes = $this->getOption('attributes', []);
-
-        return in_array($attributes['multiple'] ?? false, [true, 'multiple']);
-    }
-
-    /**
      * @inheritdoc
      */
     public function getType(): string
@@ -70,6 +58,10 @@ class File extends AbstractType
         $value = parent::getValue();
 
         if (!$this->isMultiple()) {
+            if (is_array($value)) {
+                return reset($value);
+            }
+
             return $value;
         }
 

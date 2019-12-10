@@ -15,6 +15,7 @@ namespace Berlioz\Form\Type;
 use Berlioz\Form\Transformer\NumberTransformer;
 use Berlioz\Form\Validator\FormatValidator;
 use Berlioz\Form\Validator\IntervalValidator;
+use Berlioz\Form\Validator\NumberFormatValidator;
 
 /**
  * Class Number.
@@ -43,7 +44,7 @@ class Number extends AbstractType
 
         // Format validator
         if ($this->hasValidator(FormatValidator::class) === false) {
-            $this->addValidator(new FormatValidator('/^-?[0-9]+(\.[0-9]+)?$/'));
+            $this->addValidator(new NumberFormatValidator());
         }
 
         // Interval validator

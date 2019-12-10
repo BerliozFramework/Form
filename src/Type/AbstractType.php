@@ -60,6 +60,18 @@ abstract class AbstractType extends AbstractElement implements SimpleTypeInterfa
     /////////////
 
     /**
+     * Is multiple?
+     *
+     * @return bool
+     */
+    protected function isMultiple(): bool
+    {
+        $attributes = $this->getOption('attributes', []);
+
+        return in_array($attributes['multiple'] ?? false, [true, 'multiple']);
+    }
+
+    /**
      * @inheritdoc
      */
     public function getValue()

@@ -12,13 +12,13 @@
 
 namespace Berlioz\Form\Type;
 
+use Berlioz\Form\Validator\EmailFormatValidator;
 use Berlioz\Form\Validator\FormatValidator;
 
 /**
  * Class Email
  *
  * @package Berlioz\Form\Type
- * @todo    Multiple emails
  */
 class Email extends Text
 {
@@ -30,6 +30,10 @@ class Email extends Text
         return 'email';
     }
 
+    /////////////
+    /// BUILD ///
+    /////////////
+
     /**
      * @inheritdoc
      * @throws \Berlioz\Form\Exception\ValidatorException
@@ -40,7 +44,7 @@ class Email extends Text
 
         // Format validator
         if ($this->hasValidator(FormatValidator::class) === false) {
-            $this->addValidator(new FormatValidator('/^[a-zA-Z0-9.!#$%&’*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/'));
+            $this->addValidator(new EmailFormatValidator($this->isMultiple()));
         }
     }
 }

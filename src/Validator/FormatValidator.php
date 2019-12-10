@@ -44,22 +44,18 @@ class FormatValidator extends AbstractValidator implements ValidatorInterface
      */
     public function validate(ElementInterface $element): array
     {
-        $value = (string)$element->getValue();
-
-        if (is_null($value) || $value == '') {
-            return [];
-        }
+        $value = $element->getValue();
+        $constraints = [];
 
         if (preg_match($this->format, $value) !== 1) {
-            return [
+            $constraints[] =
                 new $this->constraint(
                     [
                         'format' => $this->format,
                     ]
-                ),
-            ];
+                );
         }
 
-        return [];
+        return $constraints;
     }
 }

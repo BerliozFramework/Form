@@ -3,7 +3,7 @@
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2017 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -12,22 +12,26 @@
 
 namespace Berlioz\Form\Validator;
 
-use Berlioz\Form\Element\ElementInterface;
+use Berlioz\Form\Validator\Constraint\FormatConstraint;
 
 /**
- * Interface ValidatorInterface.
+ * Class NumberFormatValidator.
  *
  * @package Berlioz\Form\Validator
  */
-interface ValidatorInterface
+class NumberFormatValidator extends FormatValidator
 {
+    const FORMAT = '/^-?[0-9]+(\.[0-9]+)?$/';
+
     /**
-     * Validate.
+     * EmailFormatValidator constructor.
      *
-     * @param \Berlioz\Form\Element\ElementInterface $value
+     * @param string $constraint
      *
-     * @return \Berlioz\Form\Validator\Constraint\ConstraintInterface[]
      * @throws \Berlioz\Form\Exception\ValidatorException
      */
-    public function validate(ElementInterface $value): array;
+    public function __construct(string $constraint = FormatConstraint::class)
+    {
+        parent::__construct(static::FORMAT, $constraint);
+    }
 }

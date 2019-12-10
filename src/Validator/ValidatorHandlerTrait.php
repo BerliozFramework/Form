@@ -87,7 +87,7 @@ trait ValidatorHandlerTrait
      *
      * @param \Berlioz\Form\Validator\ValidatorInterface $validator
      *
-     * @return $this
+     * @return static
      */
     public function addValidator(ValidatorInterface $validator)
     {
@@ -119,6 +119,18 @@ trait ValidatorHandlerTrait
     }
 
     /**
+     * Reset validators.
+     *
+     * @return static
+     */
+    public function resetValidators()
+    {
+        $this->validators = [];
+
+        return $this;
+    }
+
+    /**
      * Get not respected constraints.
      *
      * @return \Berlioz\Form\Validator\Constraint\ConstraintInterface[]
@@ -129,11 +141,23 @@ trait ValidatorHandlerTrait
     }
 
     /**
+     * Reset constraints.
+     *
+     * @return static
+     */
+    public function resetConstraints()
+    {
+        $this->constraints = [];
+
+        return $this;
+    }
+
+    /**
      * Invalid.
      *
      * @param \Berlioz\Form\Validator\Constraint\ConstraintInterface $constraint
      *
-     * @return $this
+     * @return static
      */
     public function invalid(ConstraintInterface $constraint)
     {
