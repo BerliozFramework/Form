@@ -47,6 +47,10 @@ class FormatValidator extends AbstractValidator implements ValidatorInterface
         $value = $element->getValue();
         $constraints = [];
 
+        if (empty($value)) {
+            return [];
+        }
+
         if (preg_match($this->format, $value) !== 1) {
             $constraints[] =
                 new $this->constraint(
