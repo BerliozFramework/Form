@@ -16,7 +16,6 @@ use ArrayAccess;
 use Berlioz\Form\Collection;
 use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\HydratorException;
-use Berlioz\Form\Group;
 use Exception;
 
 /**
@@ -26,13 +25,13 @@ use Exception;
  */
 class CollectionHydrator extends AbstractHydrator
 {
-    /** @var \Berlioz\Form\Collection Collection */
+    /** @var Collection Collection */
     private $collection;
 
     /**
      * CollectionHydrator constructor.
      *
-     * @param \Berlioz\Form\Collection $collection
+     * @param Collection $collection
      */
     public function __construct(Collection $collection)
     {
@@ -41,7 +40,7 @@ class CollectionHydrator extends AbstractHydrator
 
     /**
      * @inheritdoc
-     * @return \Berlioz\Form\Collection
+     * @return Collection
      */
     public function getElement(): ElementInterface
     {
@@ -64,15 +63,23 @@ class CollectionHydrator extends AbstractHydrator
         // Prototype
         $prototype = $this->collection->getPrototype();
 
-        // Delete old values
+        // Get keys submit by form element
         $submittedKeys = array_keys($this->collection->getValue());
+
+        // List submapped's key who need to be remove
+        $removeKey = [];
         foreach ($subMapped as $key=>$value) {
             if (!in_array($key, $submittedKeys)) {
-                unset($subMapped[$key]);
+                $removeKey[] = $key;
             }
         }
 
-        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        // Delete old submapped values
+        foreach ($removeKey as $key) {
+            unset($subMapped[$key]);
+        }
+
+        /** @var ElementInterface $element */
         foreach ($this->collection as $key => $element) {
             if (!in_array($key, $submittedKeys)) {
                 continue;
