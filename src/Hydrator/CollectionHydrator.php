@@ -52,6 +52,10 @@ class CollectionHydrator extends AbstractHydrator
      */
     public function hydrate(&$mapped)
     {
+        if (!$this->getElement()->getOption('mapped', true, true)) {
+            return;
+        }
+
         $subMapped = $this->getSubMapped($this->getElement(), $mapped);
         $isArray = is_array($subMapped);
         $isArrayAccess = $subMapped instanceof ArrayAccess;
