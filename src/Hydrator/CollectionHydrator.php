@@ -31,7 +31,7 @@ class CollectionHydrator extends AbstractHydrator
     /**
      * CollectionHydrator constructor.
      *
-     * @param Collection $collection
+     * @param \Berlioz\Form\Collection $collection
      */
     public function __construct(Collection $collection)
     {
@@ -40,7 +40,7 @@ class CollectionHydrator extends AbstractHydrator
 
     /**
      * @inheritdoc
-     * @return Collection
+     * @return \Berlioz\Form\Collection
      */
     public function getElement(): ElementInterface
     {
