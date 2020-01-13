@@ -48,14 +48,16 @@ class GroupHydrator extends AbstractHydrator
      */
     public function hydrate(&$mapped)
     {
-        if ($this->group->getOption('mapped', false, true)) {
-            $subMapped = $this->getSubMapped($this->getElement(), $mapped);
+        if (!$this->getElement()->getOption('mapped', false, true)) {
+            return;
+        }
 
-            /** @var \Berlioz\Form\Element\ElementInterface $element */
-            foreach ($this->group as $element) {
-                $hydrator = $this->locateHydrator($element);
-                $hydrator->hydrate($subMapped);
-            }
+        $subMapped = $this->getSubMapped($this->getElement(), $mapped);
+
+        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        foreach ($this->group as $element) {
+            $hydrator = $this->locateHydrator($element);
+            $hydrator->hydrate($subMapped);
         }
     }
 }
