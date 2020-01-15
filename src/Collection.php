@@ -47,7 +47,9 @@ class Collection extends AbstractTraversableElement
         }
 
         if (!$this->prototype instanceof ElementInterface) {
-            throw new FormException(sprintf('"prototype" option of collection mus be implement "%s" class', ElementInterface::class));
+            throw new FormException(
+                sprintf('"prototype" option of collection mus be implement "%s" class', ElementInterface::class)
+            );
         }
 
         $this->prototype->setParent($this);
@@ -236,6 +238,8 @@ class Collection extends AbstractTraversableElement
      */
     public function submitValue($values)
     {
+        $values = (array)$values;
+
         // Complete collection
         $this->completeCollection(count($values));
 

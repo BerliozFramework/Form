@@ -84,7 +84,12 @@ class Group extends AbstractTraversableElement
     public function add(string $name, $class, array $options = [])
     {
         if (!(is_a($class, ElementInterface::class, true))) {
-            throw new InvalidArgumentException(sprintf('Class name must be a valid class/object and must be implements "%s" interface', ElementInterface::class));
+            throw new InvalidArgumentException(
+                sprintf(
+                    'Class name must be a valid class/object and must be implements "%s" interface',
+                    ElementInterface::class
+                )
+            );
         }
 
         if (!is_object($class)) {
@@ -145,11 +150,14 @@ class Group extends AbstractTraversableElement
             throw new FormException('Invalid type of value, array attempted');
         }
 
-        /** @var \Berlioz\Form\Element\ElementInterface[] $this */
-        foreach ($values as $name => $value) {
-            if (isset($this[$name])) {
-                $this[$name]->submitValue($value);
+        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        foreach ($this as $element) {
+            if (!array_key_exists($element->getName(), $values)) {
+                $element->submitValue(null);
+                continue;
             }
+
+            $element->submitValue($values[$element->getName()]);
         }
 
         return $this;
