@@ -74,13 +74,17 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     {
         if (is_null($parent = $this->getParent())) {
             return $this->getName();
-        } else {
-            if ($parent instanceof Collection) {
-                return sprintf('%s_%s', $parent->getId(), $parent->indexOf($this));
-            } else {
-                return sprintf('%s_%s', $parent->getId(), $this->getName());
-            }
         }
+
+        if ($parent instanceof Collection) {
+            return sprintf('%s_%s', $parent->getId(), $parent->indexOf($this));
+        }
+
+        if (null === $this->getName()) {
+            return $parent->getId();
+        }
+
+        return sprintf('%s_%s', $parent->getId(), $this->getName());
     }
 
     /**
@@ -111,7 +115,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
             return sprintf('%s[%s]', $parent->getFormName(), $parent->indexOf($this));
         }
 
-        if (is_null($this->getName())) {
+        if (null === $this->getName()) {
             return $parent->getFormName();
         }
 
@@ -243,7 +247,9 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
 
                 foreach ($callbacks as $callback) {
                     if (!is_callable($callback)) {
-                        throw new FormException(sprintf('Callback "%s" must be a callable or an array of callable', $type));
+                        throw new FormException(
+                            sprintf('Callback "%s" must be a callable or an array of callable', $type)
+                        );
                     }
 
                     call_user_func_array($callback, $args);
