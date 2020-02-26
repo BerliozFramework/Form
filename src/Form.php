@@ -76,6 +76,8 @@ class Form extends Group
                 'name' => $this->getFormName(),
                 'method' => $this->getOption('method'),
                 'action' => $this->getOption('action'),
+                'submitted' => $this->isSubmitted(),
+                'valid' => $this->isValid(),
                 'attributes' => $this->getOption('attributes', []),
             ]
         );
