@@ -109,6 +109,10 @@
   {{ block('button_row') }}
 {%- endblock -%}
 
+{%- block reset_row -%}
+  {{ block('button_row') }}
+{%- endblock -%}
+
 {# Label #}
 
 {%- block form_label -%}
@@ -184,6 +188,10 @@
 {%- endblock -%}
 
 {%- block submit_widget -%}
+  {{ block('button_widget') }}
+{%- endblock -%}
+
+{%- block reset_widget -%}
   {{ block('button_widget') }}
 {%- endblock -%}
 
