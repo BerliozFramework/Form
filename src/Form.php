@@ -69,18 +69,21 @@ class Form extends Group
     public function buildView(): ViewInterface
     {
         $view = parent::buildView();
-        $view->mergeVars(
-            [
-                'type' => is_null($this->getParent()) ? 'rootform' : 'form',
-                'id' => $this->getId(),
-                'name' => $this->getFormName(),
-                'method' => $this->getOption('method'),
-                'action' => $this->getOption('action'),
-                'submitted' => $this->isSubmitted(),
-                'valid' => $this->isValid(),
-                'attributes' => $this->getOption('attributes', []),
-            ]
-        );
+
+        if (null === $this->getParent()) {
+            $view->mergeVars(
+                [
+                    'type' => is_null($this->getParent()) ? 'rootform' : 'form',
+                    'id' => $this->getId(),
+                    'name' => $this->getFormName(),
+                    'method' => $this->getOption('method'),
+                    'action' => $this->getOption('action'),
+                    'submitted' => $this->isSubmitted(),
+                    'valid' => $this->isValid(),
+                    'attributes' => $this->getOption('attributes', []),
+                ]
+            );
+        }
 
         return $view;
     }
