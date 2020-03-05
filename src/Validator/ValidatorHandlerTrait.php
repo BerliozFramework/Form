@@ -44,7 +44,7 @@ trait ValidatorHandlerTrait
             throw new ValidatorException(sprintf('Trait must be used with "%s" objects', ElementInterface::class));
         }
 
-        $this->constraints = $this->invalidated ?? [];
+        $this->constraints = [];
 
         foreach ($this->validators as $validator) {
             $constraints = [];
@@ -76,10 +76,10 @@ trait ValidatorHandlerTrait
                 }
             }
 
-            return $childrenValid && empty($this->constraints);
+            return $childrenValid && empty($this->getConstraints());
         }
 
-        return empty($this->constraints);
+        return empty($this->getConstraints());
     }
 
     /**
@@ -137,7 +137,7 @@ trait ValidatorHandlerTrait
      */
     public function getConstraints(): array
     {
-        return $this->constraints;
+        return array_merge($this->constraints, $this->invalidated);
     }
 
     /**
