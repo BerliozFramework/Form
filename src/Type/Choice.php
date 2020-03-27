@@ -198,10 +198,12 @@ class Choice extends AbstractType
         $found = [];
 
         foreach ($this->buildChoices() as $choiceValue) {
-            if (in_array($choiceValue->getValue(), $value)
-                || in_array($choiceValue->getFinalValue(), $value, true)) {
-                $found[] = $choiceValue->setSelected(true);
+            if (empty(array_keys($value, $choiceValue->getValue())) &&
+                empty(array_keys($value, $choiceValue->getFinalValue()))) {
+                continue;
             }
+
+            $found[] = $choiceValue->setSelected(true);
         }
 
         return $found;
@@ -249,7 +251,9 @@ class Choice extends AbstractType
                 try {
                     $result = b_get_property_value($value, $callback, $exists);
                 } catch (Exception $e) {
-                    throw new TypeException(sprintf('Unable to found getter of "%s" property of "%s" class', $callback, get_class($value)));
+                    throw new TypeException(
+                        sprintf('Unable to found getter of "%s" property of "%s" class', $callback, get_class($value))
+                    );
                 }
 
                 if ($exists) {
