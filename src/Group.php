@@ -153,11 +153,12 @@ class Group extends AbstractTraversableElement
         /** @var \Berlioz\Form\Element\ElementInterface $element */
         foreach ($this as $element) {
             if (!array_key_exists($element->getName(), $values)) {
-                if ($element instanceof Group) {
+                if ($element instanceof TraversableElementInterface) {
                     $element->submitValue([]);
-                else {
-                    $element->submitValue(null);
+                    continue;
                 }
+
+                $element->submitValue(null);
                 continue;
             }
 
