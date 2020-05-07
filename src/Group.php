@@ -145,7 +145,7 @@ class Group extends AbstractTraversableElement
      * @inheritdoc
      */
     public function submitValue($values)
-    {
+    {       
         if (!is_array($values)) {
             throw new FormException('Invalid type of value, array attempted');
         }
@@ -153,7 +153,11 @@ class Group extends AbstractTraversableElement
         /** @var \Berlioz\Form\Element\ElementInterface $element */
         foreach ($this as $element) {
             if (!array_key_exists($element->getName(), $values)) {
-                $element->submitValue(null);
+                if ($element instanceof Group) {
+                    $element->submitValue([]);
+                else {
+                    $element->submitValue(null);
+                }
                 continue;
             }
 
