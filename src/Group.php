@@ -14,6 +14,7 @@ namespace Berlioz\Form;
 
 use Berlioz\Form\Element\AbstractTraversableElement;
 use Berlioz\Form\Element\ElementInterface;
+use Berlioz\Form\Element\TraversableElementInterface;
 use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\View\ViewInterface;
 use InvalidArgumentException;
@@ -153,6 +154,11 @@ class Group extends AbstractTraversableElement
         /** @var \Berlioz\Form\Element\ElementInterface $element */
         foreach ($this as $element) {
             if (!array_key_exists($element->getName(), $values)) {
+                if ($element instanceof TraversableElementInterface) {
+                    $element->submitValue([]);
+                    continue;
+                }
+
                 $element->submitValue(null);
                 continue;
             }
