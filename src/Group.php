@@ -236,7 +236,12 @@ class Group extends AbstractTraversableElement
     public function buildView(): ViewInterface
     {
         $view = parent::buildView();
-        $view->mergeVars(['type' => $this->getOption('type', 'group')]);
+        $view->mergeVars(
+            [
+                'type' => $this->getOption('type', 'group'),
+                'mapped' => $this->getMapped()
+            ]
+        );
 
         return $view;
     }

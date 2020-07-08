@@ -260,5 +260,6 @@ class HydratorTest extends AbstractFormTest
 
         $this->assertEquals('Baz', $person->getLastName());
         $this->assertEquals('Qux', $person->getFirstName());
+        $this->assertSame($person, $group->getMapped());
     }
 }

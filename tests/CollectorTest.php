@@ -41,7 +41,7 @@ class CollectorTest extends AbstractFormTest
             )
             ->setHobbies(new ArrayObject(['pony', 'swimming pool']))
             ->setJob(
-                (new FakeJob())
+                $job = (new FakeJob())
                     ->setTitle('Developer')
                     ->setCompany('Berlioz')
                     ->setAddress(
@@ -58,6 +58,7 @@ class CollectorTest extends AbstractFormTest
         $collector = new FormCollector($form);
         $collected = $collector->collect($person);
 
+        $this->assertSame($job, $form['job']->getMapped());
         $this->assertEquals(
             [
                 'last_name' => 'Giron',
