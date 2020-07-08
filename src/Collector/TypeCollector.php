@@ -49,8 +49,12 @@ class TypeCollector extends AbstractCollector
     /**
      * @inheritdoc
      */
-    public function collect($mapped)
+    public function collect($mapped = null)
     {
+        if (null === $mapped) {
+            return null;
+        }
+
         $propertyName = $this->type->getName();
 
         try {

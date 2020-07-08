@@ -4,18 +4,14 @@ namespace Berlioz\Form\Tests;
 
 use ArrayObject;
 use Berlioz\Form\Collection;
-use Berlioz\Form\Form;
 use Berlioz\Form\Group;
 use Berlioz\Form\Hydrator\FormHydrator;
 use Berlioz\Form\Tests\Fake\Entity\FakeAddress;
 use Berlioz\Form\Tests\Fake\Entity\FakeJob;
 use Berlioz\Form\Tests\Fake\Entity\FakePerson;
 use Berlioz\Form\Tests\Fake\FakeForm;
-use Berlioz\Form\Transformer\DateTimeTransformer;
-use Berlioz\Form\Type\Date;
 use Berlioz\Form\Type\Text;
 use DateTime;
-use PHPUnit\Framework\TestCase;
 
 class HydratorTest extends AbstractFormTest
 {
@@ -229,5 +225,40 @@ class HydratorTest extends AbstractFormTest
         $hydrator->hydrate($person);
 
         $this->assertEquals([], $person->getAddresses());
+    }
+
+    public function testPartialMapped()
+    {
+        $person = new FakePerson();
+        $person
+            ->setLastName('Bar')
+            ->setFirstName('Foo');
+
+        $group = new Group();
+        $group->mapObject($person);
+        $group
+            ->add('last_name', Text::class)
+            ->add('first_name', Text::class);
+
+        $form = new FakeForm('test');
+        $form
+            ->add('input1', Text::class)
+            ->add('input2', Text::class)
+            ->add('input3', $group);
+
+        $form->setSubmitted(true);
+        $form->submitValue(
+            [
+                'input1' => 'Foo',
+                'input2' => 'Bar',
+                'input3' => ['last_name' => 'Baz', 'first_name' => 'Qux']
+            ]
+        );
+
+        $hydrator = new FormHydrator($form);
+        $hydrator->hydrate();
+
+        $this->assertEquals('Baz', $person->getLastName());
+        $this->assertEquals('Qux', $person->getFirstName());
     }
 }

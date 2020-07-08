@@ -12,7 +12,6 @@
 
 namespace Berlioz\Form\Collector;
 
-use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Form;
 
 class FormCollector extends GroupCollector
@@ -25,17 +24,5 @@ class FormCollector extends GroupCollector
     public function __construct(Form $form)
     {
         parent::__construct($form);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function getSubMapped(ElementInterface $element, object $mapped): object
-    {
-        if (!$element instanceof Form) {
-            parent::getSubMapped($element, $mapped);
-        }
-
-        return $mapped;
     }
 }

@@ -26,6 +26,9 @@ use InvalidArgumentException;
  */
 class Group extends AbstractTraversableElement
 {
+    /** @var object|array|null Mapped object or array */
+    protected $mapped;
+
     /**
      * __clone() magic method.
      */
@@ -56,6 +59,41 @@ class Group extends AbstractTraversableElement
 
         return $data;
     }
+
+    ///////////////
+    /// MAPPING ///
+    ///////////////
+
+    /**
+     * Map an object.
+     *
+     * @param object|null $object
+     *
+     * @throws \Berlioz\Form\Exception\FormException
+     */
+    public function mapObject($object = null)
+    {
+        if (!is_object($object) && !is_null($object)) {
+            throw new FormException(sprintf('Parameter given must be an object, "%s" given', gettype($object)));
+        }
+
+        $this->mapped = $object;
+        $this->setOption('mapped', null !== $object);
+    }
+
+    /**
+     * Get mapped object.
+     *
+     * @return object|null
+     */
+    public function getMappedObject()
+    {
+        return $this->mapped;
+    }
+
+    ///////////////////
+    /// ARRAYACCESS ///
+    ///////////////////
 
     /**
      * @inheritdoc

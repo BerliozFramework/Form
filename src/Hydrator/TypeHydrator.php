@@ -48,8 +48,12 @@ class TypeHydrator extends AbstractHydrator
     /**
      * @inheritdoc
      */
-    public function hydrate(&$mapped)
+    public function hydrate(&$mapped = null)
     {
+        if (null === $mapped) {
+            return;
+        }
+
         if (!$this->type->getOption('mapped', true, true)) {
             return;
         }

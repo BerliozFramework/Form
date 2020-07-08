@@ -50,7 +50,7 @@ class CollectionHydrator extends AbstractHydrator
     /**
      * @inheritdoc
      */
-    public function hydrate(&$mapped)
+    public function hydrate(&$mapped = null)
     {
         if (!$this->getElement()->getOption('mapped', true, true)) {
             return;
