@@ -64,15 +64,15 @@ class GroupCollector extends AbstractCollector
 
         /** @var \Berlioz\Form\Element\ElementInterface $element */
         foreach ($this->group as $element) {
+            if (!$element->getOption('mapped', false, true)) {
+                continue;
+            }
+
             $collector = $this->locateCollector($element);
             $collectedValue = $collector->collect($subMapped);
 
             if (null !== $collectedValue) {
                 $collected[$element->getName()] = $collectedValue;
-                continue;
-            }
-
-            if (!$element->getOption('mapped', false, true)) {
                 continue;
             }
 

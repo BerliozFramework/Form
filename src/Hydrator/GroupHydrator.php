@@ -48,6 +48,7 @@ class GroupHydrator extends AbstractHydrator
      */
     public function hydrate(&$mapped = null)
     {
+
         $subMapped = null;
 
         // Get mapped object if defined on group
@@ -56,7 +57,7 @@ class GroupHydrator extends AbstractHydrator
         }
 
         // If mapped object, and sub mapped not already defined
-        if (null !== $mapped && null === $subMapped) {
+        if (null !== $mapped && null === $subMapped && $this->getElement()->getOption('mapped', true, true)) {
             $subMapped = $this->getSubMapped($this->getElement(), $mapped);
         }
 

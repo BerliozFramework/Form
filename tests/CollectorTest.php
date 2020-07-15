@@ -5,6 +5,9 @@ namespace Berlioz\Form\Tests;
 use ArrayObject;
 use Berlioz\Form\Collector\FormCollector;
 use Berlioz\Form\Collector\GroupCollector;
+use Berlioz\Form\Exception\CollectorException;
+use Berlioz\Form\Exception\FormException;
+use Berlioz\Form\Form;
 use Berlioz\Form\Group;
 use Berlioz\Form\Tests\Fake\Entity\FakeAddress;
 use Berlioz\Form\Tests\Fake\Entity\FakeJob;
@@ -140,6 +143,38 @@ class CollectorTest extends AbstractFormTest
                 'first_name' => 'Foo',
             ],
             $groupCollected
+        );
+    }
+
+    /**
+     * Test with nope map element. (Have to pass without exception)
+     *
+     * @throws CollectorException
+     * @throws FormException
+     */
+    public function testWithNoneMapProperty()
+    {
+        $person = new FakePerson();
+        $person
+            ->setLastName('Berlioz')
+            ->setFirstName('Hector');
+
+        $form = new Form('test', $person);
+        $form
+            ->add('last_name', Text::class)
+            ->add('first_name', Text::class)
+            ->add('nick_name', Text::class, [
+                'mapped' => false
+            ]);
+
+        $formCollector = new FormCollector($form);
+
+        $this->assertEquals(
+            [
+                'last_name' => 'Berlioz',
+                'first_name' => 'Hector',
+            ],
+            $formCollector->collect()
         );
     }
 }
