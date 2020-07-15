@@ -31,10 +31,10 @@ interface HydratorInterface
     /**
      * Hydrate object.
      *
-     * @param mixed $mapped
+     * @param mixed|null $mapped
      *
      * @return mixed
      * @throws \Berlioz\Form\Exception\HydratorException
      */
-    public function hydrate(&$mapped);
+    public function hydrate(&$mapped = null);
 }

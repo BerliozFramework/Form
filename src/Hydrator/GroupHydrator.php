@@ -46,13 +46,19 @@ class GroupHydrator extends AbstractHydrator
     /**
      * @inheritdoc
      */
-    public function hydrate(&$mapped)
+    public function hydrate(&$mapped = null)
     {
-        if (!$this->getElement()->getOption('mapped', false, true)) {
-            return;
+        $subMapped = null;
+
+        // Get mapped object if defined on group
+        if (null !== $this->group->getMappedObject()) {
+            $subMapped = $this->group->getMappedObject();
         }
 
-        $subMapped = $this->getSubMapped($this->getElement(), $mapped);
+        // If mapped object, and sub mapped not already defined
+        if (null !== $mapped && null === $subMapped) {
+            $subMapped = $this->getSubMapped($this->getElement(), $mapped);
+        }
 
         /** @var \Berlioz\Form\Element\ElementInterface $element */
         foreach ($this->group as $element) {

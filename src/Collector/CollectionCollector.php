@@ -40,7 +40,7 @@ class CollectionCollector extends AbstractCollector
         return $this->collection;
     }
 
-    public function collect($mapped)
+    public function collect($mapped = null)
     {
         $subMapped = $this->getSubMapped($this->getElement(), $mapped);
 

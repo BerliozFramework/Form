@@ -3,20 +3,15 @@
 namespace Berlioz\Form\Tests;
 
 use ArrayObject;
-use Berlioz\Form\Collection;
 use Berlioz\Form\Collector\FormCollector;
-use Berlioz\Form\Form;
+use Berlioz\Form\Collector\GroupCollector;
 use Berlioz\Form\Group;
-use Berlioz\Form\Hydrator\FormHydrator;
 use Berlioz\Form\Tests\Fake\Entity\FakeAddress;
 use Berlioz\Form\Tests\Fake\Entity\FakeJob;
 use Berlioz\Form\Tests\Fake\Entity\FakePerson;
 use Berlioz\Form\Tests\Fake\FakeForm;
-use Berlioz\Form\Transformer\DateTimeTransformer;
-use Berlioz\Form\Type\Date;
 use Berlioz\Form\Type\Text;
 use DateTime;
-use PHPUnit\Framework\TestCase;
 
 class CollectorTest extends AbstractFormTest
 {
@@ -46,7 +41,7 @@ class CollectorTest extends AbstractFormTest
             )
             ->setHobbies(new ArrayObject(['pony', 'swimming pool']))
             ->setJob(
-                (new FakeJob())
+                $job = (new FakeJob())
                     ->setTitle('Developer')
                     ->setCompany('Berlioz')
                     ->setAddress(
@@ -63,6 +58,7 @@ class CollectorTest extends AbstractFormTest
         $collector = new FormCollector($form);
         $collected = $collector->collect($person);
 
+        $this->assertSame($job, $form['job']->getMapped());
         $this->assertEquals(
             [
                 'last_name' => 'Giron',
@@ -100,6 +96,50 @@ class CollectorTest extends AbstractFormTest
                 ],
             ],
             $collected
+        );
+    }
+
+    public function testPartialMapped()
+    {
+        $person = new FakePerson();
+        $person
+            ->setLastName('Bar')
+            ->setFirstName('Foo');
+
+        $group = new Group();
+        $group->mapObject($person);
+        $group
+            ->add('last_name', Text::class)
+            ->add('first_name', Text::class);
+
+        $form = new FakeForm('test');
+        $form
+            ->add('input1', Text::class)
+            ->add('input2', Text::class)
+            ->add('input3', $group);
+
+        $formCollector = new FormCollector($form);
+        $formCollected = $formCollector->collect();
+
+        $groupCollector = new GroupCollector($group);
+        $groupCollected = $groupCollector->collect();
+
+        $this->assertEquals(
+            [
+                'input3' =>
+                    [
+                        'last_name' => 'Bar',
+                        'first_name' => 'Foo',
+                    ],
+            ],
+            $formCollected
+        );
+        $this->assertEquals(
+            [
+                'last_name' => 'Bar',
+                'first_name' => 'Foo',
+            ],
+            $groupCollected
         );
     }
 }

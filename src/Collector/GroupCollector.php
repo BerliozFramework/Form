@@ -47,21 +47,36 @@ class GroupCollector extends AbstractCollector
     /**
      * @inheritdoc
      */
-    public function collect($mapped)
+    public function collect($mapped = null)
     {
         $collected = [];
-        $subMapped = $this->getSubMapped($this->getElement(), $mapped);
+        $subMapped = null;
+
+        // Get mapped object if defined on group
+        if (null !== $this->group->getMappedObject()) {
+            $subMapped = $this->group->getMappedObject();
+        }
+
+        // If mapped object, and sub mapped not already defined
+        if (null !== $mapped && null === $subMapped) {
+            $subMapped = $this->getSubMapped($this->getElement(), $mapped);
+        }
 
         /** @var \Berlioz\Form\Element\ElementInterface $element */
         foreach ($this->group as $element) {
-            if ($element->getOption('mapped', false, true)) {
-                $collected[$element->getName()] = null;
+            $collector = $this->locateCollector($element);
+            $collectedValue = $collector->collect($subMapped);
 
-                if (!is_null($subMapped)) {
-                    $collector = $this->locateCollector($element);
-                    $collected[$element->getName()] = $collector->collect($subMapped);
-                }
+            if (null !== $collectedValue) {
+                $collected[$element->getName()] = $collectedValue;
+                continue;
             }
+
+            if (!$element->getOption('mapped', false, true)) {
+                continue;
+            }
+
+            $collected[$element->getName()] = null;
         }
 
         return $collected;

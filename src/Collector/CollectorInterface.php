@@ -31,10 +31,10 @@ interface CollectorInterface
     /**
      * Collect.
      *
-     * @param $mapped
+     * @param mixed|null $mapped
      *
      * @return mixed
      * @throws \Berlioz\Form\Exception\CollectorException
      */
-    public function collect($mapped);
+    public function collect($mapped = null);
 }

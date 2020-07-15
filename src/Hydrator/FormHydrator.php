@@ -12,7 +12,6 @@
 
 namespace Berlioz\Form\Hydrator;
 
-use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Form;
 
 /**
@@ -30,17 +29,5 @@ class FormHydrator extends GroupHydrator
     public function __construct(Form $form)
     {
         parent::__construct($form);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function getSubMapped(ElementInterface $element, object $mapped, &$new = false): object
-    {
-        if (!$element instanceof Form) {
-            parent::getSubMapped($element, $mapped, $new);
-        }
-
-        return $mapped;
     }
 }

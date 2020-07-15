@@ -13,7 +13,6 @@
 namespace Berlioz\Form;
 
 use Berlioz\Form\Collector\FormCollector;
-use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\Hydrator\FormHydrator;
 use Berlioz\Form\View\ViewInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -25,8 +24,6 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class Form extends Group
 {
-    /** @var object|array|null Mapped object or array */
-    protected $mapped;
     /** @var bool Submitted? */
     protected $submitted = false;
     /** @var array Submitted data */
@@ -47,7 +44,6 @@ class Form extends Group
         $options = array_replace_recursive(
             [
                 'method' => 'post',
-                'mapped' => !is_null($mapped),
                 'required' => true,
             ],
             $options
@@ -88,36 +84,6 @@ class Form extends Group
         return $view;
     }
 
-    ///////////////
-    /// MAPPING ///
-    ///////////////
-
-    /**
-     * Map an object.
-     *
-     * @param object|null $object
-     *
-     * @throws \Berlioz\Form\Exception\FormException
-     */
-    public function mapObject($object = null)
-    {
-        if (!is_object($object) && !is_null($object)) {
-            throw new FormException(sprintf('Parameter given must be an object, "%s" given', gettype($object)));
-        }
-
-        $this->mapped = $object;
-    }
-
-    /**
-     * Get mapped object.
-     *
-     * @return object|null
-     */
-    public function getMappedObject()
-    {
-        return $this->mapped;
-    }
-
     //////////////////
     /// SUBMISSION ///
     //////////////////
@@ -150,14 +116,9 @@ class Form extends Group
 
         $this->submitted = false;
 
-        // Get mapped object
-        $mappedObject = $this->getMappedObject();
-
         // Collect mapped object
-        if (!is_null($mappedObject)) {
-            $collector = new FormCollector($this);
-            $this->setValue($collector->collect($mappedObject));
-        }
+        $collector = new FormCollector($this);
+        $this->setValue($collector->collect());
 
         if (mb_strtolower($request->getMethod()) === mb_strtolower($this->getOption('method'))) {
             switch (mb_strtolower($request->getMethod())) {
@@ -180,10 +141,8 @@ class Form extends Group
                 $this->submitValue($this->submittedData);
 
                 // Hydrate mapped object
-                if (!is_null($mappedObject)) {
-                    $hydrator = new FormHydrator($this);
-                    $hydrator->hydrate($mappedObject);
-                }
+                $hydrator = new FormHydrator($this);
+                $hydrator->hydrate();
             }
         }
     }

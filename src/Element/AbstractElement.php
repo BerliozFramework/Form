@@ -15,6 +15,7 @@ namespace Berlioz\Form\Element;
 use Berlioz\Form\Collection;
 use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\Form;
+use Berlioz\Form\Group;
 use Berlioz\Form\Validator\ValidatorHandlerInterface;
 use Berlioz\Form\Validator\ValidatorHandlerTrait;
 use Berlioz\Form\Transformer\DefaultTransformer;
@@ -120,6 +121,51 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
         }
 
         return sprintf('%s[%s]', $parent->getFormName(), $this->getName());
+    }
+
+    ///////////////
+    /// MAPPING ///
+    ///////////////
+
+    /**
+     * Get mapped.
+     *
+     * @return mixed|null
+     * @throws \ReflectionException
+     */
+    public function getMapped()
+    {
+        // Element has mapped element
+        if ($this instanceof Group) {
+            if (null !== $this->getMappedObject()) {
+                return $this->getMappedObject();
+            }
+        }
+
+        // No parent, so no mapped element
+        if (null === ($parent = $this->getParent())) {
+            return null;
+        }
+
+        // Get mapped element of parent
+        if (null === ($mapped = $parent->getMapped())) {
+            return null;
+        }
+
+        // If parent is collection, so it's iterable mapped
+        if ($parent instanceof Collection) {
+            if (!is_iterable($mapped)) {
+                return null;
+            }
+
+            if (isset($mapped[$parent->indexOf($this)])) {
+                return $mapped[$parent->indexOf($this)];
+            }
+
+            return null;
+        }
+
+        return b_get_property_value($mapped, $this->getName());
     }
 
     ///////////////
