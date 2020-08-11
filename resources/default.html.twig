@@ -149,17 +149,28 @@
 
 {%- block choice_widget_expanded -%}
   {% for choiceKey, choiceValue in choices %}
-    {% with { type: (multiple ? 'checkbox' : 'radio'),
-      id: id ~ '_' ~ choiceValue.value,
-      name: name ~ (multiple ? '[]' : ''),
-      disabled: disabled,
-      readonly: readonly,
-      label: choiceValue.label,
-      value: choiceValue.value,
-      attributes: choiceValue.attributes|merge({"checked": choiceValue.isSelected()}) } only %}
-      {{ block('checkbox_widget') }}
-    {% endwith %}
+    {% if choiceValue is not iterable %}
+      {% with { type: (multiple ? 'checkbox' : 'radio'),
+        id: id ~ '_' ~ choiceValue.value,
+        name: name ~ (multiple ? '[]' : ''),
+        disabled: disabled,
+        readonly: readonly,
+        label: choiceValue.label,
+        value: choiceValue.value,
+        attributes: choiceValue.attributes|merge({"checked": choiceValue.isSelected()}) } only %}
+        {{ block('checkbox_widget') }}
+      {% endwith %}
+    {% else %}
+      {% with { label: choiceKey, choices: choiceValue } %}
+        {{ block('choice_widget_expanded_group') }}
+      {% endwith %}
+    {% endif %}
   {% endfor %}
+{%- endblock -%}
+
+{%- block choice_widget_expanded_group -%}
+  <h5>{{ label }}</h5>
+  {{ block('choice_widget_expanded') }}
 {%- endblock -%}
 
 {%- block choice_widget_collapsed -%}
