@@ -15,6 +15,7 @@ namespace Berlioz\Form\Type;
 use Berlioz\Form\Exception\TypeException;
 use Berlioz\Form\Transformer\ChoiceTransformerInterface;
 use Berlioz\Form\View\ViewInterface;
+use Closure;
 use Exception;
 use Traversable;
 
@@ -231,8 +232,8 @@ class Choice extends AbstractType
         }
 
         // Callable?
-        if (is_callable($callback)) {
-            return $callback($key, $value, $index);
+        if ($callback instanceof Closure) {
+            return $callback->call($this, $key, $value, $index);
         }
 
         // Array?
