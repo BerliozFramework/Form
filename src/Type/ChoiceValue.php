@@ -29,6 +29,8 @@ class ChoiceValue
     private $group;
     /** @var array Attributes */
     private $attributes = [];
+    /** @var bool Preferred? */
+    private $preferred = false;
     /** @var bool Selected? */
     private $selected = false;
 
@@ -189,6 +191,30 @@ class ChoiceValue
     public function setSelected(bool $selected): ChoiceValue
     {
         $this->selected = $selected;
+
+        return $this;
+    }
+
+    /**
+     * Is preferred?
+     *
+     * @return bool
+     */
+    public function isPreferred(): bool
+    {
+        return $this->preferred;
+    }
+
+    /**
+     * Set preferred.
+     *
+     * @param bool $preferred
+     *
+     * @return static
+     */
+    public function setPreferred(bool $preferred): ChoiceValue
+    {
+        $this->preferred = $preferred;
 
         return $this;
     }

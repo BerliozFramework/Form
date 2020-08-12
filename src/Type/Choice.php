@@ -210,6 +210,37 @@ class Choice extends AbstractType
         return $found;
     }
 
+    /**
+     * Update preferred choices.
+     *
+     * @throws TypeException
+     */
+    private function updatePreferredChoices()
+    {
+        $preferredChoices = $this->getOption('preferred_choices', null);
+
+        $index = 0;
+        foreach ($this->buildChoices() as $choiceValue) {
+            if (null === $preferredChoices) {
+                $choiceValue->setPreferred(false);
+                continue;
+            }
+
+            if (is_array($preferredChoices)) {
+                $choiceValue->setPreferred(in_array($choiceValue->getValue(), $preferredChoices));
+                continue;
+            }
+
+            if (is_callable($preferredChoices)) {
+                $choiceValue->setPreferred($preferredChoices($choiceValue, $index) == true);
+                continue;
+            }
+
+            $choiceValue->setPreferred(false);
+            $index++;
+        }
+    }
+
     /////////////
     /// BUILD ///
     /////////////
@@ -360,6 +391,23 @@ class Choice extends AbstractType
     private function buildChoicesForView(): array
     {
         $choices = $this->buildChoices();
+
+        // Order choices
+        usort(
+            $choices,
+            function (ChoiceValue $choiceValue1, ChoiceValue $choiceValue2) {
+                if ($choiceValue1->isPreferred() == $choiceValue2->isPreferred()) {
+                    return 0;
+                }
+
+                if ($choiceValue1->isPreferred()) {
+                    return -1;
+                }
+
+                return 1;
+            }
+        );
+
         $choicesForView = [];
 
         /** @var  $choice */
@@ -385,6 +433,7 @@ class Choice extends AbstractType
     {
         parent::build();
         $this->updateSelectedChoices();
+        $this->updatePreferredChoices();
     }
 
     /**
@@ -394,6 +443,7 @@ class Choice extends AbstractType
     public function buildView(): ViewInterface
     {
         $this->updateSelectedChoices();
+        $this->updatePreferredChoices();
 
         $view = parent::buildView();
         $view->mergeVars(
