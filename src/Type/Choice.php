@@ -393,11 +393,18 @@ class Choice extends AbstractType
         $choices = $this->buildChoices();
 
         // Order choices
-        usort(
+        uasort(
             $choices,
-            function (ChoiceValue $choiceValue1, ChoiceValue $choiceValue2) {
+            function (ChoiceValue $choiceValue1, ChoiceValue $choiceValue2) use ($choices) {
                 if ($choiceValue1->isPreferred() == $choiceValue2->isPreferred()) {
-                    return 0;
+                    $choiceKey1 = array_search($choiceValue1, $choices);
+                    $choiceKey2 = array_search($choiceValue2, $choices);
+
+                    if ($choiceKey1 == $choiceKey2) {
+                        return 0;
+                    }
+
+                    return $choiceKey1 > $choiceKey2 ? 1 : -1;
                 }
 
                 if ($choiceValue1->isPreferred()) {
