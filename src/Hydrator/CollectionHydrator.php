@@ -56,6 +56,10 @@ class CollectionHydrator extends AbstractHydrator
             return;
         }
 
+        if ($this->collection->getOption('disabled', false, true)) {
+            return;
+        }
+
         $subMapped = $this->getSubMapped($this->getElement(), $mapped);
         $isArray = is_array($subMapped);
         $isArrayAccess = $subMapped instanceof ArrayAccess;

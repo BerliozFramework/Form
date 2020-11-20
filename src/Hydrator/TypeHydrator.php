@@ -58,6 +58,10 @@ class TypeHydrator extends AbstractHydrator
             return;
         }
 
+        if ($this->type->getOption('disabled', false, true)) {
+            return;
+        }
+
         $propertyName = $this->type->getName();
         $value = $this->type->getFinalValue();
 

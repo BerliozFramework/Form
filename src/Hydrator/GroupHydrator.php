@@ -48,8 +48,11 @@ class GroupHydrator extends AbstractHydrator
      */
     public function hydrate(&$mapped = null)
     {
-
         $subMapped = null;
+
+        if ($this->group->getOption('disabled', false, true)) {
+            return;
+        }
 
         // Get mapped object if defined on group
         if (null !== $this->group->getMappedObject()) {
