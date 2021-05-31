@@ -19,6 +19,12 @@ namespace Berlioz\Form\Type;
  */
 class Time extends AbstractType
 {
+    public function __construct(array $options = [])
+    {
+        $options = array_replace(['format' => 'H:i:s'], $options);
+        parent::__construct($options);
+    }
+
     /**
      * @inheritdoc
      */

@@ -23,6 +23,12 @@ class Date extends AbstractType
 {
     const DEFAULT_TRANSFORMER = DateTimeTransformer::class;
 
+    public function __construct(array $options = [])
+    {
+        $options = array_replace(['format' => 'Y-m-d'], $options);
+        parent::__construct($options);
+    }
+
     /**
      * @inheritdoc
      */

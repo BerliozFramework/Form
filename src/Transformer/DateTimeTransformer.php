@@ -31,15 +31,7 @@ class DateTimeTransformer implements TransformerInterface
     public function toForm($data, ElementInterface $element)
     {
         if ($data instanceof DateTimeInterface) {
-            if ($element instanceof Date) {
-                return $data->format('Y-m-d');
-            }
-
-            if ($element instanceof Time) {
-                return $data->format('H:i:s');
-            }
-
-            return $data->format('Y-m-d H:i:s');
+            return $data->format($element->getOption('format', 'Y-m-d H:i:s'));
         }
 
         return $data;

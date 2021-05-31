@@ -19,6 +19,12 @@ namespace Berlioz\Form\Type;
  */
 class DateTime extends Date
 {
+    public function __construct(array $options = [])
+    {
+        $options = array_replace(['format' => 'Y-m-d\TH:i'], $options);
+        parent::__construct($options);
+    }
+
     /**
      * @inheritdoc
      */
