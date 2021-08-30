@@ -10,6 +10,8 @@
  * file that was distributed with this source code, to the root.
  */
 
+declare(strict_types=1);
+
 namespace Berlioz\Form\Element;
 
 use ArrayIterator;
@@ -71,7 +73,7 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
             throw new InvalidArgumentException(sprintf('Form collection accept only "%s" class', ElementInterface::class));
         }
 
-        if (is_null($offset) || mb_strlen($offset) == 0) {
+        if (is_null($offset) || mb_strlen((string)$offset) == 0) {
             $this->list[] = $value;
         } else {
             $this->list[$offset] = $value;

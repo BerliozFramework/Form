@@ -10,6 +10,8 @@
  * file that was distributed with this source code, to the root.
  */
 
+declare(strict_types=1);
+
 namespace Berlioz\Form\Collector;
 
 use Berlioz\Form\Collection;
@@ -18,13 +20,13 @@ use Berlioz\Form\Exception\CollectorException;
 
 class CollectionCollector extends AbstractCollector
 {
-    /** @var \Berlioz\Form\Collection Collection */
+    /** @var Collection Collection */
     private $collection;
 
     /**
      * CollectionCollector constructor.
      *
-     * @param \Berlioz\Form\Collection $collection
+     * @param Collection $collection
      */
     public function __construct(Collection $collection)
     {
@@ -33,7 +35,7 @@ class CollectionCollector extends AbstractCollector
 
     /**
      * @inheritdoc
-     * @return \Berlioz\Form\Collection
+     * @return Collection
      */
     public function getElement(): ElementInterface
     {
