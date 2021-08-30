@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class Password.
- *
- * @package Berlioz\Form\Type
  */
 class Password extends Text
 {

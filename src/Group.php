@@ -23,8 +23,6 @@ use InvalidArgumentException;
 
 /**
  * Class Group.
- *
- * @package Berlioz\Form
  */
 class Group extends AbstractTraversableElement
 {

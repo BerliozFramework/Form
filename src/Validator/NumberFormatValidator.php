@@ -19,8 +19,6 @@ use Berlioz\Form\Validator\Constraint\FormatConstraint;
 
 /**
  * Class NumberFormatValidator.
- *
- * @package Berlioz\Form\Validator
  */
 class NumberFormatValidator extends FormatValidator
 {

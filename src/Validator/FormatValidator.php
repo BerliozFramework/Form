@@ -20,8 +20,6 @@ use Berlioz\Form\Validator\Constraint\FormatConstraint;
 
 /**
  * Class FormatValidator.
- *
- * @package Berlioz\Form\Validator
  */
 class FormatValidator extends AbstractValidator implements ValidatorInterface
 {

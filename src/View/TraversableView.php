@@ -20,8 +20,6 @@ use Berlioz\Form\Exception\FormException;
 
 /**
  * Class TraversableView.
- *
- * @package Berlioz\Form\View
  */
 class TraversableView extends BasicView implements TraversableViewInterface
 {

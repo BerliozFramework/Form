@@ -22,8 +22,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class Form.
- *
- * @package Berlioz\Form
  */
 class Form extends Group
 {

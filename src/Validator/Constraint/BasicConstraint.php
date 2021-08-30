@@ -16,8 +16,6 @@ namespace Berlioz\Form\Validator\Constraint;
 
 /**
  * Class BasicConstraint.
- *
- * @package Berlioz\Form\Validator\Constraint
  */
 class BasicConstraint implements ConstraintInterface
 {

@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class Url.
- *
- * @package Berlioz\Form\Type
  */
 class Url extends Text
 {

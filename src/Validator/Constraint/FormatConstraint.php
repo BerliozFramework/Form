@@ -16,8 +16,6 @@ namespace Berlioz\Form\Validator\Constraint;
 
 /**
  * Class FormatConstraint.
- *
- * @package Berlioz\Form\Validator\Constraint
  */
 class FormatConstraint extends BasicConstraint
 {

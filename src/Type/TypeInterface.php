@@ -19,8 +19,6 @@ use Berlioz\Form\Validator\ValidatorHandlerInterface;
 
 /**
  * Interface TypeInterface.
- *
- * @package Berlioz\Form\Type
  */
 interface TypeInterface extends ElementInterface, ValidatorHandlerInterface
 {

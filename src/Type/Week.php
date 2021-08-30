@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class Week.
- *
- * @package Berlioz\Form\Type
  */
 class Week extends AbstractType
 {

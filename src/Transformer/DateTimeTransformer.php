@@ -21,8 +21,6 @@ use Exception;
 
 /**
  * Class DateTimeTransformer.
- *
- * @package Berlioz\Form\Transformer
  */
 class DateTimeTransformer implements TransformerInterface
 {

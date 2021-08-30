@@ -19,8 +19,6 @@ use Berlioz\Form\Validator\Constraint\ConstraintInterface;
 
 /**
  * Class AbstractValidator.
- *
- * @package Berlioz\Form\Validator
  */
 abstract class AbstractValidator implements ValidatorInterface
 {

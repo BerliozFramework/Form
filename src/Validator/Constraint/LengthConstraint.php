@@ -16,8 +16,6 @@ namespace Berlioz\Form\Validator\Constraint;
 
 /**
  * Class LengthConstraint.
- *
- * @package Berlioz\Form\Validator\Constraint
  */
 class LengthConstraint extends BasicConstraint
 {

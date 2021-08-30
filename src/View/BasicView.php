@@ -19,8 +19,6 @@ use Berlioz\Form\Exception\FormException;
 
 /**
  * Class BasicView.
- *
- * @package Berlioz\Form\View
  */
 class BasicView implements ViewInterface
 {

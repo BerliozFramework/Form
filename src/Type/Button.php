@@ -18,8 +18,6 @@ use Berlioz\Form\View\ViewInterface;
 
 /**
  * Class Button.
- *
- * @package Berlioz\Form\Type
  */
 class Button extends AbstractType
 {

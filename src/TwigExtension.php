@@ -27,8 +27,6 @@ use Twig\TwigFunction;
 if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
     /**
      * Class TwigExtension.
-     *
-     * @package Berlioz\Form
      */
     class TwigExtension extends AbstractExtension
     {

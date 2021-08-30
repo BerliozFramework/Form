@@ -23,8 +23,6 @@ use Traversable;
 
 /**
  * Class Choice.
- *
- * @package Berlioz\Form\Type
  */
 class Choice extends AbstractType
 {

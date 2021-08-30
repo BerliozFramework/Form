@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class Hidden.
- *
- * @package Berlioz\Form\Type
  */
 class Hidden extends AbstractType
 {

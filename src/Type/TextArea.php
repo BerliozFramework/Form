@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class TextArea.
- *
- * @package Berlioz\Form\Type
  */
 class TextArea extends Text
 {

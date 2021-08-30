@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class Tel.
- *
- * @package Berlioz\Form\Type
  */
 class Tel extends Text
 {

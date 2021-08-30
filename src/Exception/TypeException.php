@@ -16,8 +16,6 @@ namespace Berlioz\Form\Exception;
 
 /**
  * Class TypeException.
- *
- * @package Berlioz\Form\Exception
  */
 class TypeException extends FormException
 {

@@ -16,8 +16,6 @@ namespace Berlioz\Form\Validator\Constraint;
 
 /**
  * Class NotEmptyConstraint.
- *
- * @package Berlioz\Form\Validator\Constraint
  */
 class NotEmptyConstraint extends BasicConstraint
 {

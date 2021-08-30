@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class DateTime.
- *
- * @package Berlioz\Form\Type
  */
 class DateTime extends Date
 {

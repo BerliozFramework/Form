@@ -16,8 +16,6 @@ namespace Berlioz\Form\View;
 
 /**
  * Interface ViewInterface.
- *
- * @package Berlioz\Form\View
  */
 interface ViewInterface
 {

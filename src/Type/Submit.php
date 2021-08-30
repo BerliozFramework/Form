@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class Submit.
- *
- * @package Berlioz\Form\Type
  */
 class Submit extends Button
 {

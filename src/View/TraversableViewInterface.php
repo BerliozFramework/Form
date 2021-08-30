@@ -19,8 +19,6 @@ use IteratorAggregate;
 
 /**
  * Interface TraversableViewInterface.
- *
- * @package Berlioz\Form\View
  */
 interface TraversableViewInterface extends ViewInterface, IteratorAggregate, ArrayAccess
 {

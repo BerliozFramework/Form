@@ -19,8 +19,6 @@ use Berlioz\Form\Exception\CollectorException;
 
 /**
  * Interface CollectorInterface.
- *
- * @package Berlioz\Form\Collector
  */
 interface CollectorInterface
 {

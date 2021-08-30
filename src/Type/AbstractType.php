@@ -22,8 +22,6 @@ use Berlioz\Form\View\ViewInterface;
 
 /**
  * Class AbstractType.
- *
- * @package Berlioz\Form\Type
  */
 abstract class AbstractType extends AbstractElement implements SimpleTypeInterface
 {

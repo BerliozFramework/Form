@@ -22,8 +22,6 @@ use Berlioz\Form\View\ViewInterface;
 
 /**
  * Class Collection.
- *
- * @package Berlioz\Form
  */
 class Collection extends AbstractTraversableElement
 {

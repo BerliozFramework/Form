@@ -18,8 +18,6 @@ use Berlioz\Form\Form;
 
 /**
  * Class FormHydrator.
- *
- * @package Berlioz\Form\Hydrator
  */
 class FormHydrator extends GroupHydrator
 {

@@ -21,8 +21,6 @@ use Exception;
 
 /**
  * Class TypeCollector.
- *
- * @package Berlioz\Form\Collector
  */
 class TypeCollector extends AbstractCollector
 {

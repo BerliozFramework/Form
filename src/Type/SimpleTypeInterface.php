@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Interface SimpleTypeInterface.
- *
- * @package Berlioz\Form\Type
  */
 interface SimpleTypeInterface extends TypeInterface
 {

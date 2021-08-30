@@ -19,8 +19,6 @@ use Berlioz\Form\Group;
 
 /**
  * Class AbstractCompositeType.
- *
- * @package Berlioz\Form\Type
  */
 abstract class AbstractCompositeType extends Group implements TypeInterface
 {

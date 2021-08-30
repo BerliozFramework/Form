@@ -25,8 +25,6 @@ use ReflectionException;
 
 /**
  * Class AbstractHydrator.
- *
- * @package Berlioz\Form\Hydrator
  */
 abstract class AbstractHydrator implements HydratorInterface
 {

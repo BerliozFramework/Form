@@ -23,8 +23,6 @@ use Exception;
 
 /**
  * Class AbstractCollector.
- *
- * @package Berlioz\Form\Collector
  */
 abstract class AbstractCollector implements CollectorInterface
 {

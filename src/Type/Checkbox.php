@@ -19,8 +19,6 @@ use Berlioz\Form\View\ViewInterface;
 
 /**
  * Class Checkbox.
- *
- * @package Berlioz\Form\Type
  */
 class Checkbox extends AbstractType
 {

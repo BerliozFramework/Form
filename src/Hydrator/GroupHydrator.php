@@ -19,8 +19,6 @@ use Berlioz\Form\Group;
 
 /**
  * Class GroupHydrator.
- *
- * @package Berlioz\Form\Hydrator
  */
 class GroupHydrator extends AbstractHydrator
 {

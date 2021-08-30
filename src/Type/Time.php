@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class Time.
- *
- * @package Berlioz\Form\Type
  */
 class Time extends AbstractType
 {

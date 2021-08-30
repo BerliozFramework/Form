@@ -18,8 +18,6 @@ use Berlioz\Form\View\ViewInterface;
 
 /**
  * Class File
- *
- * @package Berlioz\Form\Type
  */
 class File extends AbstractType
 {

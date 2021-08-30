@@ -18,8 +18,6 @@ use Berlioz\Form\Transformer\DateTimeTransformer;
 
 /**
  * Class Date.
- *
- * @package Berlioz\Form\Type
  */
 class Date extends AbstractType
 {

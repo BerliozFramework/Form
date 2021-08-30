@@ -22,8 +22,6 @@ use Exception;
 
 /**
  * Class CollectionHydrator.
- *
- * @package Berlioz\Form\Hydrator
  */
 class CollectionHydrator extends AbstractHydrator
 {

@@ -20,8 +20,6 @@ use Berlioz\Form\Validator\FormatValidator;
 
 /**
  * Class Email
- *
- * @package Berlioz\Form\Type
  */
 class Email extends Text
 {

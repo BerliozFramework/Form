@@ -20,8 +20,6 @@ use Berlioz\Form\Validator\Constraint\LengthConstraint;
 
 /**
  * Class LengthValidator.
- *
- * @package Berlioz\Form\Validator
  */
 class LengthValidator extends AbstractValidator implements ValidatorInterface
 {

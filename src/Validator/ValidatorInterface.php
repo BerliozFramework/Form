@@ -20,8 +20,6 @@ use Berlioz\Form\Validator\Constraint\ConstraintInterface;
 
 /**
  * Interface ValidatorInterface.
- *
- * @package Berlioz\Form\Validator
  */
 interface ValidatorInterface
 {

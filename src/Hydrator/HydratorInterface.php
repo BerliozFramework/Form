@@ -19,8 +19,6 @@ use Berlioz\Form\Exception\HydratorException;
 
 /**
  * Interface HydratorInterface.
- *
- * @package Berlioz\Form\Hydrator
  */
 interface HydratorInterface
 {

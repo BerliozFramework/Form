@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class Range.
- *
- * @package Berlioz\Form\Type
  */
 class Range extends AbstractType
 {

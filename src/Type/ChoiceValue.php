@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class ChoiceValue.
- *
- * @package Berlioz\Form\Type
  */
 class ChoiceValue
 {

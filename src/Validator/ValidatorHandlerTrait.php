@@ -22,8 +22,6 @@ use Berlioz\Form\Validator\Constraint\ConstraintInterface;
 
 /**
  * Trait ValidatorHandlerTrait.
- *
- * @package Berlioz\Form\Validator
  */
 trait ValidatorHandlerTrait
 {

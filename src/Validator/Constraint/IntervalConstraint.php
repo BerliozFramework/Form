@@ -16,8 +16,6 @@ namespace Berlioz\Form\Validator\Constraint;
 
 /**
  * Class IntervalConstraint.
- *
- * @package Berlioz\Form\Validator\Constraint
  */
 class IntervalConstraint extends BasicConstraint
 {

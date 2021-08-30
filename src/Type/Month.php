@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class Month.
- *
- * @package Berlioz\Form\Type
  */
 class Month extends AbstractType
 {

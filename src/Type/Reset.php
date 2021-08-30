@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class Reset.
- *
- * @package Berlioz\Form\Type
  */
 class Reset extends Button
 {

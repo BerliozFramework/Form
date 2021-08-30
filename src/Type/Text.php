@@ -19,8 +19,6 @@ use Berlioz\Form\Validator\LengthValidator;
 
 /**
  * Class Text.
- *
- * @package Berlioz\Form\Type
  */
 class Text extends AbstractType
 {

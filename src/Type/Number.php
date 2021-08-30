@@ -22,8 +22,6 @@ use Berlioz\Form\Validator\NumberFormatValidator;
 
 /**
  * Class Number.
- *
- * @package Berlioz\Form\Type
  */
 class Number extends AbstractType
 {

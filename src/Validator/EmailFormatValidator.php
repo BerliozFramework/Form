@@ -19,8 +19,6 @@ use Berlioz\Form\Validator\Constraint\FormatConstraint;
 
 /**
  * Class EmailFormatValidator.
- *
- * @package Berlioz\Form\Validator
  */
 class EmailFormatValidator extends FormatValidator
 {

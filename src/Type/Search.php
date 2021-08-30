@@ -16,8 +16,6 @@ namespace Berlioz\Form\Type;
 
 /**
  * Class Search.
- *
- * @package Berlioz\Form\Type
  */
 class Search extends Text
 {

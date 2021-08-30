@@ -19,8 +19,6 @@ use Berlioz\Form\Group;
 
 /**
  * Class GroupCollector.
- *
- * @package Berlioz\Form\Collector
  */
 class GroupCollector extends AbstractCollector
 {

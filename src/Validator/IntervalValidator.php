@@ -20,8 +20,6 @@ use Berlioz\Form\Validator\Constraint\IntervalConstraint;
 
 /**
  * Class IntervalValidator.
- *
- * @package Berlioz\Form\Validator
  */
 class IntervalValidator extends AbstractValidator implements ValidatorInterface
 {

@@ -20,8 +20,6 @@ use Berlioz\Form\Validator\Constraint\NotEmptyConstraint;
 
 /**
  * Class NotEmptyValidator.
- *
- * @package Berlioz\Form\Validator
  */
 class NotEmptyValidator extends AbstractValidator implements ValidatorInterface
 {

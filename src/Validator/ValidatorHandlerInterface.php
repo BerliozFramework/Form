@@ -18,8 +18,6 @@ use Berlioz\Form\Validator\Constraint\ConstraintInterface;
 
 /**
  * Interface ValidatorHandlerInterface.
- *
- * @package Berlioz\Form\Validator
  */
 interface ValidatorHandlerInterface
 {
