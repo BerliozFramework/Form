@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Form\Collector;
 
 use Berlioz\Form\Element\ElementInterface;
+use Berlioz\Form\Exception\CollectorException;
 
 /**
  * Interface CollectorInterface.
@@ -26,7 +27,7 @@ interface CollectorInterface
     /**
      * Get form element.
      *
-     * @return \Berlioz\Form\Element\ElementInterface
+     * @return ElementInterface
      */
     public function getElement(): ElementInterface;
 
@@ -36,7 +37,7 @@ interface CollectorInterface
      * @param mixed|null $mapped
      *
      * @return mixed
-     * @throws \Berlioz\Form\Exception\CollectorException
+     * @throws CollectorException
      */
     public function collect($mapped = null);
 }

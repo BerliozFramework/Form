@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Form\Hydrator;
 
 use Berlioz\Form\Element\ElementInterface;
+use Berlioz\Form\Exception\HydratorException;
 
 /**
  * Interface HydratorInterface.
@@ -26,7 +27,7 @@ interface HydratorInterface
     /**
      * Get form element.
      *
-     * @return \Berlioz\Form\Element\ElementInterface
+     * @return ElementInterface
      */
     public function getElement(): ElementInterface;
 
@@ -36,7 +37,7 @@ interface HydratorInterface
      * @param mixed|null $mapped
      *
      * @return mixed
-     * @throws \Berlioz\Form\Exception\HydratorException
+     * @throws HydratorException
      */
     public function hydrate(&$mapped = null);
 }

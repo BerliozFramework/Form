@@ -18,21 +18,23 @@ use Berlioz\Form\Collection;
 use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\Form;
 use Berlioz\Form\Group;
-use Berlioz\Form\Validator\ValidatorHandlerInterface;
-use Berlioz\Form\Validator\ValidatorHandlerTrait;
 use Berlioz\Form\Transformer\DefaultTransformer;
 use Berlioz\Form\Transformer\TransformerInterface;
+use Berlioz\Form\Validator\ValidatorHandlerInterface;
+use Berlioz\Form\Validator\ValidatorHandlerTrait;
+use ReflectionException;
 
 abstract class AbstractElement implements ElementInterface, ValidatorHandlerInterface
 {
     const DEFAULT_TRANSFORMER = DefaultTransformer::class;
     const DEFAULT_VALIDATORS = [];
     use ValidatorHandlerTrait;
+
     /** @var array Options */
     protected $options;
-    /** @var \Berlioz\Form\Transformer\TransformerInterface Transformer */
+    /** @var TransformerInterface Transformer */
     protected $transformer;
-    /** @var \Berlioz\Form\Element\ElementInterface Parent element */
+    /** @var ElementInterface Parent element */
     protected $parent;
 
     /**
@@ -133,7 +135,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
      * Get mapped.
      *
      * @return mixed|null
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getMapped()
     {
@@ -233,7 +235,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     /**
      * Get parent.
      *
-     * @return \Berlioz\Form\Element\ElementInterface|null
+     * @return ElementInterface|null
      */
     public function getParent(): ?ElementInterface
     {
@@ -243,7 +245,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     /**
      * Set parent.
      *
-     * @param \Berlioz\Form\Element\ElementInterface|null $parent
+     * @param ElementInterface|null $parent
      *
      * @return static
      */
@@ -257,7 +259,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     /**
      * Get form.
      *
-     * @return \Berlioz\Form\Form|null
+     * @return Form|null
      */
     public function getForm(): ?Form
     {
@@ -282,8 +284,8 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
      * @param string $type
      * @param mixed ...$args
      *
-     * @return \Berlioz\Form\Element\AbstractElement
-     * @throws \Berlioz\Form\Exception\FormException
+     * @return AbstractElement
+     * @throws FormException
      */
     protected function callCallback(string $type, ...$args): AbstractElement
     {
@@ -330,7 +332,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     /**
      * Set transformer.
      *
-     * @param \Berlioz\Form\Transformer\TransformerInterface $transformer
+     * @param TransformerInterface $transformer
      *
      * @return $this
      */

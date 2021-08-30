@@ -22,7 +22,7 @@ interface TransformerInterface
      * Transform data to form.
      *
      * @param mixed $data
-     * @param \Berlioz\Form\Element\ElementInterface $element
+     * @param ElementInterface $element
      *
      * @return mixed
      */
@@ -32,7 +32,7 @@ interface TransformerInterface
      * Transform data from form.
      *
      * @param mixed $data
-     * @param \Berlioz\Form\Element\ElementInterface $element
+     * @param ElementInterface $element
      *
      * @return mixed
      */

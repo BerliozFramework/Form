@@ -33,7 +33,7 @@ interface ValidatorHandlerInterface
     /**
      * Add validator.
      *
-     * @param \Berlioz\Form\Validator\ValidatorInterface $validator
+     * @param ValidatorInterface $validator
      *
      * @return $this
      */
@@ -51,14 +51,14 @@ interface ValidatorHandlerInterface
     /**
      * Get not respected constraints.
      *
-     * @return \Berlioz\Form\Validator\Constraint\ConstraintInterface[]
+     * @return ConstraintInterface[]
      */
     public function getConstraints(): array;
 
     /**
      * Invalid.
      *
-     * @param \Berlioz\Form\Validator\Constraint\ConstraintInterface $constraint
+     * @param ConstraintInterface $constraint
      *
      * @return $this
      */

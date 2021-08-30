@@ -18,7 +18,9 @@ use Berlioz\Form\Exception\AlreadyInsertedException;
 use Berlioz\Form\View\BasicView;
 use Berlioz\Form\View\TraversableView;
 use Berlioz\Form\View\ViewInterface;
+use Throwable;
 use Twig\Environment;
+use Twig\Error\Error;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -31,13 +33,13 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
     class TwigExtension extends AbstractExtension
     {
         const DEFAULT_TPL = '@Berlioz-Form/default.html.twig';
-        /** @var \Twig\Environment Twig */
+        /** @var Environment Twig */
         private $twig;
 
         /**
          * TwigExtension constructor.
          *
-         * @param \Twig\Environment $twig
+         * @param Environment $twig
          */
         public function __construct(Environment $twig)
         {
@@ -47,7 +49,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Get twig.
          *
-         * @return \Twig\Environment
+         * @return Environment
          */
         private function getTwig(): Environment
         {
@@ -58,12 +60,12 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
          * Render.
          *
          * @param string $blockType
-         * @param \Berlioz\Form\View\ViewInterface $formView
+         * @param ViewInterface $formView
          * @param array $options
          *
          * @return string
-         * @throws \Throwable Twig error
-         * @throws \Twig\Error\Error
+         * @throws Throwable Twig error
+         * @throws Error
          */
         private function render(string $blockType, ViewInterface $formView, array $options = []): string
         {
@@ -86,7 +88,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Returns a list of functions to add to the existing list.
          *
-         * @return \Twig\TwigFunction[]
+         * @return TwigFunction[]
          */
         public function getFunctions()
         {
@@ -108,7 +110,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Function form render
          *
-         * @param \Berlioz\Form\View\ViewInterface $formView Form view
+         * @param ViewInterface $formView Form view
          * @param string|array $templateFileName Template file
          *
          * @return string
@@ -123,12 +125,12 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Function form start
          *
-         * @param \Berlioz\Form\View\BasicView $formView Form view
+         * @param BasicView $formView Form view
          * @param array $options Options
          *
          * @return string
-         * @throws \Throwable Twig error
-         * @throws \Twig\Error\Error
+         * @throws Throwable Twig error
+         * @throws Error
          */
         public function functionFormStart(BasicView $formView, array $options = []): string
         {
@@ -138,12 +140,12 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Function form end
          *
-         * @param \Berlioz\Form\View\BasicView $formView Form view
+         * @param BasicView $formView Form view
          * @param array $options Options
          *
          * @return string
-         * @throws \Throwable Twig error
-         * @throws \Twig\Error\Error
+         * @throws Throwable Twig error
+         * @throws Error
          */
         public function functionFormEnd(BasicView $formView, array $options = []): string
         {
@@ -153,12 +155,12 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Function form errors
          *
-         * @param \Berlioz\Form\View\ViewInterface $formView Form view
+         * @param ViewInterface $formView Form view
          * @param array $options Options
          *
          * @return string
-         * @throws \Throwable Twig error
-         * @throws \Twig\Error\Error
+         * @throws Throwable Twig error
+         * @throws Error
          */
         public function functionFormErrors(ViewInterface $formView, array $options = []): string
         {
@@ -168,12 +170,12 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Function form label
          *
-         * @param \Berlioz\Form\View\BasicView $formView Form view
+         * @param BasicView $formView Form view
          * @param array $options Options
          *
          * @return string
-         * @throws \Throwable Twig error
-         * @throws \Twig\Error\Error
+         * @throws Throwable Twig error
+         * @throws Error
          */
         public function functionFormLabel(BasicView $formView, array $options = []): string
         {
@@ -183,18 +185,20 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Function form widget
          *
-         * @param \Berlioz\Form\View\ViewInterface $formView Form view
+         * @param ViewInterface $formView Form view
          * @param array $options Options
          *
          * @return string
-         * @throws \Berlioz\Form\Exception\AlreadyInsertedException
-         * @throws \Throwable Twig error
-         * @throws \Twig\Error\Error
+         * @throws AlreadyInsertedException
+         * @throws Throwable Twig error
+         * @throws Error
          */
         public function functionFormWidget(ViewInterface $formView, array $options = []): string
         {
             if ($formView->isInserted()) {
-                throw new AlreadyInsertedException(sprintf('Element "%s" of form has already inserted', $formView->getVar('name', 'Unknown')));
+                throw new AlreadyInsertedException(
+                    sprintf('Element "%s" of form has already inserted', $formView->getVar('name', 'Unknown'))
+                );
             }
 
             // Set inserted
@@ -206,18 +210,20 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Function form row
          *
-         * @param \Berlioz\Form\View\ViewInterface $formView Form view
+         * @param ViewInterface $formView Form view
          * @param array $options Options
          *
          * @return string
-         * @throws \Berlioz\Form\Exception\AlreadyInsertedException
-         * @throws \Throwable Twig error
-         * @throws \Twig\Error\Error
+         * @throws AlreadyInsertedException
+         * @throws Throwable Twig error
+         * @throws Error
          */
         public function functionFormRow(ViewInterface $formView, array $options = []): string
         {
             if ($formView->isInserted()) {
-                throw new AlreadyInsertedException(sprintf('Element "%s" of form has already inserted', $formView->getVar('name', 'Unknown')));
+                throw new AlreadyInsertedException(
+                    sprintf('Element "%s" of form has already inserted', $formView->getVar('name', 'Unknown'))
+                );
             }
 
             return $this->render('row', $formView, $options);
@@ -226,19 +232,19 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Function form rest.
          *
-         * @param \Berlioz\Form\View\TraversableView $formView Form view
+         * @param TraversableView $formView Form view
          * @param array $options Options
          *
          * @return string
-         * @throws \Berlioz\Form\Exception\AlreadyInsertedException
-         * @throws \Throwable Twig error
-         * @throws \Twig\Error\Error
+         * @throws AlreadyInsertedException
+         * @throws Throwable Twig error
+         * @throws Error
          */
         public function functionFormRest(TraversableView $formView, array $options = []): string
         {
             $rendering = '';
 
-            /** @var \Berlioz\Form\View\ViewInterface $aFormView */
+            /** @var ViewInterface $aFormView */
             foreach ($formView as $aFormView) {
                 if ($aFormView->isInserted()) {
                     continue;

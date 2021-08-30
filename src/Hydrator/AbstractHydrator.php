@@ -33,10 +33,10 @@ abstract class AbstractHydrator implements HydratorInterface
     /**
      * Locate hydrator.
      *
-     * @param \Berlioz\Form\Element\ElementInterface $element
+     * @param ElementInterface $element
      *
-     * @return \Berlioz\Form\Hydrator\HydratorInterface
-     * @throws \Berlioz\Form\Exception\HydratorException
+     * @return HydratorInterface
+     * @throws HydratorException
      */
     protected function locateHydrator(ElementInterface $element): HydratorInterface
     {
@@ -63,7 +63,7 @@ abstract class AbstractHydrator implements HydratorInterface
      * @param bool $new New object?
      *
      * @return mixed
-     * @throws \Berlioz\Form\Exception\HydratorException
+     * @throws HydratorException
      */
     protected function getSubMapped(ElementInterface $element, object $mapped, &$new = false)
     {
@@ -76,7 +76,13 @@ abstract class AbstractHydrator implements HydratorInterface
             $value = b_get_property_value($mapped, $element->getName(), $exists);
 
             if (!$exists) {
-                throw new HydratorException(sprintf('Unable to find getter method of "%s" property in mapped object "%s"', $element->getName(), get_class($mapped)));
+                throw new HydratorException(
+                    sprintf(
+                        'Unable to find getter method of "%s" property in mapped object "%s"',
+                        $element->getName(),
+                        get_class($mapped)
+                    )
+                );
             }
 
             // Object found
@@ -88,7 +94,13 @@ abstract class AbstractHydrator implements HydratorInterface
             if (!is_null($subMapped = $this->createObject($element))) {
                 $new = true;
                 if (!b_set_property_value($mapped, $element->getName(), $subMapped)) {
-                    throw new HydratorException(sprintf('Unable to find setter method of "%s" property on object "%s"', $element->getName(), get_class($mapped)), 0);
+                    throw new HydratorException(
+                        sprintf(
+                            'Unable to find setter method of "%s" property on object "%s"',
+                            $element->getName(),
+                            get_class($mapped)
+                        ), 0
+                    );
                 }
 
                 return $subMapped;
@@ -98,17 +110,23 @@ abstract class AbstractHydrator implements HydratorInterface
         } catch (HydratorException $e) {
             throw $e;
         } catch (Exception $e) {
-            throw new HydratorException(sprintf('Unable to find setter method of "%s" property on object "%s"', $element->getName(), get_class($mapped)), 0, $e);
+            throw new HydratorException(
+                sprintf(
+                    'Unable to find setter method of "%s" property on object "%s"',
+                    $element->getName(),
+                    get_class($mapped)
+                ), 0, $e
+            );
         }
     }
 
     /**
      * Create object.
      *
-     * @param \Berlioz\Form\Element\ElementInterface|null $element
+     * @param ElementInterface|null $element
      *
      * @return object|null
-     * @throws \Berlioz\Form\Exception\HydratorException
+     * @throws HydratorException
      */
     protected function createObject(?ElementInterface $element = null): ?object
     {
@@ -123,7 +141,9 @@ abstract class AbstractHydrator implements HydratorInterface
         try {
             return (new ReflectionClass($dataType))->newInstance();
         } catch (ReflectionException $e) {
-            throw new HydratorException(sprintf('Unable to create object of type "%s" to hydrate the mapped object', $dataType), 0, $e);
+            throw new HydratorException(
+                sprintf('Unable to create object of type "%s" to hydrate the mapped object', $dataType), 0, $e
+            );
         }
     }
 }

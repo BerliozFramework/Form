@@ -36,7 +36,7 @@ abstract class AbstractCollector implements CollectorInterface
      * @param object $mapped
      *
      * @return mixed
-     * @throws \Berlioz\Form\Exception\CollectorException
+     * @throws CollectorException
      */
     protected function getSubMapped(ElementInterface $element, object $mapped)
     {
@@ -55,17 +55,23 @@ abstract class AbstractCollector implements CollectorInterface
 
             return null;
         } catch (Exception $e) {
-            throw new CollectorException(sprintf('Unable to find getter method of "%s" property on object "%s"', $element->getName(), get_class($mapped)), 0, $e);
+            throw new CollectorException(
+                sprintf(
+                    'Unable to find getter method of "%s" property on object "%s"',
+                    $element->getName(),
+                    get_class($mapped)
+                ), 0, $e
+            );
         }
     }
 
     /**
      * Locate collector.
      *
-     * @param \Berlioz\Form\Element\ElementInterface $element
+     * @param ElementInterface $element
      *
-     * @return \Berlioz\Form\Collector\CollectorInterface
-     * @throws \Berlioz\Form\Exception\CollectorException
+     * @return CollectorInterface
+     * @throws CollectorException
      */
     protected function locateCollector(ElementInterface $element): CollectorInterface
     {

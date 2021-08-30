@@ -27,18 +27,18 @@ use Berlioz\Form\Validator\Constraint\ConstraintInterface;
  */
 trait ValidatorHandlerTrait
 {
-    /** @var \Berlioz\Form\Validator\ValidatorInterface[] Validators */
+    /** @var ValidatorInterface[] Validators */
     protected $validators = [];
-    /** @var \Berlioz\Form\Validator\Constraint\ConstraintInterface[] Constraints */
+    /** @var ConstraintInterface[] Constraints */
     protected $invalidated = [];
-    /** @var \Berlioz\Form\Validator\Constraint\ConstraintInterface[] Constraints */
+    /** @var ConstraintInterface[] Constraints */
     protected $constraints = [];
 
     /**
      * Is valid?
      *
      * @return bool
-     * @throws \Berlioz\Form\Exception\ValidatorException
+     * @throws ValidatorException
      */
     public function isValid(): bool
     {
@@ -57,11 +57,17 @@ trait ValidatorHandlerTrait
                 }
             } else {
                 if (!(is_object($validator) && is_a($validator, ValidatorInterface::class))) {
-                    throw new ValidatorException(sprintf('Validators must be a callback or a valid "%s" class, "%s" given', ValidatorInterface::class, gettype($validator)));
+                    throw new ValidatorException(
+                        sprintf(
+                            'Validators must be a callback or a valid "%s" class, "%s" given',
+                            ValidatorInterface::class,
+                            gettype($validator)
+                        )
+                    );
                 }
 
-                /** @var \Berlioz\Form\Validator\ValidatorInterface $validator */
-                /** @var \Berlioz\Form\Element\ElementInterface $this */
+                /** @var ValidatorInterface $validator */
+                /** @var ElementInterface $this */
                 $constraints = $validator->validate($this);
             }
 
@@ -71,7 +77,7 @@ trait ValidatorHandlerTrait
         if ($this instanceof TraversableElementInterface) {
             $childrenValid = true;
 
-            /** @var \Berlioz\Form\Validator\ValidatorHandlerInterface $element */
+            /** @var ValidatorHandlerInterface $element */
             foreach ($this as $element) {
                 if (!$element->isValid()) {
                     $childrenValid = false;
@@ -87,7 +93,7 @@ trait ValidatorHandlerTrait
     /**
      * Add validator.
      *
-     * @param \Berlioz\Form\Validator\ValidatorInterface $validator
+     * @param ValidatorInterface $validator
      *
      * @return static
      */
@@ -135,7 +141,7 @@ trait ValidatorHandlerTrait
     /**
      * Get not respected constraints.
      *
-     * @return \Berlioz\Form\Validator\Constraint\ConstraintInterface[]
+     * @return ConstraintInterface[]
      */
     public function getConstraints(): array
     {
@@ -157,7 +163,7 @@ trait ValidatorHandlerTrait
     /**
      * Invalid.
      *
-     * @param \Berlioz\Form\Validator\Constraint\ConstraintInterface $constraint
+     * @param ConstraintInterface $constraint
      *
      * @return static
      */

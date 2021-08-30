@@ -36,7 +36,8 @@ class Button extends AbstractType
                     'required' => false,
                     'mapped' => false,
                     'value' => null,
-                ], $options
+                ],
+                $options
             )
         );
     }

@@ -24,13 +24,13 @@ use Berlioz\Form\Group;
  */
 class GroupHydrator extends AbstractHydrator
 {
-    /** @var \Berlioz\Form\Group Group */
+    /** @var Group Group */
     private $group;
 
     /**
      * GroupHydrator constructor.
      *
-     * @param \Berlioz\Form\Group $group
+     * @param Group $group
      */
     public function __construct(Group $group)
     {
@@ -66,7 +66,7 @@ class GroupHydrator extends AbstractHydrator
             $subMapped = $this->getSubMapped($this->getElement(), $mapped);
         }
 
-        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        /** @var ElementInterface $element */
         foreach ($this->group as $element) {
             $hydrator = $this->locateHydrator($element);
             $hydrator->hydrate($subMapped);

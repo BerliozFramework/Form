@@ -28,9 +28,9 @@ use Traversable;
  */
 class Choice extends AbstractType
 {
-    /** @var \Berlioz\Form\Type\ChoiceValue[] Choices values */
+    /** @var ChoiceValue[] Choices values */
     private $choices;
-    /** @var \Berlioz\Form\Type\ChoiceValue[] Additional choices values */
+    /** @var ChoiceValue[] Additional choices values */
     private $additionalChoices = [];
 
     /**
@@ -61,7 +61,7 @@ class Choice extends AbstractType
      * Get values.
      *
      * @return array
-     * @throws \Berlioz\Form\Exception\TypeException
+     * @throws TypeException
      */
     protected function getValues(): array
     {
@@ -76,7 +76,7 @@ class Choice extends AbstractType
 
     /**
      * @inheritdoc
-     * @throws \Berlioz\Form\Exception\TypeException
+     * @throws TypeException
      */
     public function getValue()
     {
@@ -98,7 +98,7 @@ class Choice extends AbstractType
 
     /**
      * @inheritdoc
-     * @throws \Berlioz\Form\Exception\TypeException
+     * @throws TypeException
      */
     public function getFinalValue()
     {
@@ -151,11 +151,11 @@ class Choice extends AbstractType
     /**
      * Treat unknown values.
      *
-     * @throws \Berlioz\Form\Exception\TypeException
+     * @throws TypeException
      */
     private function treatUnknownValues()
     {
-        /** @var \Berlioz\Form\Transformer\ChoiceTransformerInterface $choiceTransformer */
+        /** @var ChoiceTransformerInterface $choiceTransformer */
         if (!(($choiceTransformer = $this->getOption('choice_transformer')) instanceof ChoiceTransformerInterface)) {
             return;
         }
@@ -184,8 +184,8 @@ class Choice extends AbstractType
     /**
      * Update selected choices.
      *
-     * @return \Berlioz\Form\Type\ChoiceValue[]
-     * @throws \Berlioz\Form\Exception\TypeException
+     * @return ChoiceValue[]
+     * @throws TypeException
      */
     private function updateSelectedChoices(): array
     {
@@ -256,7 +256,7 @@ class Choice extends AbstractType
      * @param int $index Index of choice
      *
      * @return null|mixed
-     * @throws \Berlioz\Form\Exception\TypeException
+     * @throws TypeException
      */
     private function choiceCallback(string $callbackName, $key, $value, int $index)
     {
@@ -313,8 +313,8 @@ class Choice extends AbstractType
      * @param int $index Index of choice
      * @param string|null $group Group of choice
      *
-     * @return \Berlioz\Form\Type\ChoiceValue
-     * @throws \Berlioz\Form\Exception\TypeException
+     * @return ChoiceValue
+     * @throws TypeException
      */
     private function buildChoiceValue($key, $value, int $index, ?string $group = null): ChoiceValue
     {
@@ -356,8 +356,8 @@ class Choice extends AbstractType
     /**
      * Build choices.
      *
-     * @return \Berlioz\Form\Type\ChoiceValue[]
-     * @throws \Berlioz\Form\Exception\TypeException
+     * @return ChoiceValue[]
+     * @throws TypeException
      */
     private function buildChoices(): array
     {
@@ -387,8 +387,8 @@ class Choice extends AbstractType
     /**
      * Build choices for view.
      *
-     * @return \Berlioz\Form\Type\ChoiceValue[][]
-     * @throws \Berlioz\Form\Exception\TypeException
+     * @return ChoiceValue[][]
+     * @throws TypeException
      */
     private function buildChoicesForView(): array
     {
@@ -436,7 +436,7 @@ class Choice extends AbstractType
 
     /**
      * @inheritdoc
-     * @throws \Berlioz\Form\Exception\TypeException
+     * @throws TypeException
      */
     public function build()
     {
@@ -447,7 +447,7 @@ class Choice extends AbstractType
 
     /**
      * @inheritdoc
-     * @throws \Berlioz\Form\Exception\TypeException
+     * @throws TypeException
      */
     public function buildView(): ViewInterface
     {

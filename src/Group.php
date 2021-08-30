@@ -54,7 +54,7 @@ class Group extends AbstractTraversableElement
             'children' => [],
         ];
 
-        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        /** @var ElementInterface $element */
         foreach ($this as $element) {
             $data['children'][$element->getName()] = $element;
         }
@@ -71,7 +71,7 @@ class Group extends AbstractTraversableElement
      *
      * @param object|null $object
      *
-     * @throws \Berlioz\Form\Exception\FormException
+     * @throws FormException
      */
     public function mapObject($object = null)
     {
@@ -137,7 +137,7 @@ class Group extends AbstractTraversableElement
             $options['name'] = $name;
             $this[$name] = new $class($options);
         } else {
-            /** @var \Berlioz\Form\Element\ElementInterface $class */
+            /** @var ElementInterface $class */
             foreach ($options as $optName => $optValue) {
                 $class->setOption($optName, $optValue);
             }
@@ -159,7 +159,7 @@ class Group extends AbstractTraversableElement
     {
         $values = [];
 
-        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        /** @var ElementInterface $element */
         foreach ($this as $element) {
             $values[$element->getName()] = $element->getValue();
         }
@@ -174,7 +174,7 @@ class Group extends AbstractTraversableElement
     {
         $values = [];
 
-        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        /** @var ElementInterface $element */
         foreach ($this as $element) {
             $values[$element->getName()] = $element->getFinalValue();
         }
@@ -191,7 +191,7 @@ class Group extends AbstractTraversableElement
             throw new FormException('Invalid type of value, array attempted');
         }
 
-        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        /** @var ElementInterface $element */
         foreach ($this as $element) {
             if (!array_key_exists($element->getName(), $values)) {
                 if ($element instanceof TraversableElementInterface) {
@@ -218,7 +218,7 @@ class Group extends AbstractTraversableElement
             throw new FormException('Invalid type of value, array attempted');
         }
 
-        /** @var \Berlioz\Form\Element\ElementInterface[] $this */
+        /** @var ElementInterface[] $this */
         foreach ($values as $name => $value) {
             if (isset($this[$name])) {
                 $this[$name]->setValue($value);

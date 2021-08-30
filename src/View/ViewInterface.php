@@ -38,7 +38,7 @@ interface ViewInterface
     /**
      * Set parent view.
      *
-     * @param \Berlioz\Form\View\TraversableView $parentView
+     * @param TraversableView $parentView
      *
      * @return static
      */

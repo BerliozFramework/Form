@@ -31,9 +31,9 @@ class TraversableView extends BasicView implements TraversableViewInterface
     /**
      * TraversableView constructor.
      *
-     * @param \Berlioz\Form\Element\TraversableElementInterface $src
+     * @param TraversableElementInterface $src
      * @param array $variables
-     * @param \Berlioz\Form\View\ViewInterface[] $list
+     * @param ViewInterface[] $list
      */
     public function __construct(TraversableElementInterface $src, array $variables = [], array $list = [])
     {
@@ -43,7 +43,7 @@ class TraversableView extends BasicView implements TraversableViewInterface
             array_filter(
                 $list,
                 function ($value) {
-                    /** @var \Berlioz\Form\View\ViewInterface $value */
+                    /** @var ViewInterface $value */
                     $value->setParentView($this);
 
                     return $value instanceof ViewInterface;
@@ -77,7 +77,7 @@ class TraversableView extends BasicView implements TraversableViewInterface
 
     /**
      * @inheritdoc
-     * @throws \Berlioz\Form\Exception\FormException
+     * @throws FormException
      */
     public function offsetSet($offset, $value)
     {
@@ -86,7 +86,7 @@ class TraversableView extends BasicView implements TraversableViewInterface
 
     /**
      * @inheritdoc
-     * @throws \Berlioz\Form\Exception\FormException
+     * @throws FormException
      */
     public function offsetUnset($offset)
     {
@@ -111,7 +111,7 @@ class TraversableView extends BasicView implements TraversableViewInterface
      * @param string $name
      *
      * @return mixed
-     * @throws \Berlioz\Form\Exception\FormException
+     * @throws FormException
      */
     public function __get(string $name)
     {
@@ -137,7 +137,7 @@ class TraversableView extends BasicView implements TraversableViewInterface
             return false;
         }
 
-        /** @var \Berlioz\Form\View\ViewInterface $view */
+        /** @var ViewInterface $view */
         foreach ($this as $view) {
             if (!$view->isInserted()) {
                 return false;

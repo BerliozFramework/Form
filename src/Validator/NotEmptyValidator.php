@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Form\Validator;
 
 use Berlioz\Form\Element\ElementInterface;
+use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\Constraint\NotEmptyConstraint;
 
 /**
@@ -29,7 +30,7 @@ class NotEmptyValidator extends AbstractValidator implements ValidatorInterface
      *
      * @param string $constraint Constraint class
      *
-     * @throws \Berlioz\Form\Exception\ValidatorException
+     * @throws ValidatorException
      */
     public function __construct(string $constraint = NotEmptyConstraint::class)
     {

@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Form;
 
 use Berlioz\Form\Collector\FormCollector;
+use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\Hydrator\FormHydrator;
 use Berlioz\Form\View\ViewInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -38,7 +39,7 @@ class Form extends Group
      * @param object|null $mapped Mapped object
      * @param array $options Options
      *
-     * @throws \Berlioz\Form\Exception\FormException
+     * @throws FormException
      */
     public function __construct(string $name, object $mapped = null, array $options = [])
     {
@@ -107,9 +108,9 @@ class Form extends Group
     /**
      * Handle form.
      *
-     * @param \Psr\Http\Message\ServerRequestInterface $request
+     * @param ServerRequestInterface $request
      *
-     * @throws \Berlioz\Form\Exception\FormException
+     * @throws FormException
      */
     public function handle(ServerRequestInterface $request)
     {

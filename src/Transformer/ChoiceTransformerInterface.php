@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Form\Transformer;
 
 use Berlioz\Form\Element\ElementInterface;
+use Berlioz\Form\Type\ChoiceValue;
 
 interface ChoiceTransformerInterface
 {
@@ -22,9 +23,9 @@ interface ChoiceTransformerInterface
      * Transform unknown choice values to ChoiceValue objects to add.
      *
      * @param array $choices
-     * @param \Berlioz\Form\Element\ElementInterface $element
+     * @param ElementInterface $element
      *
-     * @return \Berlioz\Form\Type\ChoiceValue[]
+     * @return ChoiceValue[]
      */
     public function toForm(array $choices, ElementInterface $element): array;
 }

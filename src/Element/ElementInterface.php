@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Berlioz\Form\Element;
 
+use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\Form;
 use Berlioz\Form\View\ViewInterface;
 
@@ -68,7 +69,7 @@ interface ElementInterface
      * @param string $name
      * @param mixed $value
      *
-     * @return \Berlioz\Form\Element\ElementInterface
+     * @return ElementInterface
      */
     public function setOption(string $name, $value);
 
@@ -79,14 +80,14 @@ interface ElementInterface
     /**
      * Get parent.
      *
-     * @return \Berlioz\Form\Element\ElementInterface|null
+     * @return ElementInterface|null
      */
     public function getParent(): ?ElementInterface;
 
     /**
      * Set parent.
      *
-     * @param \Berlioz\Form\Element\ElementInterface $parent
+     * @param ElementInterface $parent
      *
      * @return static
      */
@@ -95,7 +96,7 @@ interface ElementInterface
     /**
      * Get form.
      *
-     * @return \Berlioz\Form\Form|null
+     * @return Form|null
      */
     public function getForm(): ?Form;
 
@@ -130,7 +131,7 @@ interface ElementInterface
      * @param mixed $value
      *
      * @return static
-     * @throws \Berlioz\Form\Exception\FormException If given value is invalid
+     * @throws FormException If given value is invalid
      */
     public function setValue($value);
 
@@ -141,7 +142,7 @@ interface ElementInterface
      * @param mixed $value
      *
      * @return static
-     * @throws \Berlioz\Form\Exception\FormException If given value is invalid
+     * @throws FormException If given value is invalid
      */
     public function submitValue($value);
 
@@ -159,7 +160,7 @@ interface ElementInterface
     /**
      * Build view, returns array variables for templating.
      *
-     * @return \Berlioz\Form\View\ViewInterface
+     * @return ViewInterface
      */
     public function buildView(): ViewInterface;
 }

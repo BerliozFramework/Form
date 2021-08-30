@@ -21,7 +21,7 @@ class FormCollector extends GroupCollector
     /**
      * FormHydrator constructor.
      *
-     * @param \Berlioz\Form\Form $form
+     * @param Form $form
      */
     public function __construct(Form $form)
     {

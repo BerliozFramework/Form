@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Berlioz\Form\Validator;
 
+use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\Constraint\FormatConstraint;
 
 /**
@@ -30,7 +31,7 @@ class NumberFormatValidator extends FormatValidator
      *
      * @param string $constraint
      *
-     * @throws \Berlioz\Form\Exception\ValidatorException
+     * @throws ValidatorException
      */
     public function __construct(string $constraint = FormatConstraint::class)
     {

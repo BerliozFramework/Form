@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Berlioz\Form\Validator;
 
+use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\Constraint\FormatConstraint;
 
 /**
@@ -33,7 +34,7 @@ class EmailFormatValidator extends FormatValidator
      * @param bool $multiple
      * @param string $constraint
      *
-     * @throws \Berlioz\Form\Exception\ValidatorException
+     * @throws ValidatorException
      */
     public function __construct(bool $multiple = false, string $constraint = FormatConstraint::class)
     {

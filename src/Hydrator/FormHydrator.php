@@ -26,7 +26,7 @@ class FormHydrator extends GroupHydrator
     /**
      * FormHydrator constructor.
      *
-     * @param \Berlioz\Form\Form $form
+     * @param Form $form
      */
     public function __construct(Form $form)
     {

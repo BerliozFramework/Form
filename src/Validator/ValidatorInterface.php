@@ -15,6 +15,8 @@ declare(strict_types=1);
 namespace Berlioz\Form\Validator;
 
 use Berlioz\Form\Element\ElementInterface;
+use Berlioz\Form\Exception\ValidatorException;
+use Berlioz\Form\Validator\Constraint\ConstraintInterface;
 
 /**
  * Interface ValidatorInterface.
@@ -26,10 +28,10 @@ interface ValidatorInterface
     /**
      * Validate.
      *
-     * @param \Berlioz\Form\Element\ElementInterface $value
+     * @param ElementInterface $value
      *
-     * @return \Berlioz\Form\Validator\Constraint\ConstraintInterface[]
-     * @throws \Berlioz\Form\Exception\ValidatorException
+     * @return ConstraintInterface[]
+     * @throws ValidatorException
      */
     public function validate(ElementInterface $value): array;
 }

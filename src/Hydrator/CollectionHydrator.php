@@ -33,7 +33,7 @@ class CollectionHydrator extends AbstractHydrator
     /**
      * CollectionHydrator constructor.
      *
-     * @param \Berlioz\Form\Collection $collection
+     * @param Collection $collection
      */
     public function __construct(Collection $collection)
     {
@@ -42,7 +42,7 @@ class CollectionHydrator extends AbstractHydrator
 
     /**
      * @inheritdoc
-     * @return \Berlioz\Form\Collection
+     * @return Collection
      */
     public function getElement(): ElementInterface
     {
@@ -78,7 +78,7 @@ class CollectionHydrator extends AbstractHydrator
 
         // List submapped's key who need to be remove
         $removeKey = [];
-        foreach ($subMapped as $key=>$value) {
+        foreach ($subMapped as $key => $value) {
             if (!in_array($key, $submittedKeys)) {
                 $removeKey[] = $key;
             }
@@ -116,7 +116,11 @@ class CollectionHydrator extends AbstractHydrator
             try {
                 b_set_property_value($mapped, $propertyName, $subMapped);
             } catch (Exception $e) {
-                throw new HydratorException(sprintf('Unable to find property setter of "%s" on object "%s"', $propertyName, get_class($mapped)), 0, $e);
+                throw new HydratorException(
+                    sprintf('Unable to find property setter of "%s" on object "%s"', $propertyName, get_class($mapped)),
+                    0,
+                    $e
+                );
             }
         }
     }

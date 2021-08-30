@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Form\Validator;
 
 use Berlioz\Form\Element\ElementInterface;
+use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\Constraint\FormatConstraint;
 
 /**
@@ -33,7 +34,7 @@ class FormatValidator extends AbstractValidator implements ValidatorInterface
      * @param string $format Format (REGEX)
      * @param string $constraint Constraint class
      *
-     * @throws \Berlioz\Form\Exception\ValidatorException
+     * @throws ValidatorException
      */
     public function __construct(string $format, string $constraint = FormatConstraint::class)
     {

@@ -26,13 +26,13 @@ use Exception;
  */
 class TypeHydrator extends AbstractHydrator
 {
-    /** @var \Berlioz\Form\Type\TypeInterface Type */
+    /** @var TypeInterface Type */
     private $type;
 
     /**
      * TypeHydrator constructor.
      *
-     * @param \Berlioz\Form\Type\TypeInterface $type
+     * @param TypeInterface $type
      */
     public function __construct(TypeInterface $type)
     {
@@ -69,12 +69,18 @@ class TypeHydrator extends AbstractHydrator
 
         try {
             if (!b_set_property_value($mapped, $propertyName, $value)) {
-                throw new HydratorException(sprintf('Unable to set property "%s" on object "%s"', $propertyName, get_class($mapped)));
+                throw new HydratorException(
+                    sprintf('Unable to set property "%s" on object "%s"', $propertyName, get_class($mapped))
+                );
             }
         } catch (HydratorException $e) {
             throw $e;
         } catch (Exception $e) {
-            throw new HydratorException(sprintf('Unable to find property setter of "%s" on object "%s"', $propertyName, get_class($mapped)), 0, $e);
+            throw new HydratorException(
+                sprintf('Unable to find property setter of "%s" on object "%s"', $propertyName, get_class($mapped)),
+                0,
+                $e
+            );
         }
     }
 }

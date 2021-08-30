@@ -21,7 +21,7 @@ use InvalidArgumentException;
 
 abstract class AbstractTraversableElement extends AbstractElement implements TraversableElementInterface
 {
-    /** @var \Berlioz\Form\Element\ElementInterface[] Form elements */
+    /** @var ElementInterface[] Form elements */
     protected $list = [];
 
     /**
@@ -70,7 +70,9 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
     public function offsetSet($offset, $value): void
     {
         if (!$value instanceof ElementInterface) {
-            throw new InvalidArgumentException(sprintf('Form collection accept only "%s" class', ElementInterface::class));
+            throw new InvalidArgumentException(
+                sprintf('Form collection accept only "%s" class', ElementInterface::class)
+            );
         }
 
         if (is_null($offset) || mb_strlen((string)$offset) == 0) {
@@ -99,7 +101,7 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
      */
     public function build()
     {
-        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        /** @var ElementInterface $element */
         foreach ($this as $element) {
             $element->build();
         }

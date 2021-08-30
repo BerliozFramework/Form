@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Form\Type;
 
 use Berlioz\Form\Element\AbstractElement;
+use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\NotEmptyValidator;
 use Berlioz\Form\View\BasicView;
 use Berlioz\Form\View\ViewInterface;
@@ -114,7 +115,7 @@ abstract class AbstractType extends AbstractElement implements SimpleTypeInterfa
 
     /**
      * @inheritdoc
-     * @throws \Berlioz\Form\Exception\ValidatorException
+     * @throws ValidatorException
      */
     public function build()
     {

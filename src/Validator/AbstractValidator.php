@@ -32,7 +32,7 @@ abstract class AbstractValidator implements ValidatorInterface
      *
      * @param string $constraint Constraint class
      *
-     * @throws \Berlioz\Form\Exception\ValidatorException
+     * @throws ValidatorException
      */
     public function __construct(string $constraint)
     {

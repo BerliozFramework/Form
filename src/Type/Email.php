@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Berlioz\Form\Type;
 
+use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\EmailFormatValidator;
 use Berlioz\Form\Validator\FormatValidator;
 
@@ -38,7 +39,7 @@ class Email extends Text
 
     /**
      * @inheritdoc
-     * @throws \Berlioz\Form\Exception\ValidatorException
+     * @throws ValidatorException
      */
     public function build()
     {

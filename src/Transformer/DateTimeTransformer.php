@@ -15,10 +15,9 @@ declare(strict_types=1);
 namespace Berlioz\Form\Transformer;
 
 use Berlioz\Form\Element\ElementInterface;
-use Berlioz\Form\Type\Date;
-use Berlioz\Form\Type\Time;
 use DateTime;
 use DateTimeInterface;
+use Exception;
 
 /**
  * Class DateTimeTransformer.
@@ -41,7 +40,7 @@ class DateTimeTransformer implements TransformerInterface
 
     /**
      * @inheritdoc
-     * @throws \Exception
+     * @throws Exception
      */
     public function fromForm($data, ElementInterface $element)
     {

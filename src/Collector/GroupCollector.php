@@ -24,13 +24,13 @@ use Berlioz\Form\Group;
  */
 class GroupCollector extends AbstractCollector
 {
-    /** @var  \Berlioz\Form\Group Group */
+    /** @var  Group Group */
     private $group;
 
     /**
      * GroupCollector constructor.
      *
-     * @param \Berlioz\Form\Group $group
+     * @param Group $group
      */
     public function __construct(Group $group)
     {
@@ -39,7 +39,7 @@ class GroupCollector extends AbstractCollector
 
     /**
      * @inheritdoc
-     * @return \Berlioz\Form\Group
+     * @return Group
      */
     public function getElement(): ElementInterface
     {
@@ -64,7 +64,7 @@ class GroupCollector extends AbstractCollector
             $subMapped = $this->getSubMapped($this->getElement(), $mapped);
         }
 
-        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        /** @var ElementInterface $element */
         foreach ($this->group as $element) {
             if (!$element->getOption('mapped', false, true)) {
                 continue;

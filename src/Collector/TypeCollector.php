@@ -26,13 +26,13 @@ use Exception;
  */
 class TypeCollector extends AbstractCollector
 {
-    /** @var \Berlioz\Form\Type\TypeInterface Type */
+    /** @var TypeInterface Type */
     private $type;
 
     /**
      * TypeCollector constructor.
      *
-     * @param \Berlioz\Form\Type\TypeInterface $type
+     * @param TypeInterface $type
      */
     public function __construct(TypeInterface $type)
     {
@@ -41,7 +41,7 @@ class TypeCollector extends AbstractCollector
 
     /**
      * @inheritdoc
-     * @return \Berlioz\Form\Type\TypeInterface
+     * @return TypeInterface
      */
     public function getElement(): ElementInterface
     {
@@ -64,14 +64,24 @@ class TypeCollector extends AbstractCollector
             $value = b_get_property_value($mapped, $propertyName, $exists);
 
             if (!$exists) {
-                throw new CollectorException(sprintf('Unable to find getter method of "%s" property in mapped object "%s"', $propertyName, get_class($mapped)));
+                throw new CollectorException(
+                    sprintf(
+                        'Unable to find getter method of "%s" property in mapped object "%s"',
+                        $propertyName,
+                        get_class($mapped)
+                    )
+                );
             }
 
             return $value;
         } catch (CollectorException $e) {
             throw $e;
         } catch (Exception $e) {
-            throw new CollectorException(sprintf('Unable to find property getter of "%s" on object "%s"', $propertyName, get_class($mapped)), 0, $e);
+            throw new CollectorException(
+                sprintf('Unable to find property getter of "%s" on object "%s"', $propertyName, get_class($mapped)),
+                0,
+                $e
+            );
         }
     }
 }

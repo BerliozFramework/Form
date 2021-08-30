@@ -17,6 +17,7 @@ namespace Berlioz\Form;
 use Berlioz\Form\Element\AbstractTraversableElement;
 use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\FormException;
+use Berlioz\Form\View\TraversableView;
 use Berlioz\Form\View\ViewInterface;
 
 /**
@@ -26,7 +27,7 @@ use Berlioz\Form\View\ViewInterface;
  */
 class Collection extends AbstractTraversableElement
 {
-    /** @var \Berlioz\Form\Element\ElementInterface Prototype */
+    /** @var ElementInterface Prototype */
     protected $prototype;
     /** @var array Submitted keys */
     protected $submittedKeys = [];
@@ -36,7 +37,7 @@ class Collection extends AbstractTraversableElement
      *
      * @param array $options Options
      *
-     * @throws \Berlioz\Form\Exception\FormException
+     * @throws FormException
      */
     public function __construct(array $options = [])
     {
@@ -85,7 +86,7 @@ class Collection extends AbstractTraversableElement
             'children' => [],
         ];
 
-        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        /** @var ElementInterface $element */
         foreach ($this as $element) {
             $data['children'][] = $element;
         }
@@ -96,7 +97,7 @@ class Collection extends AbstractTraversableElement
     /**
      * Get index of form element.
      *
-     * @param \Berlioz\Form\Element\ElementInterface $element
+     * @param ElementInterface $element
      *
      * @return false|int|string
      */
@@ -142,7 +143,7 @@ class Collection extends AbstractTraversableElement
     /**
      * Get prototype.
      *
-     * @return \Berlioz\Form\Element\ElementInterface
+     * @return ElementInterface
      */
     public function getPrototype(): ElementInterface
     {
@@ -160,7 +161,7 @@ class Collection extends AbstractTraversableElement
     {
         $values = [];
 
-        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        /** @var ElementInterface $element */
         foreach ($this as $key => $element) {
             if (($form = $this->getForm()) &&
                 $form->isSubmitted() &&
@@ -181,7 +182,7 @@ class Collection extends AbstractTraversableElement
     {
         $values = [];
 
-        /** @var \Berlioz\Form\Element\ElementInterface $element */
+        /** @var ElementInterface $element */
         foreach ($this as $key => $element) {
             if (($form = $this->getForm()) &&
                 $form->isSubmitted() &&
@@ -214,7 +215,7 @@ class Collection extends AbstractTraversableElement
                 continue;
             }
 
-            /** @var \Berlioz\Form\Element\ElementInterface $element */
+            /** @var ElementInterface $element */
             if (isset($this[$key])) {
                 $element = $this[$key];
             } else {
@@ -264,7 +265,7 @@ class Collection extends AbstractTraversableElement
 
         // Add
         foreach ($values as $key => $value) {
-            /** @var \Berlioz\Form\Element\ElementInterface $element */
+            /** @var ElementInterface $element */
             if (isset($this[$key])) {
                 $element = $this[$key];
                 $element->submitValue($value);
@@ -291,7 +292,7 @@ class Collection extends AbstractTraversableElement
      */
     public function buildView(): ViewInterface
     {
-        /** @var \Berlioz\Form\View\TraversableView $view */
+        /** @var TraversableView $view */
         $view = parent::buildView();
         $view->mergeVars(
             [

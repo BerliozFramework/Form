@@ -24,9 +24,9 @@ use Berlioz\Form\Exception\FormException;
  */
 class BasicView implements ViewInterface
 {
-    /** @var \Berlioz\Form\Element\ElementInterface Source element */
+    /** @var ElementInterface Source element */
     private $src;
-    /** @var \Berlioz\Form\View\ViewInterface Parent view */
+    /** @var ViewInterface Parent view */
     private $parentView;
     /** @var string Render template */
     private $render;
@@ -38,7 +38,7 @@ class BasicView implements ViewInterface
     /**
      * BasicView constructor.
      *
-     * @param \Berlioz\Form\Element\ElementInterface $src
+     * @param ElementInterface $src
      * @param array $variables
      */
     public function __construct(ElementInterface $src, array $variables = [])
@@ -99,7 +99,7 @@ class BasicView implements ViewInterface
      * @param string $name
      *
      * @return mixed
-     * @throws \Berlioz\Form\Exception\FormException
+     * @throws FormException
      */
     public function __get(string $name)
     {
