@@ -2,7 +2,6 @@
 
 **Berlioz Form** is a PHP library to manage your forms.
 
-
 ## Installation
 
 ### Composer
@@ -15,7 +14,7 @@ $ composer require berlioz/form
 
 ### Dependencies
 
-* **PHP** ^7.2 || ^8.0
+* **PHP** ^8.0
 * Packages:
   * **berlioz/helpers**
   * **psr/http-message**
