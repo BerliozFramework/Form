@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -14,41 +14,33 @@ declare(strict_types=1);
 
 namespace Berlioz\Form\Hydrator;
 
-use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\HydratorException;
 use Berlioz\Form\Type\TypeInterface;
 use Exception;
 
-/**
- * Class TypeHydrator.
- */
 class TypeHydrator extends AbstractHydrator
 {
-    /** @var TypeInterface Type */
-    private $type;
-
     /**
      * TypeHydrator constructor.
      *
      * @param TypeInterface $type
      */
-    public function __construct(TypeInterface $type)
+    public function __construct(private TypeInterface $type)
     {
-        $this->type = $type;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getElement(): ElementInterface
+    public function getElement(): TypeInterface
     {
         return $this->type;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function hydrate(&$mapped = null)
+    public function hydrate(mixed &$mapped = null): void
     {
         if (null === $mapped) {
             return;

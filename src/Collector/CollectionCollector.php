@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -15,34 +15,31 @@ declare(strict_types=1);
 namespace Berlioz\Form\Collector;
 
 use Berlioz\Form\Collection;
-use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\CollectorException;
 
 class CollectionCollector extends AbstractCollector
 {
-    /** @var Collection Collection */
-    private $collection;
-
     /**
      * CollectionCollector constructor.
      *
      * @param Collection $collection
      */
-    public function __construct(Collection $collection)
+    public function __construct(private Collection $collection)
     {
-        $this->collection = $collection;
     }
 
     /**
-     * @inheritdoc
-     * @return Collection
+     * @inheritDoc
      */
-    public function getElement(): ElementInterface
+    public function getElement(): Collection
     {
         return $this->collection;
     }
 
-    public function collect($mapped = null)
+    /**
+     * @inheritDoc
+     */
+    public function collect(mixed $mapped = null): array
     {
         $subMapped = $this->getSubMapped($this->getElement(), $mapped);
 

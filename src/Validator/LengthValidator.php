@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,9 +18,6 @@ use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\Constraint\LengthConstraint;
 
-/**
- * Class LengthValidator.
- */
 class LengthValidator extends AbstractValidator implements ValidatorInterface
 {
     /**
@@ -36,7 +33,7 @@ class LengthValidator extends AbstractValidator implements ValidatorInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function validate(ElementInterface $element): array
     {
@@ -46,7 +43,7 @@ class LengthValidator extends AbstractValidator implements ValidatorInterface
         $minLength = $attributes['minlength'] ?? 0;
         $maxLength = $attributes['maxlength'] ?? null;
 
-        if (is_null($value) || $value == '') {
+        if ($value == '') {
             return [];
         }
 

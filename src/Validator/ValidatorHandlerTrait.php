@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -14,23 +14,17 @@ declare(strict_types=1);
 
 namespace Berlioz\Form\Validator;
 
-use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Element\TraversableElementInterface;
 use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\Constraint\BasicConstraint;
 use Berlioz\Form\Validator\Constraint\ConstraintInterface;
+use Closure;
 
-/**
- * Trait ValidatorHandlerTrait.
- */
 trait ValidatorHandlerTrait
 {
-    /** @var ValidatorInterface[] Validators */
-    protected $validators = [];
-    /** @var ConstraintInterface[] Constraints */
-    protected $invalidated = [];
-    /** @var ConstraintInterface[] Constraints */
-    protected $constraints = [];
+    private array $validators = [];
+    private array $invalidated = [];
+    private array $constraints = [];
 
     /**
      * Is valid?
@@ -40,36 +34,18 @@ trait ValidatorHandlerTrait
      */
     public function isValid(): bool
     {
-        if (!$this instanceof ElementInterface) {
-            throw new ValidatorException(sprintf('Trait must be used with "%s" objects', ElementInterface::class));
-        }
-
         $this->constraints = [];
 
+        /** @var ValidatorInterface|Closure $validator */
         foreach ($this->validators as $validator) {
-            $constraints = [];
-
-            if (is_callable($validator)) {
-                if ($result = call_user_func($validator, $this) !== true) {
-                    $constraints = [new BasicConstraint([], (is_string($result) ? $result : null))];
+            if ($validator instanceof Closure) {
+                if (true !== ($result = $validator->call($validator, $this))) {
+                    array_push($this->constraints, new BasicConstraint(message: (is_string($result) ? $result : null)));
                 }
-            } else {
-                if (!(is_object($validator) && is_a($validator, ValidatorInterface::class))) {
-                    throw new ValidatorException(
-                        sprintf(
-                            'Validators must be a callback or a valid "%s" class, "%s" given',
-                            ValidatorInterface::class,
-                            gettype($validator)
-                        )
-                    );
-                }
-
-                /** @var ValidatorInterface $validator */
-                /** @var ElementInterface $this */
-                $constraints = $validator->validate($this);
+                continue;
             }
 
-            $this->constraints = array_merge($this->constraints, $constraints);
+            array_push($this->constraints, ...$validator->validate($this));
         }
 
         if ($this instanceof TraversableElementInterface) {
@@ -77,47 +53,41 @@ trait ValidatorHandlerTrait
 
             /** @var ValidatorHandlerInterface $element */
             foreach ($this as $element) {
-                if (!$element->isValid()) {
+                if (false === $element->isValid()) {
                     $childrenValid = false;
                 }
             }
 
-            return $childrenValid && empty($this->getConstraints());
+            return $childrenValid && empty($this->constraints);
         }
 
-        return empty($this->getConstraints());
+        return empty($this->constraints);
     }
 
     /**
-     * Add validator.
-     *
-     * @param ValidatorInterface $validator
-     *
-     * @return static
+     * @inheritDoc
      */
-    public function addValidator(ValidatorInterface $validator)
+    public function addValidator(ValidatorInterface|Closure ...$validator): void
     {
-        if (($key = $this->hasValidator(get_class($validator))) !== false) {
-            unset($this->validators[$key]);
-        }
-
-        $this->validators[] = $validator;
-
-        return $this;
+        $validator = array_filter(
+            $validator,
+            fn($validator) => $validator instanceof Closure || false === $this->hasValidator($validator::class)
+        );
+        array_push($this->validators, ...$validator);
     }
 
     /**
-     * Has validator?
-     *
-     * @param string $validatorClass
-     *
-     * @return mixed|false
+     * @inheritDoc
      */
-    public function hasValidator(string $validatorClass)
+    public function hasValidator(ValidatorInterface|string $class): bool
     {
-        foreach ($this->validators as $key => $validator) {
-            if (is_a($validator, $validatorClass)) {
-                return $key;
+        if ($class instanceof ValidatorInterface) {
+            $class = $class::class;
+        }
+
+        foreach ($this->validators as $validator) {
+            if (is_a($validator, $class, true)) {
+                return true;
             }
         }
 
@@ -126,14 +96,10 @@ trait ValidatorHandlerTrait
 
     /**
      * Reset validators.
-     *
-     * @return static
      */
-    public function resetValidators()
+    public function resetValidators(): void
     {
         $this->validators = [];
-
-        return $this;
     }
 
     /**
@@ -148,27 +114,17 @@ trait ValidatorHandlerTrait
 
     /**
      * Reset constraints.
-     *
-     * @return static
      */
-    public function resetConstraints()
+    public function resetConstraints(): void
     {
         $this->constraints = [];
-
-        return $this;
     }
 
     /**
-     * Invalid.
-     *
-     * @param ConstraintInterface $constraint
-     *
-     * @return static
+     * @inheritDoc
      */
-    public function invalid(ConstraintInterface $constraint)
+    public function invalid(ConstraintInterface ...$constraint): void
     {
-        $this->invalidated[] = $constraint;
-
-        return $this;
+        array_push($this->invalidated, ...$constraint);
     }
 }

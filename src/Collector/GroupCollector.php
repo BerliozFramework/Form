@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -17,26 +17,19 @@ namespace Berlioz\Form\Collector;
 use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Group;
 
-/**
- * Class GroupCollector.
- */
 class GroupCollector extends AbstractCollector
 {
-    /** @var  Group Group */
-    private $group;
-
     /**
      * GroupCollector constructor.
      *
      * @param Group $group
      */
-    public function __construct(Group $group)
+    public function __construct(private Group $group)
     {
-        $this->group = $group;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @return Group
      */
     public function getElement(): ElementInterface
@@ -45,9 +38,9 @@ class GroupCollector extends AbstractCollector
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function collect($mapped = null)
+    public function collect(mixed $mapped = null): array
     {
         $collected = [];
         $subMapped = null;

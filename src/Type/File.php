@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -16,13 +16,10 @@ namespace Berlioz\Form\Type;
 
 use Berlioz\Form\View\ViewInterface;
 
-/**
- * Class File
- */
-class File extends AbstractType
+class File extends AbstractMultipleType
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getType(): string
     {
@@ -34,7 +31,7 @@ class File extends AbstractType
     /////////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getFormName(): ?string
     {
@@ -51,9 +48,9 @@ class File extends AbstractType
     /////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         $value = parent::getValue();
 
@@ -77,9 +74,9 @@ class File extends AbstractType
     /////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function build()
+    public function build(): void
     {
         parent::build();
 
@@ -91,7 +88,7 @@ class File extends AbstractType
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function buildView(): ViewInterface
     {

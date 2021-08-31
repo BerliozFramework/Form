@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,9 +18,6 @@ use ArrayIterator;
 use Berlioz\Form\Element\TraversableElementInterface;
 use Berlioz\Form\Exception\FormException;
 
-/**
- * Class TraversableView.
- */
 class TraversableView extends BasicView implements TraversableViewInterface
 {
     /** @var array List of sub elements */
@@ -37,28 +34,20 @@ class TraversableView extends BasicView implements TraversableViewInterface
     {
         parent::__construct($src, $variables);
 
-        $this->list =
-            array_filter(
-                $list,
-                function ($value) {
-                    /** @var ViewInterface $value */
-                    $value->setParentView($this);
-
-                    return $value instanceof ViewInterface;
-                }
-            );
+        $this->list = array_filter($this->list, fn($value) => $value instanceof ViewInterface);
+        array_walk($this->list, fn(ViewInterface $view) => $view->setParentView($this));
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->list);
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function offsetExists($offset): bool
     {
@@ -66,27 +55,27 @@ class TraversableView extends BasicView implements TraversableViewInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->list[$offset] ?? null;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @throws FormException
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new FormException('Not allowed to set element in view');
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @throws FormException
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         throw new FormException('Not allowed to unset element in view');
     }

@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -27,7 +27,8 @@ class TypeTest extends TestCase
         $this->assertFalse($type->isValid());
 
         // Add multiple option
-        $type->resetValidators()->resetConstraints();
+        $type->resetValidators();
+        $type->resetConstraints();
         $type->setOption('attributes', array_merge($type->getOption('attributes', []), ['multiple' => true]));
         $type->build();
 

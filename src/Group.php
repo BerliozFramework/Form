@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -21,13 +21,10 @@ use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\View\ViewInterface;
 use InvalidArgumentException;
 
-/**
- * Class Group.
- */
 class Group extends AbstractTraversableElement
 {
     /** @var object|array|null Mapped object or array */
-    protected $mapped;
+    protected array|object|null $mapped;
 
     /**
      * __clone() magic method.
@@ -84,11 +81,11 @@ class Group extends AbstractTraversableElement
     /**
      * Get mapped object.
      *
-     * @return object|null
+     * @return object|array|null
      */
-    public function getMappedObject()
+    public function getMappedObject(): object|array|null
     {
-        return $this->mapped;
+        return $this->mapped ?? null;
     }
 
     ///////////////////
@@ -96,14 +93,10 @@ class Group extends AbstractTraversableElement
     ///////////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function offsetSet($offset, $value): void
     {
-        if (!($value instanceof ElementInterface)) {
-            throw new InvalidArgumentException(sprintf('Form group accept only "%s" class', ElementInterface::class));
-        }
-
         if (!is_string($offset)) {
             throw new InvalidArgumentException('Elements in form group must be named');
         }
@@ -115,14 +108,14 @@ class Group extends AbstractTraversableElement
      * Add an element to group.
      *
      * @param string $name Name of element
-     * @param string|object $class Class name of element
+     * @param ElementInterface|string $class Class name of element
      * @param array $options Options of element
      *
      * @return static
      */
-    public function add(string $name, $class, array $options = [])
+    public function add(string $name, ElementInterface|string $class, array $options = []): static
     {
-        if (!(is_a($class, ElementInterface::class, true))) {
+        if (false === is_a($class, ElementInterface::class, true)) {
             throw new InvalidArgumentException(
                 sprintf(
                     'Class name must be a valid class/object and must be implements "%s" interface',
@@ -131,17 +124,30 @@ class Group extends AbstractTraversableElement
             );
         }
 
-        if (!is_object($class)) {
-            $options['name'] = $name;
-            $this[$name] = new $class($options);
-        } else {
+        if ($class instanceof ElementInterface) {
             /** @var ElementInterface $class */
-            foreach ($options as $optName => $optValue) {
-                $class->setOption($optName, $optValue);
-            }
             $class->setOption('name', $name);
             $this[$name] = $class;
+
+            return $this;
         }
+
+        $options['name'] = $name;
+        $this[$name] = new $class($options);
+
+        return $this;
+    }
+
+    /**
+     * Add element.
+     *
+     * @param ElementInterface $element
+     *
+     * @return $this
+     */
+    public function addElement(ElementInterface $element): static
+    {
+        $this[$element->getName()] = $element;
 
         return $this;
     }
@@ -151,9 +157,9 @@ class Group extends AbstractTraversableElement
     /////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getValue()
+    public function getValue(): array
     {
         $values = [];
 
@@ -166,9 +172,9 @@ class Group extends AbstractTraversableElement
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getFinalValue()
+    public function getFinalValue(): array
     {
         $values = [];
 
@@ -181,9 +187,9 @@ class Group extends AbstractTraversableElement
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function submitValue($values)
+    public function submitValue(mixed $values): void
     {
         if (!is_array($values)) {
             throw new FormException('Invalid type of value, array attempted');
@@ -203,14 +209,12 @@ class Group extends AbstractTraversableElement
 
             $element->submitValue($values[$element->getName()]);
         }
-
-        return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function setValue($values)
+    public function setValue(mixed $values): void
     {
         if (!is_array($values)) {
             throw new FormException('Invalid type of value, array attempted');
@@ -222,8 +226,6 @@ class Group extends AbstractTraversableElement
                 $this[$name]->setValue($value);
             }
         }
-
-        return $this;
     }
 
     /////////////
@@ -231,7 +233,7 @@ class Group extends AbstractTraversableElement
     /////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function buildView(): ViewInterface
     {

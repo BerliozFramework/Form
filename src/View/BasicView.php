@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -17,21 +17,11 @@ namespace Berlioz\Form\View;
 use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\FormException;
 
-/**
- * Class BasicView.
- */
 class BasicView implements ViewInterface
 {
-    /** @var ElementInterface Source element */
-    private $src;
-    /** @var ViewInterface Parent view */
-    private $parentView;
-    /** @var string Render template */
-    private $render;
-    /** @var array Options */
-    private $variables = [];
-    /** @var bool Inserted? */
-    private $inserted = false;
+    private ?ViewInterface $parentView = null;
+    private ?string $render = null;
+    private bool $inserted = false;
 
     /**
      * BasicView constructor.
@@ -39,40 +29,38 @@ class BasicView implements ViewInterface
      * @param ElementInterface $src
      * @param array $variables
      */
-    public function __construct(ElementInterface $src, array $variables = [])
-    {
-        $this->src = $src;
-        $this->variables = $variables;
+    public function __construct(
+        private ElementInterface $src,
+        private array $variables = [],
+    ) {
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getMapped(): ?object
     {
-        if (is_null($this->src->getForm())) {
+        if (null === $this->src->getForm()) {
             return null;
         }
 
         return $this->src->getForm()->getMappedObject();
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function getSrcType(): string
-    {
-        return get_class($this->src);
-    }
+//    /**
+//     * @inheritDoc
+//     */
+//    public function getSrcType(): string
+//    {
+//        return $this->src::class;
+//    }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function setParentView(TraversableView $parentView)
+    public function setParentView(TraversableView $parentView): void
     {
         $this->parentView = $parentView;
-
-        return $this;
     }
 
     /////////////////
@@ -109,15 +97,15 @@ class BasicView implements ViewInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getVar(string $name, $default = null)
+    public function getVar(string $name, mixed $default = null): mixed
     {
         return $this->variables[$name] ?? $default;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getVars(): array
     {
@@ -125,13 +113,11 @@ class BasicView implements ViewInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function mergeVars(array $variables)
+    public function mergeVars(array $variables): void
     {
         $this->variables = array_replace_recursive($this->variables, $variables);
-
-        return $this;
     }
 
     //////////////
@@ -139,29 +125,19 @@ class BasicView implements ViewInterface
     //////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getRender(): ?string
     {
-        if (!empty($this->render)) {
-            return $this->render;
-        }
-
-        if (!is_null($this->parentView)) {
-            return $this->parentView->getRender();
-        }
-
-        return null;
+        return $this->render ?: $this->parentView?->getRender() ?: null;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function setRender(?string $value)
+    public function setRender(?string $value): void
     {
         $this->render = $value;
-
-        return $this;
     }
 
     /////////////////
@@ -169,9 +145,7 @@ class BasicView implements ViewInterface
     /////////////////
 
     /**
-     * Is inserted?
-     *
-     * @return bool
+     * @inheritDoc
      */
     public function isInserted(): bool
     {
@@ -179,16 +153,10 @@ class BasicView implements ViewInterface
     }
 
     /**
-     * Set inserted.
-     *
-     * @param bool $inserted
-     *
-     * @return static
+     * @inheritDoc
      */
-    public function setInserted(bool $inserted = true)
+    public function setInserted(bool $inserted = true): void
     {
         $this->inserted = $inserted;
-
-        return $this;
     }
 }

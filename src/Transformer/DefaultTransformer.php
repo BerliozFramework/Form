@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -19,7 +19,7 @@ use Berlioz\Form\Element\ElementInterface;
 class DefaultTransformer implements TransformerInterface
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function toForm($data, ElementInterface $element)
     {
@@ -27,7 +27,7 @@ class DefaultTransformer implements TransformerInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function fromForm($data, ElementInterface $element)
     {

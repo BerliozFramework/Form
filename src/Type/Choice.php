@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -21,9 +21,6 @@ use Closure;
 use Exception;
 use Traversable;
 
-/**
- * Class Choice.
- */
 class Choice extends AbstractType
 {
     /** @var ChoiceValue[] Choices values */
@@ -44,7 +41,7 @@ class Choice extends AbstractType
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getType(): string
     {
@@ -73,10 +70,10 @@ class Choice extends AbstractType
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @throws TypeException
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         $value = [];
         $selectedChoicesValue = $this->updateSelectedChoices();
@@ -95,10 +92,10 @@ class Choice extends AbstractType
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @throws TypeException
      */
-    public function getFinalValue()
+    public function getFinalValue(): mixed
     {
         $value = [];
         $selectedChoices = $this->updateSelectedChoices();
@@ -117,9 +114,9 @@ class Choice extends AbstractType
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function setValue($value)
+    public function setValue(mixed $value): void
     {
         if (!is_array($value) && !$value instanceof Traversable) {
             $value = [$value];
@@ -127,14 +124,12 @@ class Choice extends AbstractType
 
         parent::setValue($value);
         $this->treatUnknownValues();
-
-        return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function submitValue($value)
+    public function submitValue($value): void
     {
         if (!is_array($value) && !$value instanceof Traversable) {
             $value = [$value];
@@ -142,8 +137,6 @@ class Choice extends AbstractType
 
         parent::submitValue($value);
         $this->treatUnknownValues();
-
-        return $this;
     }
 
     /**
@@ -433,10 +426,10 @@ class Choice extends AbstractType
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @throws TypeException
      */
-    public function build()
+    public function build(): void
     {
         parent::build();
         $this->updateSelectedChoices();
@@ -444,7 +437,7 @@ class Choice extends AbstractType
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @throws TypeException
      */
     public function buildView(): ViewInterface

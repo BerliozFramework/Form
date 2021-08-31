@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,15 +20,10 @@ use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\View\TraversableView;
 use Berlioz\Form\View\ViewInterface;
 
-/**
- * Class Collection.
- */
 class Collection extends AbstractTraversableElement
 {
-    /** @var ElementInterface Prototype */
-    protected $prototype;
-    /** @var array Submitted keys */
-    protected $submittedKeys = [];
+    protected ?ElementInterface $prototype = null;
+    protected array $submittedKeys = [];
 
     /**
      * Collection constructor.
@@ -153,9 +148,9 @@ class Collection extends AbstractTraversableElement
     /////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getValue()
+    public function getValue(): array
     {
         $values = [];
 
@@ -174,9 +169,9 @@ class Collection extends AbstractTraversableElement
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getFinalValue()
+    public function getFinalValue(): array
     {
         $values = [];
 
@@ -195,9 +190,9 @@ class Collection extends AbstractTraversableElement
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function setValue($values)
+    public function setValue(mixed $values): void
     {
         // Complete collection
         $this->completeCollection(count($values));
@@ -230,14 +225,12 @@ class Collection extends AbstractTraversableElement
 
         // Complete collection
         $this->completeCollection(count($values));
-
-        return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function submitValue($values)
+    public function submitValue($values): void
     {
         $values = (array)$values;
 
@@ -277,8 +270,6 @@ class Collection extends AbstractTraversableElement
             // Callback
             $this->callCallback('add', $this, $element);
         }
-
-        return $this;
     }
 
     /////////////
@@ -286,18 +277,23 @@ class Collection extends AbstractTraversableElement
     /////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function buildView(): ViewInterface
     {
         /** @var TraversableView $view */
         $view = parent::buildView();
+
+        $prototype = $this->getPrototype();
+        $prototypeView = $prototype?->buildView();
+        $prototypeView?->setParentView($view);
+
         $view->mergeVars(
             [
                 'type' => $this->getOption('type', 'collection'),
                 'id' => $this->getId(),
                 'name' => $this->getFormName(),
-                'prototype' => $this->getPrototype()->buildView()->setParentView($view),
+                'prototype' => $prototypeView,
                 'editable' => $this->getOption('editable', true),
                 'min_elements' => $this->getOption('min_elements'),
                 'max_elements' => $this->getOption('max_elements'),

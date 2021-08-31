@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -17,36 +17,29 @@ namespace Berlioz\Form\Hydrator;
 use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Group;
 
-/**
- * Class GroupHydrator.
- */
 class GroupHydrator extends AbstractHydrator
 {
-    /** @var Group Group */
-    private $group;
-
     /**
      * GroupHydrator constructor.
      *
      * @param Group $group
      */
-    public function __construct(Group $group)
+    public function __construct(private Group $group)
     {
-        $this->group = $group;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getElement(): ElementInterface
+    public function getElement(): Group
     {
         return $this->group;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function hydrate(&$mapped = null)
+    public function hydrate(mixed &$mapped = null): void
     {
         $subMapped = null;
 

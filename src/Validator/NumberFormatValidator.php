@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -17,12 +17,9 @@ namespace Berlioz\Form\Validator;
 use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\Constraint\FormatConstraint;
 
-/**
- * Class NumberFormatValidator.
- */
 class NumberFormatValidator extends FormatValidator
 {
-    const FORMAT = '/^-?[0-9]+(\.[0-9]+)?$/';
+    protected const FORMAT = '/^-?[0-9]+(\.[0-9]+)?$/';
 
     /**
      * EmailFormatValidator constructor.

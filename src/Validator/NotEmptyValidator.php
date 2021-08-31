@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,9 +18,6 @@ use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\Constraint\NotEmptyConstraint;
 
-/**
- * Class NotEmptyValidator.
- */
 class NotEmptyValidator extends AbstractValidator implements ValidatorInterface
 {
     /**
@@ -36,7 +33,7 @@ class NotEmptyValidator extends AbstractValidator implements ValidatorInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function validate(ElementInterface $element): array
     {
@@ -48,7 +45,7 @@ class NotEmptyValidator extends AbstractValidator implements ValidatorInterface
         }
 
         // Null?
-        if (is_null($value)) {
+        if (null === $value) {
             return [new $this->constraint()];
         }
 

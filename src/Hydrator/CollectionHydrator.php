@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,37 +20,29 @@ use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\HydratorException;
 use Exception;
 
-/**
- * Class CollectionHydrator.
- */
 class CollectionHydrator extends AbstractHydrator
 {
-    /** @var Collection Collection */
-    private $collection;
-
     /**
      * CollectionHydrator constructor.
      *
      * @param Collection $collection
      */
-    public function __construct(Collection $collection)
+    public function __construct(private Collection $collection)
     {
-        $this->collection = $collection;
     }
 
     /**
-     * @inheritdoc
-     * @return Collection
+     * @inheritDoc
      */
-    public function getElement(): ElementInterface
+    public function getElement(): Collection
     {
         return $this->collection;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function hydrate(&$mapped = null)
+    public function hydrate(mixed &$mapped = null): void
     {
         if (!$this->getElement()->getOption('mapped', true, true)) {
             return;
@@ -74,7 +66,7 @@ class CollectionHydrator extends AbstractHydrator
         // Get keys submit by form element
         $submittedKeys = array_keys($this->collection->getValue());
 
-        // List submapped's key who need to be remove
+        // List submapped's key who need to be removed
         $removeKey = [];
         foreach ($subMapped as $key => $value) {
             if (!in_array($key, $submittedKeys)) {

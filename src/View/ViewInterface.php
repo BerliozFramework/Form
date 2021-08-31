@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -27,20 +27,11 @@ interface ViewInterface
     public function getMapped(): ?object;
 
     /**
-     * Get source form element class name.
-     *
-     * @return string
-     */
-    public function getSrcType(): string;
-
-    /**
      * Set parent view.
      *
      * @param TraversableView $parentView
-     *
-     * @return static
      */
-    public function setParentView(TraversableView $parentView);
+    public function setParentView(TraversableView $parentView): void;
 
     /**
      * Get variable.
@@ -50,7 +41,7 @@ interface ViewInterface
      *
      * @return mixed
      */
-    public function getVar(string $name, $default = null);
+    public function getVar(string $name, mixed $default = null): mixed;
 
     /**
      * Get all variables.
@@ -70,19 +61,15 @@ interface ViewInterface
      * Set render template.
      *
      * @param string|null $value Template
-     *
-     * @return static
      */
-    public function setRender(?string $value);
+    public function setRender(?string $value): void;
 
     /**
      * Merge variables.
      *
      * @param array $variables
-     *
-     * @return static
      */
-    public function mergeVars(array $variables);
+    public function mergeVars(array $variables): void;
 
     /**
      * Is inserted?
@@ -95,8 +82,6 @@ interface ViewInterface
      * Set inserted.
      *
      * @param bool $inserted
-     *
-     * @return static
      */
-    public function setInserted(bool $inserted = true);
+    public function setInserted(bool $inserted = true): void;
 }

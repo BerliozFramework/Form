@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,15 +20,12 @@ use Berlioz\Form\Hydrator\FormHydrator;
 use Berlioz\Form\View\ViewInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * Class Form.
- */
 class Form extends Group
 {
     /** @var bool Submitted? */
-    protected $submitted = false;
+    protected bool $submitted = false;
     /** @var array Submitted data */
-    protected $submittedData = [];
+    protected array $submittedData = [];
 
     /**
      * Form constructor.
@@ -61,7 +58,7 @@ class Form extends Group
     /////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function buildView(): ViewInterface
     {

@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,17 +20,11 @@ use Berlioz\Form\Validator\NotEmptyValidator;
 use Berlioz\Form\View\BasicView;
 use Berlioz\Form\View\ViewInterface;
 
-/**
- * Class AbstractType.
- */
 abstract class AbstractType extends AbstractElement implements SimpleTypeInterface
 {
-    /** @var bool Submitted? */
-    protected $submitted = false;
-    /** @var mixed Submitted value */
-    protected $submittedValue;
-    /** @var mixed Value */
-    protected $value;
+    protected bool $submitted = false;
+    protected mixed $submittedValue = null;
+    protected mixed $value = null;
 
     /**
      * __clone() magic method.
@@ -50,7 +44,7 @@ abstract class AbstractType extends AbstractElement implements SimpleTypeInterfa
         return [
             'name' => $this->getName(),
             'value' => $this->getValue(),
-            'parent' => $this->getParent() ? $this->getParent()->getName() : null,
+            'parent' => $this->getParent()?->getName(),
             'options' => $this->options,
             'constraints' => $this->getConstraints(),
         ];
@@ -61,50 +55,32 @@ abstract class AbstractType extends AbstractElement implements SimpleTypeInterfa
     /////////////
 
     /**
-     * Is multiple?
-     *
-     * @return bool
+     * @inheritDoc
      */
-    protected function isMultiple(): bool
+    public function getValue(): mixed
     {
-        $attributes = $this->getOption('attributes', []);
-
-        return in_array($attributes['multiple'] ?? false, [true, 'multiple']);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getValue()
-    {
-        if ($form = $this->getForm()) {
-            if ($form->isSubmitted()) {
-                return $this->submittedValue;
-            }
+        if (true === $this->getForm()?->isSubmitted()) {
+            return $this->submittedValue;
         }
 
         return $this->value;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function submitValue($value)
+    public function submitValue(mixed $value): void
     {
         $this->submitted = true;
         $this->submittedValue = $value;
-
-        return $this;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function setValue($value)
+    public function setValue(mixed $value): void
     {
         $this->value = $this->getTransformer()->toForm($value, $this);
-
-        return $this;
     }
 
     /////////////
@@ -112,10 +88,10 @@ abstract class AbstractType extends AbstractElement implements SimpleTypeInterfa
     /////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @throws ValidatorException
      */
-    public function build()
+    public function build(): void
     {
         // Validator
         if ($this->hasValidator(NotEmptyValidator::class) === false) {
@@ -124,7 +100,7 @@ abstract class AbstractType extends AbstractElement implements SimpleTypeInterfa
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function buildView(): ViewInterface
     {

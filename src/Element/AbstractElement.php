@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -22,48 +22,25 @@ use Berlioz\Form\Transformer\DefaultTransformer;
 use Berlioz\Form\Transformer\TransformerInterface;
 use Berlioz\Form\Validator\ValidatorHandlerInterface;
 use Berlioz\Form\Validator\ValidatorHandlerTrait;
-use ReflectionException;
+use Exception;
 
 abstract class AbstractElement implements ElementInterface, ValidatorHandlerInterface
 {
-    const DEFAULT_TRANSFORMER = DefaultTransformer::class;
-    const DEFAULT_VALIDATORS = [];
     use ValidatorHandlerTrait;
 
-    /** @var array Options */
-    protected $options;
-    /** @var TransformerInterface Transformer */
-    protected $transformer;
-    /** @var ElementInterface Parent element */
-    protected $parent;
+    protected TransformerInterface $transformer;
+    protected ?ElementInterface $parent = null;
 
     /**
      * Element constructor.
      *
      * @param array $options Options
      */
-    public function __construct(array $options = [])
-    {
-        $this->options = $options;
-
-        // Transformer?
-        if (isset($this->options['transformer'])) {
-            $this->setTransformer($this->options['transformer']);
-            unset($this->options['transformer']);
-        }
-
-        // Validators?
-        if (isset($this->options['validators'])) {
-            if (!is_array($this->options['validators'])) {
-                $this->options['validators'] = [$this->options['validators']];
-            }
-
-            foreach ($this->options['validators'] as $validator) {
-                $this->addValidator($validator);
-            }
-
-            unset($this->options['validators']);
-        }
+    public function __construct(
+        protected array $options = [],
+    ) {
+        $this->addValidator(...($options['validators'] ?? []));
+        $this->transformer = $options['transformer'] ?? new DefaultTransformer();
     }
 
     /////////////////
@@ -77,7 +54,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
      */
     public function getId(): ?string
     {
-        if (is_null($parent = $this->getParent())) {
+        if (null === ($parent = $this->getParent())) {
             return $this->getName();
         }
 
@@ -93,9 +70,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     }
 
     /**
-     * Get name.
-     *
-     * @return string|null
+     * @inheritDoc
      */
     public function getName(): ?string
     {
@@ -109,17 +84,17 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
      */
     public function getFormName(): ?string
     {
-        $parent = $this->getParent();
-
-        if (is_null($parent)) {
+        // No parent
+        if (null === ($parent = $this->getParent())) {
             return $this->getName();
         }
 
-        // Parent collection?
+        // Parent is a collection?
         if ($parent instanceof Collection) {
             return sprintf('%s[%s]', $parent->getFormName(), $parent->indexOf($this));
         }
 
+        // No name
         if (null === $this->getName()) {
             return $parent->getFormName();
         }
@@ -134,10 +109,10 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     /**
      * Get mapped.
      *
-     * @return mixed|null
-     * @throws ReflectionException
+     * @return mixed
+     * @throws FormException
      */
-    public function getMapped()
+    public function getMapped(): mixed
     {
         // Element has mapped element
         if ($this instanceof Group) {
@@ -169,7 +144,14 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
             return null;
         }
 
-        return b_get_property_value($mapped, $this->getName());
+        try {
+            return b_get_property_value($mapped, $this->getName());
+        } catch (Exception $exception) {
+            throw new FormException(
+                sprintf('Unable to get value of "%s" input', $this->getName()),
+                previous: $exception
+            );
+        }
     }
 
     ///////////////
@@ -202,30 +184,27 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
      * @param mixed $default Default value
      * @param bool $inherit Inherit option? (default: false)
      *
-     * @return mixed|null
+     * @return mixed
      */
-    public function getOption(string $name, $default = null, bool $inherit = false)
+    public function getOption(string $name, mixed $default = null, bool $inherit = false): mixed
     {
-        if (isset($this->options[$name]) || $inherit === false || is_null($this->getParent())) {
-            return $this->options[$name] ?? $default;
-        } else {
-            return $this->getParent()->getOption($name, $default, $inherit);
+        if (null !== ($value = b_array_traverse_get($this->options, $name))) {
+            return $value;
         }
+
+        if (true === $inherit) {
+            return $this->parent?->getOption($name, $default, $inherit) ?? $default;
+        }
+
+        return $default;
     }
 
     /**
-     * Set option.
-     *
-     * @param string $name
-     * @param mixed $value
-     *
-     * @return static
+     * @inheritDoc
      */
-    public function setOption(string $name, $value)
+    public function setOption(string $name, mixed $value): void
     {
-        $this->options[$name] = $value;
-
-        return $this;
+        b_array_traverse_set($this->options, $name, $value);
     }
 
     ///////////////
@@ -233,9 +212,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     ///////////////
 
     /**
-     * Get parent.
-     *
-     * @return ElementInterface|null
+     * @inheritDoc
      */
     public function getParent(): ?ElementInterface
     {
@@ -243,17 +220,11 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     }
 
     /**
-     * Set parent.
-     *
-     * @param ElementInterface|null $parent
-     *
-     * @return static
+     * @inheritDoc
      */
-    public function setParent(?ElementInterface $parent)
+    public function setParent(?ElementInterface $parent): void
     {
         $this->parent = $parent;
-
-        return $this;
     }
 
     /**
@@ -266,10 +237,14 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
         $parent = $this;
 
         do {
-            if (!is_null($parent) && is_null($parent->getParent()) && $parent instanceof Form) {
+            if (null !== ($parent->getParent())) {
+                continue;
+            }
+
+            if ($parent instanceof Form) {
                 return $parent;
             }
-        } while (!is_null($parent = $parent->getParent()));
+        } while (null !== ($parent = $parent->getParent()));
 
         return null;
     }
@@ -321,11 +296,6 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
      */
     public function getTransformer(): TransformerInterface
     {
-        if (is_null($this->transformer)) {
-            $defaultTransformer = static::DEFAULT_TRANSFORMER;
-            $this->transformer = new $defaultTransformer();
-        }
-
         return $this->transformer;
     }
 
@@ -348,9 +318,9 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     /////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getFinalValue()
+    public function getFinalValue(): mixed
     {
         return $this->getTransformer()->fromForm($this->getValue(), $this);
     }

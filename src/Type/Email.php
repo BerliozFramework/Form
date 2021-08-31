@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,13 +18,10 @@ use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\EmailFormatValidator;
 use Berlioz\Form\Validator\FormatValidator;
 
-/**
- * Class Email
- */
-class Email extends Text
+class Email extends AbstractMultipleType
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getType(): string
     {
@@ -36,10 +33,10 @@ class Email extends Text
     /////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @throws ValidatorException
      */
-    public function build()
+    public function build(): void
     {
         parent::build();
 

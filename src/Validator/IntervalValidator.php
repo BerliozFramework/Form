@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,9 +18,6 @@ use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\Constraint\IntervalConstraint;
 
-/**
- * Class IntervalValidator.
- */
 class IntervalValidator extends AbstractValidator implements ValidatorInterface
 {
     /**
@@ -36,7 +33,7 @@ class IntervalValidator extends AbstractValidator implements ValidatorInterface
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function validate(ElementInterface $element): array
     {
@@ -45,12 +42,12 @@ class IntervalValidator extends AbstractValidator implements ValidatorInterface
         $minValue = $attributes['min'] ?? null;
         $maxValue = $attributes['max'] ?? null;
 
-        if (is_null($value) || $value === '') {
+        if ($value == '') {
             return [];
         }
 
-        if ((!is_null($minValue) && (string)$value < (string)$minValue) ||
-            (!is_null($maxValue) && (string)$value > (string)$maxValue)) {
+        if ((null !== $minValue && (string)$value < (string)$minValue) ||
+            (null !== $maxValue && (string)$value > (string)$maxValue)) {
             return [
                 new $this->constraint(
                     [

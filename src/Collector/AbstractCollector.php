@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -21,12 +21,8 @@ use Berlioz\Form\Group;
 use Berlioz\Form\Type\TypeInterface;
 use Exception;
 
-/**
- * Class AbstractCollector.
- */
 abstract class AbstractCollector implements CollectorInterface
 {
-
     /**
      * Get mapped sub object.
      *
@@ -36,7 +32,7 @@ abstract class AbstractCollector implements CollectorInterface
      * @return mixed
      * @throws CollectorException
      */
-    protected function getSubMapped(ElementInterface $element, object $mapped)
+    protected function getSubMapped(ElementInterface $element, object $mapped): mixed
     {
         if (is_null($element->getName())) {
             return $mapped;
@@ -52,13 +48,14 @@ abstract class AbstractCollector implements CollectorInterface
             }
 
             return null;
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             throw new CollectorException(
-                sprintf(
-                    'Unable to find getter method of "%s" property on object "%s"',
-                    $element->getName(),
-                    get_class($mapped)
-                ), 0, $e
+                message:  sprintf(
+                              'Unable to find getter method of "%s" property on object "%s"',
+                              $element->getName(),
+                              get_class($mapped)
+                          ),
+                previous: $exception
             );
         }
     }

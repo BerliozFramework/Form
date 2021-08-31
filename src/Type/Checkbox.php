@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -17,15 +17,15 @@ namespace Berlioz\Form\Type;
 use Berlioz\Form\Transformer\CheckboxTransformer;
 use Berlioz\Form\View\ViewInterface;
 
-/**
- * Class Checkbox.
- */
 class Checkbox extends AbstractType
 {
-    const DEFAULT_TRANSFORMER = CheckboxTransformer::class;
+    public function __construct(array $options = [])
+    {
+        parent::__construct(array_replace(['transformer' => new CheckboxTransformer()], $options));
+    }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getType(): string
     {
@@ -37,7 +37,7 @@ class Checkbox extends AbstractType
     /////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function buildView(): ViewInterface
     {

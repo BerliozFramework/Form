@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -14,13 +14,10 @@ declare(strict_types=1);
 
 namespace Berlioz\Form\Type;
 
-/**
- * Class Range.
- */
 class Range extends AbstractType
 {
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getType(): string
     {

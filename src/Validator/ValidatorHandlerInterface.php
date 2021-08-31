@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -31,20 +31,18 @@ interface ValidatorHandlerInterface
     /**
      * Add validator.
      *
-     * @param ValidatorInterface $validator
-     *
-     * @return $this
+     * @param ValidatorInterface ...$validator
      */
-    public function addValidator(ValidatorInterface $validator);
+    public function addValidator(ValidatorInterface ...$validator): void;
 
     /**
      * Has validator?
      *
-     * @param string $validatorClass
+     * @param ValidatorInterface|string $class
      *
-     * @return mixed|false
+     * @return bool
      */
-    public function hasValidator(string $validatorClass);
+    public function hasValidator(ValidatorInterface|string $class): bool;
 
     /**
      * Get not respected constraints.
@@ -56,9 +54,7 @@ interface ValidatorHandlerInterface
     /**
      * Invalid.
      *
-     * @param ConstraintInterface $constraint
-     *
-     * @return $this
+     * @param ConstraintInterface ...$constraint
      */
-    public function invalid(ConstraintInterface $constraint);
+    public function invalid(ConstraintInterface ...$constraint): void;
 }

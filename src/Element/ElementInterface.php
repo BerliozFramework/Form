@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -59,19 +59,17 @@ interface ElementInterface
      * @param mixed $default Default value
      * @param bool $inherit Inherit option? (default: false)
      *
-     * @return mixed|null
+     * @return mixed
      */
-    public function getOption(string $name, $default = null, bool $inherit = false);
+    public function getOption(string $name, mixed $default = null, bool $inherit = false): mixed;
 
     /**
      * Set option.
      *
      * @param string $name
      * @param mixed $value
-     *
-     * @return ElementInterface
      */
-    public function setOption(string $name, $value);
+    public function setOption(string $name, mixed $value): void;
 
     ///////////////
     /// PARENTS ///
@@ -87,11 +85,9 @@ interface ElementInterface
     /**
      * Set parent.
      *
-     * @param ElementInterface $parent
-     *
-     * @return static
+     * @param ElementInterface|null $parent
      */
-    public function setParent(ElementInterface $parent);
+    public function setParent(?ElementInterface $parent): void;
 
     /**
      * Get form.
@@ -110,9 +106,9 @@ interface ElementInterface
      *
      * Returns null if no value found.
      *
-     * @return mixed|null
+     * @return mixed
      */
-    public function getValue();
+    public function getValue(): mixed;
 
     /**
      * Get final value.
@@ -120,9 +116,9 @@ interface ElementInterface
      *
      * Returns null if no value found.
      *
-     * @return mixed|null
+     * @return mixed
      */
-    public function getFinalValue();
+    public function getFinalValue(): mixed;
 
     /**
      * Set value.
@@ -130,10 +126,9 @@ interface ElementInterface
      *
      * @param mixed $value
      *
-     * @return static
      * @throws FormException If given value is invalid
      */
-    public function setValue($value);
+    public function setValue(mixed $value): void;
 
     /**
      * Submit value.
@@ -141,10 +136,9 @@ interface ElementInterface
      *
      * @param mixed $value
      *
-     * @return static
      * @throws FormException If given value is invalid
      */
-    public function submitValue($value);
+    public function submitValue(mixed $value): void;
 
     /////////////
     /// BUILD ///
@@ -155,7 +149,7 @@ interface ElementInterface
      *
      * @return void
      */
-    public function build();
+    public function build(): void;
 
     /**
      * Build view, returns array variables for templating.

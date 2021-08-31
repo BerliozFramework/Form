@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -20,15 +20,12 @@ use Berlioz\Form\Validator\FormatValidator;
 use Berlioz\Form\Validator\IntervalValidator;
 use Berlioz\Form\Validator\NumberFormatValidator;
 
-/**
- * Class Number.
- */
 class Number extends AbstractType
 {
     const DEFAULT_TRANSFORMER = NumberTransformer::class;
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getType(): string
     {
@@ -36,10 +33,10 @@ class Number extends AbstractType
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * @throws ValidatorException
      */
-    public function build()
+    public function build(): void
     {
         parent::build();
 

@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -18,14 +18,8 @@ use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\Constraint\FormatConstraint;
 
-/**
- * Class FormatValidator.
- */
 class FormatValidator extends AbstractValidator implements ValidatorInterface
 {
-    /** @var string Format */
-    private $format;
-
     /**
      * FormatValidator constructor.
      *
@@ -34,14 +28,13 @@ class FormatValidator extends AbstractValidator implements ValidatorInterface
      *
      * @throws ValidatorException
      */
-    public function __construct(string $format, string $constraint = FormatConstraint::class)
+    public function __construct(private string $format, string $constraint = FormatConstraint::class)
     {
         parent::__construct($constraint);
-        $this->format = $format;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function validate(ElementInterface $element): array
     {
@@ -53,12 +46,7 @@ class FormatValidator extends AbstractValidator implements ValidatorInterface
         }
 
         if (preg_match($this->format, $value) !== 1) {
-            $constraints[] =
-                new $this->constraint(
-                    [
-                        'format' => $this->format,
-                    ]
-                );
+            $constraints[] = new $this->constraint(['format' => $this->format]);
         }
 
         return $constraints;

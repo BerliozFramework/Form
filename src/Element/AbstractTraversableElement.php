@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -21,8 +21,7 @@ use InvalidArgumentException;
 
 abstract class AbstractTraversableElement extends AbstractElement implements TraversableElementInterface
 {
-    /** @var ElementInterface[] Form elements */
-    protected $list = [];
+    protected array $list = [];
 
     /**
      * Empty list.
@@ -33,7 +32,7 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function getIterator(): ArrayIterator
     {
@@ -41,7 +40,7 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function count(): int
     {
@@ -49,7 +48,7 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function offsetExists($offset): bool
     {
@@ -57,22 +56,20 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function offsetGet($offset): ?ElementInterface
     {
-        return isset($this->list[$offset]) ? $this->list[$offset] : null;
+        return $this->list[$offset] ?? null;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function offsetSet($offset, $value): void
     {
         if (!$value instanceof ElementInterface) {
-            throw new InvalidArgumentException(
-                sprintf('Form collection accept only "%s" class', ElementInterface::class)
-            );
+            throw new InvalidArgumentException(sprintf('Accept only "%s" class', ElementInterface::class));
         }
 
         if (is_null($offset) || mb_strlen((string)$offset) == 0) {
@@ -85,7 +82,7 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function offsetUnset($offset): void
     {
@@ -97,9 +94,9 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
     /////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function build()
+    public function build(): void
     {
         /** @var ElementInterface $element */
         foreach ($this as $element) {
@@ -108,17 +105,11 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public function buildView(): ViewInterface
     {
-        $list =
-            array_map(
-                function (ElementInterface $element) {
-                    return $element->buildView();
-                },
-                $this->list
-            );
+        $list = array_map(fn(ElementInterface $element) => $element->buildView(), $this->list);
 
         return new TraversableView(
             $this,

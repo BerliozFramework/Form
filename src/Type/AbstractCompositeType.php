@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2017 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -17,9 +17,6 @@ namespace Berlioz\Form\Type;
 use Berlioz\Form\Element\AbstractElement;
 use Berlioz\Form\Group;
 
-/**
- * Class AbstractCompositeType.
- */
 abstract class AbstractCompositeType extends Group implements TypeInterface
 {
     /////////////
@@ -27,9 +24,9 @@ abstract class AbstractCompositeType extends Group implements TypeInterface
     /////////////
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function getFinalValue()
+    public function getFinalValue(): array
     {
         return AbstractElement::getFinalValue();
     }

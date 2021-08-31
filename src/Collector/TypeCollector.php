@@ -1,9 +1,9 @@
 <?php
-/**
+/*
  * This file is part of Berlioz framework.
  *
  * @license   https://opensource.org/licenses/MIT MIT License
- * @copyright 2019 Ronan GIRON
+ * @copyright 2021 Ronan GIRON
  * @author    Ronan GIRON <https://github.com/ElGigi>
  *
  * For the full copyright and license information, please view the LICENSE
@@ -14,42 +14,33 @@ declare(strict_types=1);
 
 namespace Berlioz\Form\Collector;
 
-use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\CollectorException;
 use Berlioz\Form\Type\TypeInterface;
 use Exception;
 
-/**
- * Class TypeCollector.
- */
 class TypeCollector extends AbstractCollector
 {
-    /** @var TypeInterface Type */
-    private $type;
-
     /**
      * TypeCollector constructor.
      *
      * @param TypeInterface $type
      */
-    public function __construct(TypeInterface $type)
+    public function __construct(private TypeInterface $type)
     {
-        $this->type = $type;
     }
 
     /**
-     * @inheritdoc
-     * @return TypeInterface
+     * @inheritDoc
      */
-    public function getElement(): ElementInterface
+    public function getElement(): TypeInterface
     {
         return $this->type;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
-    public function collect($mapped = null)
+    public function collect(mixed $mapped = null): mixed
     {
         if (null === $mapped) {
             return null;
@@ -72,13 +63,16 @@ class TypeCollector extends AbstractCollector
             }
 
             return $value;
-        } catch (CollectorException $e) {
-            throw $e;
-        } catch (Exception $e) {
+        } catch (CollectorException $exception) {
+            throw $exception;
+        } catch (Exception $exception) {
             throw new CollectorException(
-                sprintf('Unable to find property getter of "%s" on object "%s"', $propertyName, get_class($mapped)),
-                0,
-                $e
+                          sprintf(
+                              'Unable to find property getter of "%s" on object "%s"',
+                              $propertyName,
+                              get_class($mapped)
+                          ),
+                previous: $exception
             );
         }
     }

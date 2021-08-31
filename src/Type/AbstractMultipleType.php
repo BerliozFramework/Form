@@ -14,13 +14,15 @@ declare(strict_types=1);
 
 namespace Berlioz\Form\Type;
 
-class Week extends AbstractType
+abstract class AbstractMultipleType extends AbstractType implements MultipleTypeInterface
 {
     /**
-     * @inheritDoc
+     * Is multiple?
+     *
+     * @return bool
      */
-    public function getType(): string
+    public function isMultiple(): bool
     {
-        return 'week';
+        return true === $this->getOption('attributes.multiple', false);
     }
 }
