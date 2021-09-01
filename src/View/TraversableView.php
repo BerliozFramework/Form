@@ -20,9 +20,6 @@ use Berlioz\Form\Exception\FormException;
 
 class TraversableView extends BasicView implements TraversableViewInterface
 {
-    /** @var array List of sub elements */
-    private $list = [];
-
     /**
      * TraversableView constructor.
      *
@@ -30,8 +27,11 @@ class TraversableView extends BasicView implements TraversableViewInterface
      * @param array $variables
      * @param ViewInterface[] $list
      */
-    public function __construct(TraversableElementInterface $src, array $variables = [], array $list = [])
-    {
+    public function __construct(
+        TraversableElementInterface $src,
+        array $variables = [],
+        private array $list = []
+    ) {
         parent::__construct($src, $variables);
 
         $this->list = array_filter($this->list, fn($value) => $value instanceof ViewInterface);
