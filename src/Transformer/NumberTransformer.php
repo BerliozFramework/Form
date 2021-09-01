@@ -21,7 +21,7 @@ class NumberTransformer implements TransformerInterface
     /**
      * @inheritDoc
      */
-    public function toForm($data, ElementInterface $element)
+    public function toForm(mixed $data, ElementInterface $element): ?float
     {
         if (is_null($data) || $data === '') {
             return null;
@@ -33,7 +33,7 @@ class NumberTransformer implements TransformerInterface
     /**
      * @inheritDoc
      */
-    public function fromForm($data, ElementInterface $element)
+    public function fromForm(mixed $data, ElementInterface $element): mixed
     {
         return $this->toForm($data, $element);
     }

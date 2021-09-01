@@ -24,7 +24,7 @@ class DateTimeTransformer implements TransformerInterface
     /**
      * @inheritDoc
      */
-    public function toForm($data, ElementInterface $element)
+    public function toForm(mixed $data, ElementInterface $element): mixed
     {
         if ($data instanceof DateTimeInterface) {
             return $data->format($element->getOption('format', 'Y-m-d H:i:s'));
@@ -37,7 +37,7 @@ class DateTimeTransformer implements TransformerInterface
      * @inheritDoc
      * @throws Exception
      */
-    public function fromForm($data, ElementInterface $element)
+    public function fromForm(mixed $data, ElementInterface $element): ?DateTime
     {
         if (is_string($data) && $data != '') {
             return new DateTime($data);

@@ -21,7 +21,7 @@ class DefaultTransformer implements TransformerInterface
     /**
      * @inheritDoc
      */
-    public function toForm($data, ElementInterface $element)
+    public function toForm(mixed $data, ElementInterface $element): mixed
     {
         return $data;
     }
@@ -29,7 +29,7 @@ class DefaultTransformer implements TransformerInterface
     /**
      * @inheritDoc
      */
-    public function fromForm($data, ElementInterface $element)
+    public function fromForm(mixed $data, ElementInterface $element): mixed
     {
         return $data;
     }

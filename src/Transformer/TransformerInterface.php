@@ -26,7 +26,7 @@ interface TransformerInterface
      *
      * @return mixed
      */
-    public function toForm($data, ElementInterface $element);
+    public function toForm(mixed $data, ElementInterface $element): mixed;
 
     /**
      * Transform data from form.
@@ -36,5 +36,5 @@ interface TransformerInterface
      *
      * @return mixed
      */
-    public function fromForm($data, ElementInterface $element);
+    public function fromForm(mixed $data, ElementInterface $element): mixed;
 }
