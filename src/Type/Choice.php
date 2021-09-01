@@ -23,10 +23,8 @@ use Traversable;
 
 class Choice extends AbstractType
 {
-    /** @var ChoiceValue[] Choices values */
-    private $choices;
-    /** @var ChoiceValue[] Additional choices values */
-    private $additionalChoices = [];
+    private array $choices;
+    private array $additionalChoices = [];
 
     /**
      * Choice constructor.
@@ -197,7 +195,8 @@ class Choice extends AbstractType
                 continue;
             }
 
-            $found[] = $choiceValue->setSelected(true);
+            $choiceValue->setSelected(true);
+            $found[] = $choiceValue;
         }
 
         return $found;
@@ -210,7 +209,7 @@ class Choice extends AbstractType
      */
     private function updatePreferredChoices()
     {
-        $preferredChoices = $this->getOption('preferred_choices', null);
+        $preferredChoices = $this->getOption('preferred_choices');
 
         $index = 0;
         foreach ($this->buildChoices() as $choiceValue) {
@@ -246,10 +245,10 @@ class Choice extends AbstractType
      * @param mixed $value Value of choice
      * @param int $index Index of choice
      *
-     * @return null|mixed
+     * @return mixed
      * @throws TypeException
      */
-    private function choiceCallback(string $callbackName, $key, $value, int $index)
+    private function choiceCallback(string $callbackName, int|string $key, mixed $value, int $index): mixed
     {
         if (is_null($callback = $this->getOption($callbackName))) {
             return null;
@@ -275,9 +274,14 @@ class Choice extends AbstractType
                 $exists = false;
                 try {
                     $result = b_get_property_value($value, $callback, $exists);
-                } catch (Exception $e) {
+                } catch (Exception $exception) {
                     throw new TypeException(
-                        sprintf('Unable to found getter of "%s" property of "%s" class', $callback, get_class($value))
+                        sprintf(
+                            'Unable to found getter of "%s" property of "%s" class',
+                            $callback,
+                            get_class($value)
+                        ),
+                        previous: $exception
                     );
                 }
 
@@ -307,7 +311,7 @@ class Choice extends AbstractType
      * @return ChoiceValue
      * @throws TypeException
      */
-    private function buildChoiceValue($key, $value, int $index, ?string $group = null): ChoiceValue
+    private function buildChoiceValue(int|string $key, mixed $value, int $index, ?string $group = null): ChoiceValue
     {
         // Value
         $valueIsObject = is_object($value);
@@ -333,13 +337,12 @@ class Choice extends AbstractType
             }
         }
 
-        $choiceValue =
-            (new ChoiceValue())
-                ->setLabel($label)
-                ->setValue($rawValue)
-                ->setFinalValue($value)
-                ->setGroup($group)
-                ->setAttributes($attributes ?? []);
+        $choiceValue = new ChoiceValue();
+        $choiceValue->setLabel($label);
+        $choiceValue->setValue($rawValue);
+        $choiceValue->setFinalValue($value);
+        $choiceValue->setGroup($group);
+        $choiceValue->setAttributes($attributes ?? []);
 
         return $choiceValue;
     }
@@ -352,7 +355,7 @@ class Choice extends AbstractType
      */
     private function buildChoices(): array
     {
-        if (null !== $this->choices) {
+        if (null !== ($this->choices ?? null)) {
             return array_merge($this->choices, $this->additionalChoices);
         }
 

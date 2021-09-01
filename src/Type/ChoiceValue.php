@@ -16,20 +16,13 @@ namespace Berlioz\Form\Type;
 
 class ChoiceValue
 {
-    /** @var string Label */
-    private $label;
-    /** @var string Value */
-    private $value;
-    /** @var mixed Final value */
-    private $finalValue;
-    /** @var string|null Group */
-    private $group;
-    /** @var array Attributes */
-    private $attributes = [];
-    /** @var bool Preferred? */
-    private $preferred = false;
-    /** @var bool Selected? */
-    private $selected = false;
+    private string $label;
+    private mixed $value;
+    private mixed $finalValue;
+    private ?string $group;
+    private array $attributes = [];
+    private bool $preferred = false;
+    private bool $selected = false;
 
     /**
      * Get label.
@@ -45,38 +38,30 @@ class ChoiceValue
      * Set label.
      *
      * @param string $label
-     *
-     * @return static
      */
-    public function setLabel(string $label): ChoiceValue
+    public function setLabel(string $label): void
     {
         $this->label = $label;
-
-        return $this;
     }
 
     /**
      * Get value.
      *
-     * @return string
+     * @return mixed
      */
-    public function getValue(): string
+    public function getValue(): mixed
     {
-        return $this->value;
+        return $this->value ?? null;
     }
 
     /**
      * Set value.
      *
-     * @param string $value
-     *
-     * @return static
+     * @param mixed $value
      */
-    public function setValue(string $value): ChoiceValue
+    public function setValue(mixed $value): void
     {
         $this->value = $value;
-
-        return $this;
     }
 
     /**
@@ -84,23 +69,19 @@ class ChoiceValue
      *
      * @return mixed
      */
-    public function getFinalValue()
+    public function getFinalValue(): mixed
     {
-        return $this->finalValue;
+        return $this->finalValue ?? null;
     }
 
     /**
      * Set final value.
      *
      * @param mixed $value
-     *
-     * @return static
      */
-    public function setFinalValue($value): ChoiceValue
+    public function setFinalValue(mixed $value): void
     {
         $this->finalValue = $value;
-
-        return $this;
     }
 
     /**
@@ -110,21 +91,17 @@ class ChoiceValue
      */
     public function getGroup(): ?string
     {
-        return $this->group;
+        return $this->group ?? null;
     }
 
     /**
      * Set group.
      *
      * @param string|null $group
-     *
-     * @return static
      */
-    public function setGroup(?string $group): ChoiceValue
+    public function setGroup(?string $group): void
     {
         $this->group = $group;
-
-        return $this;
     }
 
     /**
@@ -143,9 +120,9 @@ class ChoiceValue
      * @param string $name Attribute name
      * @param null $default Default value if not exists
      *
-     * @return mixed|null
+     * @return mixed
      */
-    public function getAttribute(string $name, $default = null)
+    public function getAttribute(string $name, mixed $default = null): mixed
     {
         if (array_key_exists($name, $this->attributes)) {
             return $this->attributes[$name];
@@ -158,14 +135,10 @@ class ChoiceValue
      * Set attributes.
      *
      * @param array $attributes
-     *
-     * @return static
      */
-    public function setAttributes(array $attributes): ChoiceValue
+    public function setAttributes(array $attributes): void
     {
         $this->attributes = $attributes;
-
-        return $this;
     }
 
     /**
@@ -182,14 +155,10 @@ class ChoiceValue
      * Set selected.
      *
      * @param bool $selected
-     *
-     * @return static
      */
-    public function setSelected(bool $selected): ChoiceValue
+    public function setSelected(bool $selected): void
     {
         $this->selected = $selected;
-
-        return $this;
     }
 
     /**
@@ -206,13 +175,9 @@ class ChoiceValue
      * Set preferred.
      *
      * @param bool $preferred
-     *
-     * @return static
      */
-    public function setPreferred(bool $preferred): ChoiceValue
+    public function setPreferred(bool $preferred): void
     {
         $this->preferred = $preferred;
-
-        return $this;
     }
 }
