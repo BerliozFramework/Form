@@ -303,14 +303,10 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
      * Set transformer.
      *
      * @param TransformerInterface $transformer
-     *
-     * @return $this
      */
-    public function setTransformer(TransformerInterface $transformer)
+    public function setTransformer(TransformerInterface $transformer): void
     {
         $this->transformer = $transformer;
-
-        return $this;
     }
 
     /////////////

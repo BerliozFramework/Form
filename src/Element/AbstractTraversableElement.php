@@ -24,6 +24,17 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
     protected array $list = [];
 
     /**
+     * __clone() magic method.
+     */
+    public function __clone()
+    {
+        foreach ($this->list as &$element) {
+            $element = clone $element;
+            $element->setParent($this);
+        }
+    }
+
+    /**
      * Empty list.
      */
     public function empty(): void

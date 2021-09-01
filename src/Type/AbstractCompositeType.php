@@ -26,7 +26,7 @@ abstract class AbstractCompositeType extends Group implements TypeInterface
     /**
      * @inheritDoc
      */
-    public function getFinalValue(): array
+    public function getFinalValue(): mixed
     {
         return AbstractElement::getFinalValue();
     }

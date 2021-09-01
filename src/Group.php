@@ -27,17 +27,6 @@ class Group extends AbstractTraversableElement
     protected array|object|null $mapped;
 
     /**
-     * __clone() magic method.
-     */
-    public function __clone()
-    {
-        foreach ($this->list as &$element) {
-            $element = clone $element;
-            $element->setParent($this);
-        }
-    }
-
-    /**
      * __debugInfo() magic method.
      *
      * @return array
@@ -45,7 +34,7 @@ class Group extends AbstractTraversableElement
     public function __debugInfo(): array
     {
         $data = [
-            'parent' => $this->getParent() ? $this->getParent()->getName() : null,
+            'parent' => $this->getParent()?->getName(),
             'children' => [],
         ];
 
@@ -68,7 +57,7 @@ class Group extends AbstractTraversableElement
      *
      * @throws FormException
      */
-    public function mapObject($object = null)
+    public function mapObject(?object $object = null)
     {
         if (!is_object($object) && !is_null($object)) {
             throw new FormException(sprintf('Parameter given must be an object, "%s" given', gettype($object)));
@@ -174,7 +163,7 @@ class Group extends AbstractTraversableElement
     /**
      * @inheritDoc
      */
-    public function getFinalValue(): array
+    public function getFinalValue(): mixed
     {
         $values = [];
 
