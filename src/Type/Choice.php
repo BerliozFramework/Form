@@ -187,11 +187,21 @@ class Choice extends AbstractType
             return [];
         }
 
+        $value = array_map(
+            function ($value) {
+                if (is_scalar($value)) {
+                    return $value;
+                }
+
+                return $this->choiceCallback('choice_value', null, $value, null);
+            },
+            $value
+        );
+
         $found = [];
 
         foreach ($this->buildChoices() as $choiceValue) {
-            if (empty(array_keys($value, $choiceValue->getValue())) &&
-                empty(array_keys($value, $choiceValue->getFinalValue()))) {
+            if (empty(array_keys($value, $choiceValue->getValue()))) {
                 continue;
             }
 
@@ -241,14 +251,14 @@ class Choice extends AbstractType
      * Callback for each choice.
      *
      * @param string $callbackName Callback name
-     * @param int|string $key Key of choice
+     * @param int|string|null $key Key of choice
      * @param mixed $value Value of choice
-     * @param int $index Index of choice
+     * @param int|null $index Index of choice
      *
      * @return mixed
      * @throws TypeException
      */
-    private function choiceCallback(string $callbackName, int|string $key, mixed $value, int $index): mixed
+    private function choiceCallback(string $callbackName, int|string|null $key, mixed $value, ?int $index): mixed
     {
         if (is_null($callback = $this->getOption($callbackName))) {
             return null;
