@@ -14,7 +14,7 @@ namespace Berlioz\Form;
 
 use Berlioz\Form\Exception\AlreadyInsertedException;
 use Berlioz\Form\View\BasicView;
-use Berlioz\Form\View\TraversableView;
+use Berlioz\Form\View\TraversableViewInterface;
 use Berlioz\Form\View\ViewInterface;
 use Throwable;
 use Twig\Environment;
@@ -26,17 +26,14 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
     class TwigExtension extends AbstractExtension
     {
         const DEFAULT_TPL = '@Berlioz-Form/default.html.twig';
-        /** @var Environment Twig */
-        private $twig;
 
         /**
          * TwigExtension constructor.
          *
          * @param Environment $twig
          */
-        public function __construct(Environment $twig)
+        public function __construct(private Environment $twig)
         {
-            $this->twig = $twig;
         }
 
         /**
@@ -83,7 +80,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
          *
          * @return TwigFunction[]
          */
-        public function getFunctions()
+        public function getFunctions(): array
         {
             $functions = [];
 
@@ -104,11 +101,11 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
          * Function form render
          *
          * @param ViewInterface $formView Form view
-         * @param string|array $templateFileName Template file
+         * @param string|null $templateFileName Template file
          *
          * @return string
          */
-        public function functionFormRender(ViewInterface $formView, $templateFileName): string
+        public function functionFormRender(ViewInterface $formView, ?string $templateFileName = null): string
         {
             $formView->setRender($templateFileName);
 
@@ -118,14 +115,14 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Function form start
          *
-         * @param BasicView $formView Form view
+         * @param TraversableViewInterface $formView Form view
          * @param array $options Options
          *
          * @return string
          * @throws Throwable Twig error
          * @throws Error
          */
-        public function functionFormStart(BasicView $formView, array $options = []): string
+        public function functionFormStart(TraversableViewInterface $formView, array $options = []): string
         {
             return $this->render('start', $formView, $options);
         }
@@ -133,14 +130,14 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Function form end
          *
-         * @param BasicView $formView Form view
+         * @param TraversableViewInterface $formView Form view
          * @param array $options Options
          *
          * @return string
          * @throws Throwable Twig error
          * @throws Error
          */
-        public function functionFormEnd(BasicView $formView, array $options = []): string
+        public function functionFormEnd(TraversableViewInterface $formView, array $options = []): string
         {
             return $this->render('end', $formView, $options);
         }
@@ -225,7 +222,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
         /**
          * Function form rest.
          *
-         * @param TraversableView $formView Form view
+         * @param TraversableViewInterface $formView Form view
          * @param array $options Options
          *
          * @return string
@@ -233,7 +230,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
          * @throws Throwable Twig error
          * @throws Error
          */
-        public function functionFormRest(TraversableView $formView, array $options = []): string
+        public function functionFormRest(TraversableViewInterface $formView, array $options = []): string
         {
             $rendering = '';
 

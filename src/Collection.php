@@ -192,18 +192,18 @@ class Collection extends AbstractTraversableElement
     /**
      * @inheritDoc
      */
-    public function setValue(mixed $values): void
+    public function setValue(mixed $value): void
     {
         // Complete collection
-        $this->completeCollection(count($values));
+        $this->completeCollection(count($value));
 
         $max = $this->getOption('max_elements');
         $i = 0;
 
         // Sort values
-        ksort($values);
+        ksort($value);
 
-        foreach ($values as $key => $value) {
+        foreach ($value as $key => $aValue) {
             if (is_int($max) && $i > $max) {
                 continue;
             }
@@ -219,29 +219,29 @@ class Collection extends AbstractTraversableElement
                 $this->callCallback('complete', $this, $this[$key]);
             }
 
-            $element->setValue($value);
+            $element->setValue($aValue);
             $i++;
         }
 
         // Complete collection
-        $this->completeCollection(count($values));
+        $this->completeCollection(count($value));
     }
 
     /**
      * @inheritDoc
      */
-    public function submitValue($values): void
+    public function submitValue($value): void
     {
-        $values = (array)$values;
+        $value = (array)$value;
 
         // Complete collection
-        $this->completeCollection(count($values));
+        $this->completeCollection(count($value));
 
         // Sort values
-        ksort($values);
+        ksort($value);
 
         // Submitted keys
-        $this->submittedKeys = array_keys($values);
+        $this->submittedKeys = array_keys($value);
 
         // Delete old elements
         $diff = array_diff(array_keys($this->list), $this->submittedKeys);
@@ -255,17 +255,17 @@ class Collection extends AbstractTraversableElement
         }
 
         // Add
-        foreach ($values as $key => $value) {
+        foreach ($value as $key => $aValue) {
             /** @var ElementInterface $element */
             if (isset($this[$key])) {
                 $element = $this[$key];
-                $element->submitValue($value);
+                $element->submitValue($aValue);
                 continue;
             }
 
             $this[$key] = $element = clone $this->prototype;
             $element->setParent($this);
-            $element->submitValue($value);
+            $element->submitValue($aValue);
 
             // Callback
             $this->callCallback('add', $this, $element);
@@ -279,7 +279,7 @@ class Collection extends AbstractTraversableElement
     /**
      * @inheritDoc
      */
-    public function buildView(): ViewInterface
+    public function buildView(): TraversableView
     {
         /** @var TraversableView $view */
         $view = parent::buildView();

@@ -17,7 +17,7 @@ namespace Berlioz\Form;
 use Berlioz\Form\Collector\FormCollector;
 use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\Hydrator\FormHydrator;
-use Berlioz\Form\View\ViewInterface;
+use Berlioz\Form\View\TraversableView;
 use Psr\Http\Message\ServerRequestInterface;
 
 class Form extends Group
@@ -60,7 +60,7 @@ class Form extends Group
     /**
      * @inheritDoc
      */
-    public function buildView(): ViewInterface
+    public function buildView(): TraversableView
     {
         $view = parent::buildView();
 

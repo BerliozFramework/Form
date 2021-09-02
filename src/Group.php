@@ -18,7 +18,7 @@ use Berlioz\Form\Element\AbstractTraversableElement;
 use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Element\TraversableElementInterface;
 use Berlioz\Form\Exception\FormException;
-use Berlioz\Form\View\ViewInterface;
+use Berlioz\Form\View\TraversableView;
 use InvalidArgumentException;
 
 class Group extends AbstractTraversableElement
@@ -114,7 +114,6 @@ class Group extends AbstractTraversableElement
         }
 
         if ($class instanceof ElementInterface) {
-            /** @var ElementInterface $class */
             $class->setOption('name', $name);
             $this[$name] = $class;
 
@@ -130,13 +129,15 @@ class Group extends AbstractTraversableElement
     /**
      * Add element.
      *
-     * @param ElementInterface $element
+     * @param ElementInterface ...$element
      *
      * @return $this
      */
-    public function addElement(ElementInterface $element): static
+    public function addElement(ElementInterface ...$element): static
     {
-        $this[$element->getName()] = $element;
+        foreach ($element as $anElement) {
+            $this[$anElement->getName()] = $anElement;
+        }
 
         return $this;
     }
@@ -178,15 +179,15 @@ class Group extends AbstractTraversableElement
     /**
      * @inheritDoc
      */
-    public function submitValue(mixed $values): void
+    public function submitValue(mixed $value): void
     {
-        if (!is_array($values)) {
+        if (!is_array($value)) {
             throw new FormException('Invalid type of value, array attempted');
         }
 
         /** @var ElementInterface $element */
         foreach ($this as $element) {
-            if (!array_key_exists($element->getName(), $values)) {
+            if (!array_key_exists($element->getName(), $value)) {
                 if ($element instanceof TraversableElementInterface) {
                     $element->submitValue([]);
                     continue;
@@ -196,23 +197,27 @@ class Group extends AbstractTraversableElement
                 continue;
             }
 
-            $element->submitValue($values[$element->getName()]);
+            $element->submitValue($value[$element->getName()]);
         }
     }
 
     /**
      * @inheritDoc
      */
-    public function setValue(mixed $values): void
+    public function setValue(mixed $value): void
     {
-        if (!is_array($values)) {
+        if (null === $value) {
+            return;
+        }
+
+        if (!is_array($value)) {
             throw new FormException('Invalid type of value, array attempted');
         }
 
         /** @var ElementInterface[] $this */
-        foreach ($values as $name => $value) {
+        foreach ($value as $name => $aValue) {
             if (isset($this[$name])) {
-                $this[$name]->setValue($value);
+                $this[$name]->setValue($aValue);
             }
         }
     }
@@ -224,7 +229,7 @@ class Group extends AbstractTraversableElement
     /**
      * @inheritDoc
      */
-    public function buildView(): ViewInterface
+    public function buildView(): TraversableView
     {
         $view = parent::buildView();
         $view->mergeVars(
