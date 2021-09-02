@@ -76,11 +76,10 @@ class TwigTest extends AbstractFormTest
     {
         $entity = new FakePerson();
         $form = $this->getFormTest($entity);
+        $view = $form->buildView();
 
-        $this->assertEquals(
-            '</form>',
-            $this->getTwigExtension()->functionFormEnd($form->buildView())
-        );
+        $this->getTwigExtension()->functionFormRest($view);
+        $this->assertEquals('</form>', $this->getTwigExtension()->functionFormEnd($view));
     }
 
     public function testFunctionLabel()
