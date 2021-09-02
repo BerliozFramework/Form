@@ -36,9 +36,10 @@
 
 {%- block form_start -%}
 <form name="{{ name }}" method="{{ method }}" action="{{ action }}"{{- block('attributes') -}}>
-  {%- endblock -%}
+{%- endblock -%}
 
-  {%- block form_end -%}
+{%- block form_end -%}
+  {{ form_rest(form) }}
 </form>
 {%- endblock -%}
 
