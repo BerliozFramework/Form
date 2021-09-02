@@ -75,6 +75,7 @@ class File extends AbstractMultipleType
 
     /**
      * @inheritDoc
+     * @todo Add validator for accept attribute
      */
     public function build(): void
     {

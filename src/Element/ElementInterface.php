@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Form\Element;
 
 use Berlioz\Form\Exception\FormException;
+use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Form;
 use Berlioz\Form\View\ViewInterface;
 
@@ -70,6 +71,27 @@ interface ElementInterface
      * @param mixed $value
      */
     public function setOption(string $name, mixed $value): void;
+
+    /**
+     * Is required?
+     *
+     * @return bool
+     */
+    public function isRequired(): bool;
+
+    /**
+     * Is disabled?
+     *
+     * @return bool
+     */
+    public function isDisabled(): bool;
+
+    /**
+     * Is read only?
+     *
+     * @return bool
+     */
+    public function isReadonly(): bool;
 
     ///////////////
     /// PARENTS ///
@@ -148,6 +170,7 @@ interface ElementInterface
      * Build form.
      *
      * @return void
+     * @throws ValidatorException
      */
     public function build(): void;
 

@@ -15,8 +15,8 @@ declare(strict_types=1);
 namespace Berlioz\Form\Element;
 
 use ArrayIterator;
+use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\View\TraversableView;
-use Berlioz\Form\View\ViewInterface;
 use InvalidArgumentException;
 
 abstract class AbstractTraversableElement extends AbstractElement implements TraversableElementInterface
@@ -117,8 +117,9 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
 
     /**
      * @inheritDoc
+     * @throws FormException
      */
-    public function buildView(): ViewInterface
+    public function buildView(): TraversableView
     {
         $list = array_map(fn(ElementInterface $element) => $element->buildView(), $this->list);
 
@@ -126,9 +127,9 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
             $this,
             [
                 'errors' => $this->getConstraints(),
-                'required' => $this->getOption('required', false, true),
-                'disabled' => $this->getOption('disabled', false, true),
-                'readonly' => $this->getOption('readonly', false, true),
+                'required' => $this->isRequired(),
+                'disabled' => $this->isDisabled(),
+                'readonly' => $this->isReadonly(),
                 'mapped' => $this->getMapped(),
             ],
             $list

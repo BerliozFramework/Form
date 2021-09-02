@@ -21,7 +21,10 @@ class Date extends AbstractType
     public function __construct(array $options = [])
     {
         $options = array_replace(
-            ['format' => 'Y-m-d', 'transformer' => new DateTimeTransformer()],
+            [
+                'format' => 'Y-m-d',
+                'transformer' => new DateTimeTransformer()
+            ],
             $options
         );
         parent::__construct($options);
@@ -33,5 +36,14 @@ class Date extends AbstractType
     public function getType(): string
     {
         return 'date';
+    }
+
+    /**
+     * @inheritDoc
+     * @todo Add validator for min, max, step attributes
+     */
+    public function build(): void
+    {
+        parent::build();
     }
 }

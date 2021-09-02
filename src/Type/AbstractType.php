@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Form\Type;
 
 use Berlioz\Form\Element\AbstractElement;
+use Berlioz\Form\Validator\FormatValidator;
 use Berlioz\Form\Validator\NotEmptyValidator;
 use Berlioz\Form\View\BasicView;
 use Berlioz\Form\View\ViewInterface;
@@ -82,6 +83,34 @@ abstract class AbstractType extends AbstractElement implements SimpleTypeInterfa
         $this->value = $this->getTransformer()->toForm($value, $this);
     }
 
+    ///////////////
+    /// OPTIONS ///
+    ///////////////
+
+    /**
+     * @inheritDoc
+     */
+    public function isRequired(): bool
+    {
+        return $this->getOption('attributes.required', parent::isRequired());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isDisabled(): bool
+    {
+        return $this->getOption('attributes.disabled', parent::isDisabled());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isReadonly(): bool
+    {
+        return $this->getOption('attributes.readonly', parent::isReadonly());
+    }
+
     /////////////
     /// BUILD ///
     /////////////
@@ -91,7 +120,12 @@ abstract class AbstractType extends AbstractElement implements SimpleTypeInterfa
      */
     public function build(): void
     {
-        // Validator
+        // Pattern validator
+        if ($pattern = $this->getOption('attributes.pattern')) {
+            $this->addValidator(new FormatValidator(sprintf('#^%s$#', str_replace('#', '\\#', $pattern))));
+        }
+
+        // Not empty validator
         if ($this->hasValidator(NotEmptyValidator::class) === false) {
             $this->addValidator(new NotEmptyValidator());
         }
@@ -113,9 +147,9 @@ abstract class AbstractType extends AbstractElement implements SimpleTypeInterfa
                 'helper' => $this->getOption('helper', false),
                 'value' => $this->getValue(),
                 'errors' => $this->getConstraints(),
-                'required' => $this->getOption('required', false, true),
-                'disabled' => $this->getOption('disabled', false, true),
-                'readonly' => $this->getOption('readonly', false, true),
+                'required' => $this->isRequired(),
+                'disabled' => $this->isDisabled(),
+                'readonly' => $this->isReadonly(),
                 'attributes' => $this->getOption('attributes', []),
             ]
         );

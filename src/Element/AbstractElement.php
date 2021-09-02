@@ -207,6 +207,30 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
         b_array_traverse_set($this->options, $name, $value);
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function isRequired(): bool
+    {
+        return $this->getOption('required', true, true);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isDisabled(): bool
+    {
+        return $this->getOption('disabled', false, true);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isReadonly(): bool
+    {
+        return $this->getOption('readonly', false, true);
+    }
+
     ///////////////
     /// PARENTS ///
     ///////////////
@@ -318,6 +342,14 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
      */
     public function getFinalValue(): mixed
     {
-        return $this->getTransformer()->fromForm($this->getValue(), $this);
+        $value = $this->getValue();
+
+        if ($this->getOption('null_if_empty', false, true)) {
+            if (empty($value)) {
+                $value = null;
+            }
+        }
+
+        return $this->getTransformer()->fromForm($value, $this);
     }
 }

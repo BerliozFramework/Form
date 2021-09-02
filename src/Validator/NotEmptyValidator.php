@@ -40,7 +40,7 @@ class NotEmptyValidator extends AbstractValidator implements ValidatorInterface
         $value = $element->getValue();
 
         // Not required?
-        if ($element->getOption('required') === false) {
+        if (false === $element->isRequired()) {
             return [];
         }
 

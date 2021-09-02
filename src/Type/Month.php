@@ -23,4 +23,13 @@ class Month extends AbstractType
     {
         return 'month';
     }
+
+    /**
+     * @inheritDoc
+     * @todo Add validator for min, max, step attributes
+     */
+    public function build(): void
+    {
+        parent::build();
+    }
 }

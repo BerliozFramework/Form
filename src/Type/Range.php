@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Berlioz\Form\Type;
 
-class Range extends AbstractType
+class Range extends Number
 {
     /**
      * @inheritDoc
@@ -22,5 +22,14 @@ class Range extends AbstractType
     public function getType(): string
     {
         return 'range';
+    }
+
+    /**
+     * @inheritDoc
+     * @todo Add validator for step attribute
+     */
+    public function build(): void
+    {
+        parent::build();
     }
 }

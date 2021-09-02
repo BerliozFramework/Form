@@ -29,7 +29,6 @@ class Text extends AbstractType
 
     /**
      * @inheritDoc
-     * @throws ValidatorException
      */
     public function build(): void
     {

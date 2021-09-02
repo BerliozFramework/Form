@@ -29,4 +29,13 @@ class Time extends AbstractType
     {
         return 'time';
     }
+
+    /**
+     * @inheritDoc
+     * @todo Add validator for min, max, step attributes
+     */
+    public function build(): void
+    {
+        parent::build();
+    }
 }

@@ -23,6 +23,6 @@ abstract class AbstractMultipleType extends AbstractType implements MultipleType
      */
     public function isMultiple(): bool
     {
-        return true === $this->getOption('attributes.multiple', false);
+        return true === $this->getOption('multiple', $this->getOption('attributes.multiple', false));
     }
 }
