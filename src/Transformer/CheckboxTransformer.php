@@ -21,13 +21,13 @@ class CheckboxTransformer implements TransformerInterface
     /**
      * @inheritDoc
      */
-    public function toForm(mixed $data, ElementInterface $element): ?bool
+    public function toForm(mixed $data, ElementInterface $element): bool
     {
         if ($element->getOption('default_value', 'on') == 'on') {
-            return $data == 'on';
+            return $data == 'on' || $data == true;
         }
 
-        return null;
+        return $data == true;
     }
 
     /**
