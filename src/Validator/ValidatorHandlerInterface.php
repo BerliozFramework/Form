@@ -16,9 +16,6 @@ namespace Berlioz\Form\Validator;
 
 use Berlioz\Form\Validator\Constraint\ConstraintInterface;
 
-/**
- * Interface ValidatorHandlerInterface.
- */
 interface ValidatorHandlerInterface
 {
     /**

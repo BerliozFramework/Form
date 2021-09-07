@@ -18,9 +18,6 @@ use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\Constraint\ConstraintInterface;
 
-/**
- * Interface ValidatorInterface.
- */
 interface ValidatorInterface
 {
     /**
