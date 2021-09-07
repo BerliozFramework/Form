@@ -36,7 +36,7 @@ class Form extends Group
      *
      * @throws FormException
      */
-    public function __construct(string $name, object $mapped = null, array $options = [])
+    public function __construct(string $name, ?object $mapped = null, array $options = [])
     {
         $options['name'] = $name;
         $options = array_replace_recursive(

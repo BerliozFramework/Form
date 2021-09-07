@@ -23,8 +23,7 @@ use InvalidArgumentException;
 
 class Group extends AbstractTraversableElement
 {
-    /** @var object|array|null Mapped object or array */
-    protected array|object|null $mapped;
+    protected object|null $mapped;
 
     /**
      * __debugInfo() magic method.
@@ -70,9 +69,9 @@ class Group extends AbstractTraversableElement
     /**
      * Get mapped object.
      *
-     * @return object|array|null
+     * @return object|null
      */
-    public function getMappedObject(): object|array|null
+    public function getMappedObject(): object|null
     {
         return $this->mapped ?? null;
     }
