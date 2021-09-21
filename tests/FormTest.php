@@ -30,7 +30,10 @@ class FormTest extends AbstractFormTest
             ->add(
                 'checkbox1',
                 Checkbox::class,
-                ['default_value' => 'bar']
+                [
+                    'default_value' => 'bar',
+                    'checked_value' => 'bar'
+                ]
             )
             ->add('checkbox2', Checkbox::class);
 

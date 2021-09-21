@@ -149,6 +149,7 @@ class TwigTest extends AbstractFormTest
         // Checkbox
         $form->setSubmitted(true);
         $form['check']->submitValue('on');
+        $form['check']->setValue('on');
         $this->assertEquals(
             '<label>
     <input type="checkbox" id="foo_check" name="foo[check]" required="required" checked="checked" value="on" />
@@ -188,6 +189,7 @@ class TwigTest extends AbstractFormTest
         // Checkbox
         $form->setSubmitted(true);
         $form['check']->submitValue('on');
+        $form['check']->setValue('on');
         $this->assertEquals(
             '<label>
     <input type="checkbox" id="foo_check" name="foo[check]" required="required" checked="checked" value="on" />
