@@ -19,6 +19,7 @@ use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\HydratorException;
 use Berlioz\Form\Group;
 use Berlioz\Form\Type\TypeInterface;
+use Closure;
 use Exception;
 use ReflectionClass;
 use ReflectionException;
@@ -134,6 +135,10 @@ abstract class AbstractHydrator implements HydratorInterface
         }
 
         try {
+            if ($dataType instanceof Closure) {
+                return $dataType->call(null, $element);
+            }
+
             return (new ReflectionClass($dataType))->newInstance();
         } catch (ReflectionException $e) {
             throw new HydratorException(
