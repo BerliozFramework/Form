@@ -23,13 +23,12 @@ class CheckboxTransformer implements TransformerInterface
      */
     public function toForm(mixed $data, ElementInterface $element): ?string
     {
-        $defaultValue = $element->getOption('default_value', 'on');
+        $element->setOption(
+            'attributes.checked',
+            $data == $element->getOption('checked_value', true)
+        );
 
-        if (true == $data || $data == $defaultValue) {
-            return $defaultValue;
-        }
-
-        return null;
+        return $element->getOption('default_value', 'on');
     }
 
     /**
@@ -39,10 +38,10 @@ class CheckboxTransformer implements TransformerInterface
     {
         $defaultValue = $element->getOption('default_value', 'on');
 
-        if ('on' == $defaultValue) {
-            return $data == $defaultValue;
+        if ($data == $defaultValue) {
+            return $element->getOption('checked_value', true);
         }
 
-        return $data;
+        return $element->getOption('unchecked_value', false);
     }
 }
