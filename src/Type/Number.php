@@ -22,7 +22,17 @@ use Berlioz\Form\Validator\NumberFormatValidator;
 
 class Number extends AbstractType
 {
-    const DEFAULT_TRANSFORMER = NumberTransformer::class;
+    public function __construct(array $options = [])
+    {
+        $options = array_replace(
+            [
+                'transformer' => new NumberTransformer()
+            ],
+            $options
+        );
+
+        parent::__construct($options);
+    }
 
     /**
      * @inheritDoc
