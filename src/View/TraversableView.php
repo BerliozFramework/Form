@@ -52,7 +52,7 @@ class TraversableView extends BasicView implements TraversableViewInterface
     /**
      * @inheritdoc
      */
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->list);
     }
@@ -60,6 +60,7 @@ class TraversableView extends BasicView implements TraversableViewInterface
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->list);
@@ -68,6 +69,7 @@ class TraversableView extends BasicView implements TraversableViewInterface
     /**
      * @inheritdoc
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->list[$offset] ?? null;
@@ -77,6 +79,7 @@ class TraversableView extends BasicView implements TraversableViewInterface
      * @inheritdoc
      * @throws \Berlioz\Form\Exception\FormException
      */
+    #[\ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         throw new FormException('Not allowed to set element in view');
@@ -86,6 +89,7 @@ class TraversableView extends BasicView implements TraversableViewInterface
      * @inheritdoc
      * @throws \Berlioz\Form\Exception\FormException
      */
+    #[\ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         throw new FormException('Not allowed to unset element in view');
