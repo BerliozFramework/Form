@@ -19,6 +19,8 @@ use Berlioz\Form\Transformer\ChoiceTransformerInterface;
 use Berlioz\Form\View\ViewInterface;
 use Closure;
 use Exception;
+use ReflectionFunction;
+use ReflectionParameter;
 use Traversable;
 
 class Choice extends AbstractType
@@ -266,7 +268,21 @@ class Choice extends AbstractType
 
         // Callable?
         if ($callback instanceof Closure) {
-            return $callback->call($this, $key, $value, $index);
+            try {
+                $reflection = new ReflectionFunction($callback);
+                $parameters = array_map(
+                    fn(ReflectionParameter $param) => $param->getName(),
+                    $reflection->getParameters()
+                );
+                $parameters = array_intersect_key(
+                    ['key' => $key, 'value' => $value, 'index' => $index],
+                    array_fill_keys($parameters, null)
+                );
+
+                return $reflection->invokeArgs($parameters);
+            } catch (Exception $exception) {
+                throw new TypeException(sprintf('Unable to call callback "%s"', $callback), previous: $exception);
+            }
         }
 
         // Array?
