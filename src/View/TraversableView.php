@@ -136,7 +136,7 @@ class TraversableView extends BasicView implements TraversableViewInterface
     public function isInserted(): bool
     {
         if (count($this->list) == 0) {
-            return false;
+            return parent::isInserted();
         }
 
         /** @var \Berlioz\Form\View\ViewInterface $view */
