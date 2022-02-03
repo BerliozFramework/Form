@@ -72,30 +72,6 @@
   {% endfor %}
 {%- endblock -%}
 
-{%- block collection_row -%}
-  {% apply spaceless %}
-    <div
-    {% if editable %}
-      id="{{ id }}"
-      data-collection="{{ name }}"
-      data-prototype="{% with { 'element': prototype } %}{{ block('collection_item')|spaceless|e }}{% endwith %}"
-      data-collection-min="{{ min_elements }}"
-      data-collection-max="{{ max_elements }}"
-    {% endif %}
-    >
-  {% endapply %}
-  {% for key, element in form %}
-    <div data-collection-key="{{ key }}">
-      {% with { 'element': element, 'index': key } %}{{ block('collection_item') }}{% endwith %}
-    </div>
-  {% endfor %}
-  </div>
-{%- endblock -%}
-
-{%- block collection_item -%}
-  {{ form_row(element, {index: index}) }}
-{%- endblock -%}
-
 {%- block checkbox_row -%}
   {{ form_widget(form) }}
   {{ form_errors(form) }}
@@ -211,4 +187,36 @@
   <button {{ block('widget_attributes') }} type="{{ type }}" {% if value is not empty %}value="{{ value }}" {% endif %} >
     {% if label is not empty %}{{ label }}{% endif %}
   </button>
+{%- endblock -%}
+
+
+{# Collection #}
+
+{%- block collection_row -%}
+  {{ form_errors(form) }}
+  {{ form_widget(form) }}
+{%- endblock -%}
+
+{%- block collection_widget -%}
+  {% apply spaceless %}
+    <div
+    {% if editable %}
+      id="{{ id }}"
+      data-collection="{{ name }}"
+      data-prototype="{% with { 'element': prototype } %}{{ block('collection_item')|spaceless|e }}{% endwith %}"
+      data-collection-min="{{ min_elements }}"
+      data-collection-max="{{ max_elements }}"
+    {% endif %}
+    >
+  {% endapply %}
+  {% for key, element in form %}
+    <div data-collection-key="{{ key }}">
+      {% with { 'element': element, 'index': key } %}{{ block('collection_item') }}{% endwith %}
+    </div>
+  {% endfor %}
+  </div>
+{%- endblock -%}
+
+{%- block collection_item -%}
+  {{ form_row(element, {index: index}) }}
 {%- endblock -%}
