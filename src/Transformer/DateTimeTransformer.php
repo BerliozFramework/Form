@@ -37,7 +37,7 @@ class DateTimeTransformer implements TransformerInterface
      * @inheritDoc
      * @throws Exception
      */
-    public function fromForm(mixed $data, ElementInterface $element): ?DateTime
+    public function fromForm(mixed $data, ElementInterface $element): ?DateTimeInterface
     {
         if (is_string($data) && $data != '') {
             return new DateTime($data);
