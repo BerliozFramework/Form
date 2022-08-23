@@ -199,8 +199,13 @@ class Choice extends AbstractType
         $found = [];
 
         foreach ($this->buildChoices() as $choiceValue) {
-            if (empty(array_keys($value, $choiceValue->getValue())) &&
-                empty(array_keys($value, $choiceValue->getFinalValue()))) {
+            if (
+                empty(array_keys($value, $choiceValue->getValue()))
+                && (
+                    is_scalar($choiceValue->getFinalValue())
+                    && empty(array_keys($value, $choiceValue->getFinalValue()))
+                )
+            ) {
                 continue;
             }
 
