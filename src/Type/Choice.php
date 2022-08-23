@@ -201,10 +201,10 @@ class Choice extends AbstractType
         foreach ($this->buildChoices() as $choiceValue) {
             if (
                 empty(array_keys($value, $choiceValue->getValue()))
-                && (
+                &&
                     is_scalar($choiceValue->getFinalValue())
-                    && empty(array_keys($value, $choiceValue->getFinalValue()))
-                )
+                    ? empty(array_keys($value, $choiceValue->getFinalValue()))
+                    : true
             ) {
                 continue;
             }
