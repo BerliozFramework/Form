@@ -210,7 +210,7 @@ class Group extends AbstractTraversableElement
         }
 
         if (!is_array($value)) {
-            throw new FormException('Invalid type of value, array attempted');
+            throw new FormException('Invalid type of value, array expected');
         }
 
         /** @var ElementInterface[] $this */
