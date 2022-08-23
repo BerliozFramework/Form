@@ -202,9 +202,11 @@ class Choice extends AbstractType
             if (
                 empty(array_keys($value, $choiceValue->getValue()))
                 &&
-                    is_scalar($choiceValue->getFinalValue())
+                (
+                is_scalar($choiceValue->getFinalValue())
                     ? empty(array_keys($value, $choiceValue->getFinalValue()))
                     : true
+                )
             ) {
                 continue;
             }
