@@ -131,7 +131,7 @@ class Choice extends AbstractType
      */
     public function submitValue($value): void
     {
-        if (!is_array($value) && !$value instanceof Traversable) {
+        if (null !== $value && !is_array($value) && !$value instanceof Traversable) {
             $value = [$value];
         }
 
