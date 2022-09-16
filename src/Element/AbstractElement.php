@@ -144,6 +144,11 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
             return null;
         }
 
+        // If mapped is an array
+        if (is_array($mapped)) {
+            return $mapped[$this->getName()] ?? null;
+        }
+
         try {
             return b_get_property_value($mapped, $this->getName());
         } catch (Exception $exception) {
