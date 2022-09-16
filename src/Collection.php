@@ -18,7 +18,6 @@ use Berlioz\Form\Element\AbstractTraversableElement;
 use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\View\TraversableView;
-use Berlioz\Form\View\ViewInterface;
 
 class Collection extends AbstractTraversableElement
 {
@@ -171,7 +170,7 @@ class Collection extends AbstractTraversableElement
     /**
      * @inheritDoc
      */
-    public function getFinalValue(): array
+    public function getFinalValue(): mixed
     {
         $values = [];
 
@@ -186,7 +185,7 @@ class Collection extends AbstractTraversableElement
             $values[$key] = $element->getFinalValue();
         }
 
-        return $values;
+        return $this->getTransformer()->fromForm($values, $this);
     }
 
     /**
@@ -194,6 +193,8 @@ class Collection extends AbstractTraversableElement
      */
     public function setValue(mixed $value): void
     {
+        $value = $this->getTransformer()->toForm($value, $this);
+
         // Complete collection
         $this->completeCollection(count($value));
 
