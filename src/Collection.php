@@ -124,7 +124,8 @@ class Collection extends AbstractTraversableElement
         }
 
         for ($i = $nbElements; $i < $minElements; $i++) {
-            $this->list[] = clone $this->prototype;
+            $this->list[] = $element = clone $this->prototype;
+            $element->setParent($this);
         }
     }
 
