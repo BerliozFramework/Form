@@ -66,6 +66,17 @@ class Collection extends AbstractTraversableElement
     }
 
     /**
+     * __clone() magic method.
+     */
+    public function __clone()
+    {
+        $this->submittedKeys = [];
+        $this->prototype = clone $this->prototype;
+        $this->prototype->setParent($this);
+        parent::__clone();
+    }
+
+    /**
      * __debugInfo() magic method.
      *
      * @return array
