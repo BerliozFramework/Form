@@ -172,7 +172,7 @@ class Group extends AbstractTraversableElement
             $values[$element->getName()] = $element->getFinalValue();
         }
 
-        return $values;
+        return $this->getTransformer()->fromForm($values, $this);
     }
 
     /**
