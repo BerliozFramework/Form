@@ -86,17 +86,20 @@ class CollectionHydrator extends AbstractHydrator
             }
 
             if (!isset($subMapped[$key])) {
-                if (is_null($subMapped[$key] = $this->createObject($prototype))) {
-                    $subMapped[$key] = $element->getFinalValue();
-                    continue;
+                $obj = $this->createObject($prototype);
+
+                if (null !== $obj) {
+                    $subMapped[$key] = $obj;
+
+                    $hydrator = $this->locateHydrator($element);
+                    if (!$hydrator instanceof TypeHydrator) {
+                        $hydrator->hydrate($subMapped[$key]);
+                        continue;
+                    }
                 }
             }
 
-            $hydrator = $this->locateHydrator($element);
-            if (!$hydrator instanceof TypeHydrator) {
-                $hydrator->hydrate($subMapped[$key]);
-                continue;
-            }
+            $subMapped[$key] = $element->getFinalValue();
         }
 
         // Is array? Need to set array, because no reference on arrays.
@@ -104,6 +107,7 @@ class CollectionHydrator extends AbstractHydrator
             $propertyName = $this->getElement()->getName();
 
             try {
+                $subMapped = $this->collection->getTransformer()->fromForm($subMapped, $this->collection);
                 b_set_property_value($mapped, $propertyName, $subMapped);
             } catch (Exception $e) {
                 throw new HydratorException(
