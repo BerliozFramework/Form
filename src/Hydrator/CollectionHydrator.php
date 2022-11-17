@@ -85,23 +85,20 @@ class CollectionHydrator extends AbstractHydrator
                 continue;
             }
 
-            if (!isset($subMapped[$key])) {
-                $obj = $this->createObject($prototype);
+            $obj = $this->createObject($prototype);
+            if (!isset($subMapped[$key]) && null !== $obj) {
+                $subMapped[$key] = $obj;
+            }
 
-                if (null !== $obj) {
-                    $subMapped[$key] = $obj;
-
-                    $hydrator = $this->locateHydrator($element);
-                    if (!$hydrator instanceof TypeHydrator) {
-                        $hydrator->hydrate($subMapped[$key]);
-                        continue;
-                    }
+            if (null !== $obj) {
+                $hydrator = $this->locateHydrator($element);
+                if (!$hydrator instanceof TypeHydrator) {
+                    $hydrator->hydrate($subMapped[$key]);
                 }
+                continue;
             }
 
-            if (is_scalar($subMapped[$key])) {
-                $subMapped[$key] = $element->getFinalValue();
-            }
+            $subMapped[$key] = $element->getFinalValue();
         }
 
         // Is array? Need to set array, because no reference on arrays.
