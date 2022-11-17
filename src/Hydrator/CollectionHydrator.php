@@ -99,7 +99,9 @@ class CollectionHydrator extends AbstractHydrator
                 }
             }
 
-            $subMapped[$key] = $element->getFinalValue();
+            if (is_scalar($subMapped[$key])) {
+                $subMapped[$key] = $element->getFinalValue();
+            }
         }
 
         // Is array? Need to set array, because no reference on arrays.
