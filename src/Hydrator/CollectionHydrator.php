@@ -52,7 +52,7 @@ class CollectionHydrator extends AbstractHydrator
             return;
         }
 
-        $subMapped = $this->getSubMapped($this->getElement(), $mapped);
+        $subMapped = $this->getSubMapped($this->getElement(), $mapped) ?? [];
         $isArray = is_array($subMapped);
         $isArrayAccess = $subMapped instanceof ArrayAccess;
 
