@@ -136,7 +136,7 @@ abstract class AbstractHydrator implements HydratorInterface
 
         try {
             if ($dataType instanceof Closure) {
-                return $dataType->call(null, $element);
+                return $dataType($element);
             }
 
             return (new ReflectionClass($dataType))->newInstance();
