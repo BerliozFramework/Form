@@ -108,7 +108,7 @@ class Collection extends AbstractTraversableElement
     {
         if (($index = array_search($element, $this->list, true)) === false) {
             if ($this->getPrototype() === $element) {
-                return '___name___';
+                return '___' . $this->getOption('prototype_placeholder', 'name') . '___';
             }
 
             return false;
@@ -307,6 +307,7 @@ class Collection extends AbstractTraversableElement
                 'id' => $this->getId(),
                 'name' => $this->getFormName(),
                 'prototype' => $prototypeView,
+                'prototype_placeholder' => $this->getOption('prototype_placeholder', 'name'),
                 'editable' => $this->getOption('editable', true),
                 'min_elements' => $this->getOption('min_elements'),
                 'max_elements' => $this->getOption('max_elements'),
