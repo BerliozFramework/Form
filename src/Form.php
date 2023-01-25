@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Berlioz\Form;
 
 use Berlioz\Form\Collector\FormCollector;
+use Berlioz\Form\DataProvider\FormDataProvider;
 use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\Hydrator\FormHydrator;
 use Berlioz\Form\View\TraversableView;
@@ -24,6 +25,7 @@ class Form extends Group
 {
     /** @var bool Submitted? */
     protected bool $submitted = false;
+    protected FormDataProvider $dataProvider;
     /** @var array Submitted data */
     protected array $submittedData = [];
 
@@ -49,6 +51,7 @@ class Form extends Group
 
         parent::__construct($options);
 
+        $this->setDataProvider($options['dataProvider'] ?? new FormDataProvider());
         $this->mapObject($mapped);
         $this->submitted = false;
     }
@@ -101,6 +104,18 @@ class Form extends Group
     ////////////////
 
     /**
+     * Set a data provider.
+     *
+     * @param FormDataProvider $dataProvider
+     *
+     * @return void
+     */
+    public function setDataProvider(FormDataProvider $dataProvider): void
+    {
+        $this->dataProvider = $dataProvider;
+    }
+
+    /**
      * Handle form.
      *
      * @param ServerRequestInterface $request
@@ -118,24 +133,12 @@ class Form extends Group
         $collector = new FormCollector($this);
         $this->setValue($collector->collect());
 
-        if (mb_strtolower($request->getMethod()) === mb_strtolower($this->getOption('method'))) {
-            switch (mb_strtolower($request->getMethod())) {
-                case 'get':
-                    $submittedData = $request->getQueryParams();
-                    break;
-                case 'post':
-                    if (!is_array($parsedBody = $request->getParsedBody())) {
-                        $parsedBody = [];
-                    }
+        if (strtolower($request->getMethod()) === strtolower($this->getOption('method'))) {
+            $submittedData = $this->dataProvider->handle($request, $this);
+            $this->submitted = $submittedData !== false;
 
-                    $submittedData = array_replace_recursive($parsedBody, $request->getUploadedFiles());
-                    break;
-                default:
-                    $submittedData = [];
-            }
-
-            if (($this->submitted = array_key_exists($this->getName(), $submittedData)) !== false) {
-                $this->submittedData = $submittedData[$this->getName()];
+            if (true === $this->submitted) {
+                $this->submittedData = $submittedData ?: [];
                 $this->submitValue($this->submittedData);
 
                 // Hydrate mapped object

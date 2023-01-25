@@ -24,7 +24,6 @@ use Berlioz\Form\Type\Choice;
 use Berlioz\Form\Type\Date;
 use Berlioz\Form\Type\Text;
 use Berlioz\Http\Message\ServerRequest;
-use Berlioz\Http\Message\Stream;
 use Berlioz\Http\Message\Uri;
 use PHPUnit\Framework\TestCase;
 
@@ -91,7 +90,7 @@ abstract class AbstractFormTest extends TestCase
         return $form;
     }
 
-    protected function getServerRequest(array $postData = []): ServerRequest
+    protected function getServerRequest(array $postData = [], ?string $body = null): ServerRequest
     {
         $_POST = $postData;
 
@@ -105,7 +104,7 @@ abstract class AbstractFormTest extends TestCase
                 ['Content-Type' => 'multipart/form-data'],
                 [],
                 [],
-                new Stream()
+                $body
             );
 
         return $serverRequest;

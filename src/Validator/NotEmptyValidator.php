@@ -53,7 +53,7 @@ class NotEmptyValidator extends AbstractValidator implements ValidatorInterface
         if (is_string($value)) {
             $value = trim((string)$element->getValue());
 
-            if (mb_strlen($value) == 0) {
+            if (strlen($value) == 0) {
                 return [new $this->constraint(['string' => (string)$element->getValue()])];
             }
         }

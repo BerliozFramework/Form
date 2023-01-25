@@ -83,7 +83,7 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
             throw new InvalidArgumentException(sprintf('Accept only "%s" class', ElementInterface::class));
         }
 
-        if (is_null($offset) || mb_strlen((string)$offset) == 0) {
+        if (is_null($offset) || strlen((string)$offset) == 0) {
             $this->list[] = $value;
         } else {
             $this->list[$offset] = $value;
