@@ -122,7 +122,7 @@ class Choice extends AbstractType
             $value = [$value];
         }
 
-        parent::setValue($value);
+        parent::setValue(array_filter($value, fn($v) => null !== $v));
         $this->treatUnknownValues();
     }
 
@@ -131,11 +131,11 @@ class Choice extends AbstractType
      */
     public function submitValue($value): void
     {
-        if (null !== $value && !is_array($value) && !$value instanceof Traversable) {
+        if (!is_array($value) && !$value instanceof Traversable) {
             $value = [$value];
         }
 
-        parent::submitValue($value);
+        parent::submitValue(array_filter($value, fn($v) => null !== $v));
         $this->treatUnknownValues();
     }
 
