@@ -122,6 +122,10 @@ class Choice extends AbstractType
             $value = [$value];
         }
 
+        if ($value instanceof Traversable) {
+            $value = iterator_to_array($value);
+        }
+
         parent::setValue(array_filter($value, fn($v) => null !== $v));
         $this->treatUnknownValues();
     }
@@ -133,6 +137,10 @@ class Choice extends AbstractType
     {
         if (!is_array($value) && !$value instanceof Traversable) {
             $value = [$value];
+        }
+
+        if ($value instanceof Traversable) {
+            $value = iterator_to_array($value);
         }
 
         parent::submitValue(array_filter($value, fn($v) => null !== $v));
