@@ -199,15 +199,29 @@ class Choice extends AbstractType
         $found = [];
 
         foreach ($this->buildChoices() as $choiceValue) {
-            if (empty(array_keys($value, $choiceValue->getValue()))) {
-                // Final value not scalar
-                if (false === is_scalar($choiceValue->getFinalValue())) {
-                    continue;
-                }
+            $value = array_filter(
+                $value,
+                function ($element) use ($choiceValue) {
+                    if (
+                        is_object($element) === is_object($choiceValue->getValue())
+                        && $element == $choiceValue->getValue()
+                    ) {
+                        return true;
+                    }
 
-                if (empty(array_keys($value, $choiceValue->getFinalValue()))) {
-                    continue;
+                    if (
+                        is_object($element) === is_object($choiceValue->getFinalValue())
+                        && $element == $choiceValue->getFinalValue()
+                    ) {
+                        return true;
+                    }
+
+                    return false;
                 }
+            );
+
+            if (empty($value)) {
+                continue;
             }
 
             $found[] = $choiceValue->setSelected(true);
