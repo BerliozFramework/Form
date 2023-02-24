@@ -199,7 +199,7 @@ class Choice extends AbstractType
         $found = [];
 
         foreach ($this->buildChoices() as $choiceValue) {
-            $value = array_filter(
+            $selected = array_filter(
                 $value,
                 function ($element) use ($choiceValue) {
                     if (
@@ -220,7 +220,7 @@ class Choice extends AbstractType
                 }
             );
 
-            if (empty($value)) {
+            if (empty($selected)) {
                 continue;
             }
 
