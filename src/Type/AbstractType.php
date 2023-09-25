@@ -59,7 +59,7 @@ abstract class AbstractType extends AbstractElement implements SimpleTypeInterfa
      */
     public function getValue(): mixed
     {
-        if (true === $this->getForm()?->isSubmitted()) {
+        if (true === $this->submitted) {
             return $this->submittedValue;
         }
 

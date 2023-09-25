@@ -54,7 +54,11 @@ class TypeHydrator extends AbstractHydrator
             return;
         }
 
-        $propertyName = $this->type->getName();
+
+        $propertyName = $this->type->getOption('mapped');
+        if (!is_string($propertyName)) {
+            $propertyName = $this->type->getName();
+        }
         $value = $this->type->getFinalValue();
 
         try {

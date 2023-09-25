@@ -46,7 +46,10 @@ class TypeCollector extends AbstractCollector
             return null;
         }
 
-        $propertyName = $this->type->getName();
+        $propertyName = $this->type->getOption('mapped');
+        if (!is_string($propertyName)) {
+            $propertyName = $this->type->getName();
+        }
 
         try {
             $exists = false;
