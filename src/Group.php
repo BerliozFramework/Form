@@ -187,12 +187,6 @@ class Group extends AbstractTraversableElement
         /** @var ElementInterface $element */
         foreach ($this as $element) {
             if (!array_key_exists($element->getName(), $value)) {
-                if ($element instanceof TraversableElementInterface) {
-                    $element->submitValue([]);
-                    continue;
-                }
-
-                $element->submitValue(null);
                 continue;
             }
 
