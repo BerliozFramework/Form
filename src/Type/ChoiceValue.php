@@ -16,7 +16,7 @@ namespace Berlioz\Form\Type;
 
 class ChoiceValue
 {
-    private string $label;
+    private string|int|float $label;
     private mixed $value;
     private mixed $finalValue;
     private ?string $group;
@@ -27,9 +27,9 @@ class ChoiceValue
     /**
      * Get label.
      *
-     * @return string
+     * @return string|int|float
      */
-    public function getLabel(): string
+    public function getLabel(): string|int|float
     {
         return $this->label;
     }
@@ -37,9 +37,9 @@ class ChoiceValue
     /**
      * Set label.
      *
-     * @param string $label
+     * @param string|int|float $label
      */
-    public function setLabel(string $label): void
+    public function setLabel(string|int|float $label): void
     {
         $this->label = $label;
     }
