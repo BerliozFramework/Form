@@ -205,6 +205,7 @@ class Collection extends AbstractTraversableElement
      */
     public function setValue(mixed $value): void
     {
+        null === $value && $value = [];
         $value = $this->getTransformer()->toForm($value, $this);
 
         // Complete collection
