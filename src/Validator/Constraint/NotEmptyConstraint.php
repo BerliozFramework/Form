@@ -23,6 +23,6 @@ class NotEmptyConstraint extends BasicConstraint
      */
     public function __construct(array $context = [])
     {
-        parent::__construct($context, 'The field is required.');
+        parent::__construct($context, 'The field "%name%" is required.');
     }
 }

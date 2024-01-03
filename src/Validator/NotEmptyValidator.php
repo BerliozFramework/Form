@@ -46,7 +46,7 @@ class NotEmptyValidator extends AbstractValidator implements ValidatorInterface
 
         // Null?
         if (null === $value) {
-            return [new $this->constraint()];
+            return [new $this->constraint(['name' => $element->getName()])];
         }
 
         // String?
@@ -54,14 +54,19 @@ class NotEmptyValidator extends AbstractValidator implements ValidatorInterface
             $value = trim((string)$element->getValue());
 
             if (strlen($value) == 0) {
-                return [new $this->constraint(['string' => (string)$element->getValue()])];
+                return [
+                    new $this->constraint([
+                        'name' => $element->getName(),
+                        'string' => (string)$element->getValue()
+                    ])
+                ];
             }
         }
 
         // Array
         if (is_array($value)) {
             if (count($value) == 0) {
-                return [new $this->constraint()];
+                return [new $this->constraint(['name' => $element->getName()])];
             }
         }
 
