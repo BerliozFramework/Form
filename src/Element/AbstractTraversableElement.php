@@ -16,6 +16,7 @@ namespace Berlioz\Form\Element;
 
 use ArrayIterator;
 use Berlioz\Form\Exception\FormException;
+use Berlioz\Form\Validator\ValidatorHandlerTrait;
 use Berlioz\Form\View\TraversableView;
 use InvalidArgumentException;
 
@@ -98,6 +99,22 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
     public function offsetUnset($offset): void
     {
         unset($this->list[$offset]);
+    }
+
+    /////////////////
+    /// VALIDATOR ///
+    /////////////////
+
+    public function getAllConstraints(): array
+    {
+        $constraints = [];
+
+        foreach ($this->list as $value) {
+            array_push($constraints, ...$value->getConstraints());
+        }
+        array_push($constraints, ...$this->getConstraints());
+
+        return $constraints;
     }
 
     /////////////
