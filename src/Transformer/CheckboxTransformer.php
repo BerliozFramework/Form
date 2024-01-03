@@ -38,7 +38,7 @@ class CheckboxTransformer implements TransformerInterface
     {
         $defaultValue = $element->getOption('default_value', 'on');
 
-        if ($data == $defaultValue) {
+        if ($element->isSubmitted() && $data == $defaultValue) {
             return $element->getOption('checked_value', true);
         }
 

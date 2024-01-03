@@ -28,6 +28,8 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
 {
     use ValidatorHandlerTrait;
 
+    /** @var bool Submitted? */
+    protected bool $submitted = false;
     protected TransformerInterface $transformer;
     protected ?ElementInterface $parent = null;
 
@@ -39,6 +41,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     public function __construct(
         protected array $options = [],
     ) {
+        $this->submitted = false;
         $this->addValidator(...($options['validators'] ?? []));
         $this->transformer = $options['transformer'] ?? new DefaultTransformer();
     }
@@ -270,7 +273,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
                 continue;
             }
 
-            if ($parent instanceof Form) {
+            if ($parent instanceof Form && $parent !== $this) {
                 return $parent;
             }
         } while (null !== ($parent = $parent->getParent()));
@@ -341,6 +344,16 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     /////////////
     /// VALUE ///
     /////////////
+
+    /**
+     * @inheritDoc
+     */
+    public function isSubmitted(): bool
+    {
+        $form = $this->getForm();
+
+        return $form?->isSubmitted() ?? $this->submitted;
+    }
 
     /**
      * @inheritDoc

@@ -22,7 +22,6 @@ use Berlioz\Form\View\ViewInterface;
 
 abstract class AbstractType extends AbstractElement implements SimpleTypeInterface
 {
-    protected bool $submitted = false;
     protected mixed $submittedValue = null;
     protected mixed $value = null;
 
@@ -59,7 +58,7 @@ abstract class AbstractType extends AbstractElement implements SimpleTypeInterfa
      */
     public function getValue(): mixed
     {
-        if (true === $this->submitted) {
+        if (true === $this->isSubmitted()) {
             return $this->submittedValue;
         }
 

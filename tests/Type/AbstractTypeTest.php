@@ -13,11 +13,10 @@
 namespace Berlioz\Form\Tests\Type;
 
 use Berlioz\Form\Element\AbstractElement;
-use Berlioz\Form\Form;
 use Berlioz\Form\Group;
+use Berlioz\Form\Tests\Fake\FakeForm;
 use Berlioz\Form\Tests\Fake\FakeTransformer;
 use Berlioz\Form\Tests\Fake\FakeType;
-use Berlioz\Form\Tests\Fake\FakeForm;
 use Berlioz\Form\Transformer\DefaultTransformer;
 use Berlioz\Form\Type\AbstractType;
 use Berlioz\Form\Validator\NotEmptyValidator;
@@ -156,12 +155,12 @@ class AbstractTypeTest extends TestCase
     public function testValue()
     {
         $type = new FakeType(['name' => 'bar']);
-        $type->submitValue('bar');
-
-        $this->assertNull($type->getValue());
 
         $type->setValue('test');
         $this->assertSame('test', $type->getValue());
+//
+        $type->submitValue('bar');
+        $this->assertSame('bar', $type->getValue());
 
         $form = new FakeForm('foo');
         $type->setParent($form);

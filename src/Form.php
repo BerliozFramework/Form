@@ -23,8 +23,6 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Form extends Group
 {
-    /** @var bool Submitted? */
-    protected bool $submitted = false;
     protected FormDataProvider $dataProvider;
     /** @var array Submitted data */
     protected array $submittedData = [];
@@ -53,7 +51,6 @@ class Form extends Group
 
         $this->setDataProvider($options['dataProvider'] ?? new FormDataProvider());
         $this->mapObject($mapped);
-        $this->submitted = false;
     }
 
     /////////////
@@ -83,20 +80,6 @@ class Form extends Group
         }
 
         return $view;
-    }
-
-    //////////////////
-    /// SUBMISSION ///
-    //////////////////
-
-    /**
-     * Is submitted?
-     *
-     * @return bool
-     */
-    public function isSubmitted(): bool
-    {
-        return $this->submitted;
     }
 
     ////////////////

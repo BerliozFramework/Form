@@ -153,6 +153,13 @@ interface ElementInterface
     public function setValue(mixed $value): void;
 
     /**
+     * Is submitted value?
+     *
+     * @return bool
+     */
+    public function isSubmitted(): bool;
+
+    /**
      * Submit value.
      * Value from user submission.
      *
