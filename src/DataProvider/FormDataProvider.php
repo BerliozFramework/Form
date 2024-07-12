@@ -27,9 +27,16 @@ class FormDataProvider implements DataProviderInterface
     protected function getSubmittedData(ServerRequestInterface $request): array
     {
         switch (strtolower($request->getMethod())) {
+            case 'connect':
             case 'get':
+            case 'head':
+            case 'options':
+            case 'trace':
                 return $request->getQueryParams();
+            case 'delete':
+            case 'patch':
             case 'post':
+            case 'put':
                 $parsedBody = $request->getParsedBody();
                 false === is_array($parsedBody) && $parsedBody = [];
 
