@@ -246,6 +246,7 @@ class Collection extends AbstractTraversableElement
      */
     public function submitValue($value): void
     {
+        $this->submitted = true;
         $value = (array)$value;
 
         // Complete collection
