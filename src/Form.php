@@ -118,9 +118,8 @@ class Form extends Group
 
         if (strtolower($request->getMethod()) === strtolower($this->getOption('method'))) {
             $submittedData = $this->dataProvider->handle($request, $this);
-            $this->submitted = $submittedData !== false;
 
-            if (true === $this->submitted) {
+            if ($submittedData !== false) {
                 $this->submittedData = $submittedData ?: [];
                 $this->submitValue($this->submittedData);
 

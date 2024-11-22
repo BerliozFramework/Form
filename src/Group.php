@@ -16,7 +16,6 @@ namespace Berlioz\Form;
 
 use Berlioz\Form\Element\AbstractTraversableElement;
 use Berlioz\Form\Element\ElementInterface;
-use Berlioz\Form\Element\TraversableElementInterface;
 use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\View\TraversableView;
 use InvalidArgumentException;
@@ -183,6 +182,8 @@ class Group extends AbstractTraversableElement
         if (!is_array($value)) {
             throw new FormException('Invalid type of value, array attempted');
         }
+
+        $this->submitted = true;
 
         /** @var ElementInterface $element */
         foreach ($this as $element) {
