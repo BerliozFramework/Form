@@ -350,9 +350,13 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
      */
     public function isSubmitted(): bool
     {
-        $form = $this->getForm();
+        $submittedForm = $this->getForm()?->isSubmitted();
 
-        return $form?->isSubmitted() ?? $this->submitted;
+        if (true === $submittedForm) {
+            return $this->submitted;
+        }
+
+        return $submittedForm ?? $this->submitted;
     }
 
     /**

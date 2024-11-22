@@ -158,7 +158,7 @@ class AbstractTypeTest extends TestCase
 
         $type->setValue('test');
         $this->assertSame('test', $type->getValue());
-//
+
         $type->submitValue('bar');
         $this->assertSame('bar', $type->getValue());
 

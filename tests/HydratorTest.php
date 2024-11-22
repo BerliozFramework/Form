@@ -198,7 +198,7 @@ class HydratorTest extends AbstractFormTest
         $person
             ->setAddresses(
                 [
-                    (new FakeAddress())
+                    $expectedAddress = (new FakeAddress())
                         ->setAddress('2 avenue Paris')
                         ->setAddressNext('BP 12345')
                         ->setZipCode('75001')
@@ -234,7 +234,7 @@ class HydratorTest extends AbstractFormTest
         $hydrator = new FormHydrator($form);
         $hydrator->hydrate($person);
 
-        $this->assertEquals([], $person->getAddresses());
+        $this->assertEquals([$expectedAddress], $person->getAddresses());
     }
 
     public function testPartialMapped()
