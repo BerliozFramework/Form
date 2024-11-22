@@ -52,6 +52,14 @@ class CollectionHydrator extends AbstractHydrator
             return;
         }
 
+        if ($this->collection->getOption('readonly', false, true)) {
+            return;
+        }
+
+        if (false === $this->collection->isSubmitted()) {
+            return;
+        }
+
         $subMapped = $this->getSubMapped($this->getElement(), $mapped) ?? [];
         $isArray = is_array($subMapped);
         $isArrayAccess = $subMapped instanceof ArrayAccess;

@@ -47,6 +47,14 @@ class GroupHydrator extends AbstractHydrator
             return;
         }
 
+        if ($this->group->getOption('readonly', false, true)) {
+            return;
+        }
+
+        if (false === $this->group->isSubmitted()) {
+            return;
+        }
+
         // Get mapped object if defined on group
         if (null !== $this->group->getMappedObject()) {
             $subMapped = $this->group->getMappedObject();
