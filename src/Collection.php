@@ -137,6 +137,7 @@ class Collection extends AbstractTraversableElement
         for ($i = $nbElements; $i < $minElements; $i++) {
             $this->list[] = $element = clone $this->prototype;
             $element->setParent($this);
+            $element->build();
         }
     }
 
@@ -228,6 +229,7 @@ class Collection extends AbstractTraversableElement
             } else {
                 $this[$key] = $element = clone $this->prototype;
                 $element->setParent($this);
+                $element->build();
 
                 // Callback
                 $this->callCallback('complete', $this, $this[$key]);
@@ -281,6 +283,7 @@ class Collection extends AbstractTraversableElement
             $this[$key] = $element = clone $this->prototype;
             $element->setParent($this);
             $element->submitValue($aValue);
+            $element->build();
 
             // Callback
             $this->callCallback('add', $this, $element);
