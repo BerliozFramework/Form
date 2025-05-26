@@ -22,10 +22,10 @@ use Twig\Error\Error;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-if (class_exists('Twig\\Extension\\AbstractExtension', true)) {
+if (class_exists('Twig\\Extension\\AbstractExtension')) {
     class TwigExtension extends AbstractExtension
     {
-        const DEFAULT_TPL = '@Berlioz-Form/default.html.twig';
+        public const DEFAULT_TPL = '@Berlioz-Form/default.html.twig';
 
         /**
          * TwigExtension constructor.

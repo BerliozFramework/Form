@@ -55,7 +55,7 @@ class Group extends AbstractTraversableElement
      *
      * @throws FormException
      */
-    public function mapObject(?object $object = null)
+    public function mapObject(?object $object = null): void
     {
         if (!is_object($object) && !is_null($object)) {
             throw new FormException(sprintf('Parameter given must be an object, "%s" given', gettype($object)));

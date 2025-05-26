@@ -105,7 +105,7 @@ class Form extends Group
      *
      * @throws FormException
      */
-    public function handle(ServerRequestInterface $request)
+    public function handle(ServerRequestInterface $request): void
     {
         // Build
         $this->build();

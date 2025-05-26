@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Berlioz\Form\Type;
 
-use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Validator\LengthValidator;
 
 class Text extends AbstractType
@@ -36,7 +35,7 @@ class Text extends AbstractType
 
         // Length validator
         if ($this->hasValidator(LengthValidator::class) === false) {
-            $this->addValidator(new LengthValidator);
+            $this->addValidator(new LengthValidator());
         }
     }
 }

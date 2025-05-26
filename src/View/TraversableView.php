@@ -57,7 +57,7 @@ class TraversableView extends BasicView implements TraversableViewInterface
     /**
      * @inheritDoc
      */
-    public function offsetGet(mixed $offset): mixed
+    public function offsetGet(mixed $offset): ?ViewInterface
     {
         return $this->list[$offset] ?? null;
     }
@@ -97,7 +97,7 @@ class TraversableView extends BasicView implements TraversableViewInterface
      *
      * @param string $name
      *
-     * @return mixed
+     * @return ViewInterface
      * @throws FormException
      */
     public function __get(string $name)

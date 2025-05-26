@@ -84,7 +84,7 @@ class Collection extends AbstractTraversableElement
     public function __debugInfo(): array
     {
         $data = [
-            'parent' => $this->getParent() ? $this->getParent()->getName() : null,
+            'parent' => $this->getParent()?->getName(),
             'prototype' => $this->prototype,
             'children' => [],
         ];
@@ -104,7 +104,7 @@ class Collection extends AbstractTraversableElement
      *
      * @return false|int|string
      */
-    public function indexOf(ElementInterface $element)
+    public function indexOf(ElementInterface $element): bool|int|string
     {
         if (($index = array_search($element, $this->list, true)) === false) {
             if ($this->getPrototype() === $element) {
@@ -124,7 +124,7 @@ class Collection extends AbstractTraversableElement
      *
      * @return void
      */
-    protected function completeCollection(int $nb = null): void
+    protected function completeCollection(?int $nb = null): void
     {
         // Complete by elements
         $nbElements = count($this);

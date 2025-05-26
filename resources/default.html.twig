@@ -198,17 +198,15 @@
 {%- endblock -%}
 
 {%- block collection_widget -%}
-  {% apply spaceless %}
     <div
     {% if editable %}
       id="{{ id }}"
       data-collection="{{ name }}"
-      data-prototype="{% with { 'element': prototype } %}{{ block('collection_item')|spaceless|e }}{% endwith %}"
+      data-prototype="{% with { 'element': prototype } %}{{ block('collection_item')|e('html') }}{% endwith %}"
       data-collection-min="{{ min_elements }}"
       data-collection-max="{{ max_elements }}"
     {% endif %}
     >
-  {% endapply %}
   {% for key, element in form %}
     <div data-collection-key="{{ key }}">
       {% with { 'element': element, 'index': key } %}{{ block('collection_item') }}{% endwith %}

@@ -61,7 +61,7 @@ abstract class AbstractHydrator implements HydratorInterface
      * @return mixed
      * @throws HydratorException
      */
-    protected function getSubMapped(ElementInterface $element, object $mapped, &$new = false)
+    protected function getSubMapped(ElementInterface $element, object $mapped, bool &$new = false): mixed
     {
         if (is_null($element->getName())) {
             return $mapped;

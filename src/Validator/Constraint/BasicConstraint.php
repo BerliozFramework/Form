@@ -17,9 +17,9 @@ namespace Berlioz\Form\Validator\Constraint;
 class BasicConstraint implements ConstraintInterface
 {
     /** @var array Context */
-    private $context;
+    private array $context;
     /** @var string|null Mssage */
-    private $message;
+    private ?string $message;
 
     /**
      * BasicConstraint constructor.

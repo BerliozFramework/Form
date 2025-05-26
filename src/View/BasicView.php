@@ -47,14 +47,6 @@ class BasicView implements ViewInterface
         return $this->src->getForm()->getMappedObject();
     }
 
-//    /**
-//     * @inheritDoc
-//     */
-//    public function getSrcType(): string
-//    {
-//        return $this->src::class;
-//    }
-
     /**
      * @inheritDoc
      */

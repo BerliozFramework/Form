@@ -201,7 +201,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
         }
 
         if (true === $inherit) {
-            return $this->parent?->getOption($name, $default, $inherit) ?? $default;
+            return $this->parent?->getOption($name, $default, true) ?? $default;
         }
 
         return $default;

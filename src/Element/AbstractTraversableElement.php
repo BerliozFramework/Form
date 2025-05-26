@@ -16,7 +16,6 @@ namespace Berlioz\Form\Element;
 
 use ArrayIterator;
 use Berlioz\Form\Exception\FormException;
-use Berlioz\Form\Validator\ValidatorHandlerTrait;
 use Berlioz\Form\View\TraversableView;
 use InvalidArgumentException;
 

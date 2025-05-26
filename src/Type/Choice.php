@@ -152,7 +152,7 @@ class Choice extends AbstractType
      *
      * @throws TypeException
      */
-    private function treatUnknownValues()
+    private function treatUnknownValues(): void
     {
         /** @var ChoiceTransformerInterface $choiceTransformer */
         if (!(($choiceTransformer = $this->getOption('choice_transformer')) instanceof ChoiceTransformerInterface)) {
@@ -227,7 +227,7 @@ class Choice extends AbstractType
      *
      * @throws TypeException
      */
-    private function updatePreferredChoices()
+    private function updatePreferredChoices(): void
     {
         $preferredChoices = $this->getOption('preferred_choices');
 
@@ -289,7 +289,7 @@ class Choice extends AbstractType
 
                 return $reflection->invokeArgs($parameters);
             } catch (Exception $exception) {
-                throw new TypeException(sprintf('Unable to call callback "%s"', $callback), previous: $exception);
+                throw new TypeException('Unable to call closure callback', previous: $exception);
             }
         }
 

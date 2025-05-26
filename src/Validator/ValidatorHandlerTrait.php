@@ -40,7 +40,7 @@ trait ValidatorHandlerTrait
         foreach ($this->validators as $validator) {
             if ($validator instanceof Closure) {
                 if (true !== ($result = $validator->call($this, $this))) {
-                    array_push($this->constraints, new BasicConstraint(message: (is_string($result) ? $result : null)));
+                    $this->constraints[] = new BasicConstraint(message: (is_string($result) ? $result : null));
                 }
                 continue;
             }
