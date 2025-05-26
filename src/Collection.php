@@ -71,6 +71,17 @@ class Collection extends AbstractTraversableElement
     }
 
     /**
+     * __clone() magic method.
+     */
+    public function __clone()
+    {
+        $this->submittedKeys = [];
+        $this->prototype = clone $this->prototype;
+        $this->prototype->setParent($this);
+        parent::__clone();
+    }
+
+    /**
      * __debugInfo() magic method.
      *
      * @return array
@@ -129,7 +140,9 @@ class Collection extends AbstractTraversableElement
         }
 
         for ($i = $nbElements; $i < $minElements; $i++) {
-            $this->list[] = clone $this->prototype;
+            $this->list[] = $element = clone $this->prototype;
+            $element->setParent($this);
+            $element->build();
         }
     }
 
@@ -218,6 +231,7 @@ class Collection extends AbstractTraversableElement
             } else {
                 $this[$key] = $element = clone $this->prototype;
                 $element->setParent($this);
+                $element->build();
 
                 // Callback
                 $this->callCallback('complete', $this, $this[$key]);
@@ -272,6 +286,7 @@ class Collection extends AbstractTraversableElement
             $this[$key] = $element = clone $this->prototype;
             $element->setParent($this);
             $element->submitValue($value);
+            $element->build();
 
             // Callback
             $this->callCallback('add', $this, $element);
@@ -291,12 +306,17 @@ class Collection extends AbstractTraversableElement
     {
         /** @var \Berlioz\Form\View\TraversableView $view */
         $view = parent::buildView();
+
+        $prototype = $this->getPrototype();
+        $prototypeView = $prototype?->buildView();
+        $prototypeView?->setParentView($view);
+
         $view->mergeVars(
             [
                 'type' => $this->getOption('type', 'collection'),
                 'id' => $this->getId(),
                 'name' => $this->getFormName(),
-                'prototype' => $this->getPrototype()->buildView()->setParentView($view),
+                'prototype' => $prototypeView,
                 'editable' => $this->getOption('editable', true),
                 'min_elements' => $this->getOption('min_elements'),
                 'max_elements' => $this->getOption('max_elements'),
