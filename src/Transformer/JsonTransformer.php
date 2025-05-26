@@ -39,7 +39,7 @@ class JsonTransformer implements TransformerInterface
             return $data;
         }
 
-        return json_decode($data, true, $this->decodeDepth, $this->decodeFlags);
+        return json_encode($data, $this->encodeFlags, $this->encodeDepth);
     }
 
     /**
@@ -61,6 +61,6 @@ class JsonTransformer implements TransformerInterface
             return null;
         }
 
-        return json_encode($data, $this->encodeFlags, $this->encodeDepth);
+        return json_decode($data, true, $this->decodeDepth, $this->decodeFlags);
     }
 }
