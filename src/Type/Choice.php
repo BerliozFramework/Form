@@ -427,8 +427,8 @@ class Choice extends AbstractMultipleType
             $choices,
             function (ChoiceValue $choiceValue1, ChoiceValue $choiceValue2) use ($choices) {
                 if ($choiceValue1->isPreferred() == $choiceValue2->isPreferred()) {
-                    $choiceKey1 = array_search($choiceValue1, $choices);
-                    $choiceKey2 = array_search($choiceValue2, $choices);
+                    $choiceKey1 = array_search($choiceValue1, $choices, true);
+                    $choiceKey2 = array_search($choiceValue2, $choices, true);
 
                     if ($choiceKey1 == $choiceKey2) {
                         return 0;
