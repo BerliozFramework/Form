@@ -6,21 +6,21 @@ namespace Berlioz\Form\Transformer;
 
 use BackedEnum;
 use Berlioz\Form\Element\ElementInterface;
-use LogicException;
-use UnitEnum;
+use ValueError;
 
 class EnumTransformer implements TransformerInterface
 {
     public function __construct(private string $class)
     {
-        class_exists(BackedEnum::class) || throw new LogicException('PHP 8.1 required to use Enum transformer');
-        is_a($this->class, BackedEnum::class, true) || throw new LogicException('Class must implement BackedEnum');
+        if (false === is_a($this->class, BackedEnum::class, true)) {
+            throw new ValueError('Enum must be a PHP 8.1 backed enum type');
+        }
     }
 
     /**
      * @inheritDoc
      */
-    public function fromForm($data, ElementInterface $element): UnitEnum|array|null
+    public function fromForm($data, ElementInterface $element): BackedEnum|array|null
     {
         if (is_array($data)) {
             return array_filter(
