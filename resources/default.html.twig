@@ -151,6 +151,9 @@
 {%- endblock -%}
 
 {%- block choice_widget_collapsed -%}
+  {% if multiple and not required %}
+    <input type="hidden" name="{{ name }}[]" value="">
+  {% endif %}
   <select {{ block('widget_attributes') }}>
     {% if allow_clear is not same as(false) and not multiple %}
       <option value="">{% if allow_clear is same as(true) %}&nbsp;{% else %}{{ allow_clear }}{% endif %}</option>
