@@ -23,7 +23,7 @@ use ReflectionFunction;
 use ReflectionParameter;
 use Traversable;
 
-class Choice extends AbstractType
+class Choice extends AbstractMultipleType
 {
     private array $choices;
     private array $additionalChoices = [];
