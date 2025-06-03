@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Berlioz\Form\Type;
 
+use Berlioz\Form\Validator\FileFormatValidator;
 use Berlioz\Form\View\ViewInterface;
 
 class File extends AbstractMultipleType
@@ -85,6 +86,11 @@ class File extends AbstractMultipleType
             $formAttributes = $form->getOption('attributes', []);
             $formAttributes['enctype'] = 'multipart/form-data';
             $form->setOption('attributes', $formAttributes);
+        }
+
+        // Format validator
+        if ($this->hasValidator(FileFormatValidator::class) === false) {
+            $this->addValidator(new FileFormatValidator());
         }
     }
 
