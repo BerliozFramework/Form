@@ -52,6 +52,11 @@ class FileFormatValidator extends AbstractValidator implements ValidatorInterfac
         $accept = array_map('strtolower', $accept);
 
         $files = $element->getValue();
+
+        if (null === $files) {
+            return $constraints;
+        }
+
         if (false === $multiple) {
             $files = [$files];
         }
