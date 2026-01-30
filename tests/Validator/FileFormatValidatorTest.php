@@ -11,11 +11,16 @@ class FileFormatValidatorTest extends TestCase
 {
     public function testValidFileByExtension(): void
     {
+        // Mock of the stream
+        $stream = $this->createMock(\Psr\Http\Message\StreamInterface::class);
+        $stream->method('isSeekable')->willReturn(false);
+
         // Mock of the uploaded file
         // The file is a PNG with MIME type image/png
         $file = $this->createMock(UploadedFile::class);
         $file->method('getMediaType')->willReturn('image/png');
         $file->method('getClientFilename')->willReturn('image.png');
+        $file->method('getStream')->willReturn($stream);
 
         // Mock of the form element
         // The accept attribute allows .png and .jpg extensions
@@ -37,11 +42,16 @@ class FileFormatValidatorTest extends TestCase
 
     public function testInvalidFileFormat(): void
     {
+        // Mock of the stream
+        $stream = $this->createMock(\Psr\Http\Message\StreamInterface::class);
+        $stream->method('isSeekable')->willReturn(false);
+
         // Mock of the uploaded file
         // The file is a PDF, which is not allowed
         $file = $this->createMock(UploadedFile::class);
         $file->method('getMediaType')->willReturn('application/pdf');
         $file->method('getClientFilename')->willReturn('document.pdf');
+        $file->method('getStream')->willReturn($stream);
 
         // Mock of the form element
         // Only image extensions are allowed
@@ -67,11 +77,16 @@ class FileFormatValidatorTest extends TestCase
 
     public function testValidFileByMime(): void
     {
+        // Mock of the stream
+        $stream = $this->createMock(\Psr\Http\Message\StreamInterface::class);
+        $stream->method('isSeekable')->willReturn(false);
+
         // Mock of the uploaded file
         // MIME type matches image/*
         $file = $this->createMock(UploadedFile::class);
         $file->method('getMediaType')->willReturn('image/jpeg');
         $file->method('getClientFilename')->willReturn('photo.jpeg');
+        $file->method('getStream')->willReturn($stream);
 
         // Mock of the form element
         // The accept attribute allows all image MIME types
