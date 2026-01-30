@@ -62,8 +62,9 @@ class FileFormatValidator extends AbstractValidator implements ValidatorInterfac
         $accept = array_map('trim', $accept);
         $accept = array_map('strtolower', $accept);
 
-        $files = $element->getValue();
-        if (false === $multiple) {
+        $files = $element->getValue() ?: [];
+
+        if (false === $multiple && false === is_array($files)) {
             $files = [$files];
         }
 
