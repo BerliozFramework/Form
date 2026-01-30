@@ -18,10 +18,15 @@ use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Type\MultipleTypeInterface;
 use Berlioz\Form\Validator\Constraint\FileFormatConstraint;
-use Berlioz\Http\Message\UploadedFile;
+use League\MimeTypeDetection\ExtensionMimeTypeDetector;
+use League\MimeTypeDetection\FinfoMimeTypeDetector;
+use League\MimeTypeDetection\MimeTypeDetector;
+use Psr\Http\Message\UploadedFileInterface;
 
 class FileFormatValidator extends AbstractValidator implements ValidatorInterface
 {
+    protected MimeTypeDetector $mimeTypeDetector;
+
     /**
      * LengthValidator constructor.
      *
@@ -29,9 +34,15 @@ class FileFormatValidator extends AbstractValidator implements ValidatorInterfac
      *
      * @throws ValidatorException
      */
-    public function __construct(string $constraint = FileFormatConstraint::class)
-    {
+    public function __construct(
+        string $constraint = FileFormatConstraint::class,
+        ?MimeTypeDetector $mimeTypeDetector = null,
+    ) {
         parent::__construct($constraint);
+        $this->mimeTypeDetector = $mimeTypeDetector ?? match (extension_loaded('fileinfo')) {
+            true => new FinfoMimeTypeDetector(),
+            false => new ExtensionMimeTypeDetector(),
+        };
     }
 
     /**
@@ -56,9 +67,15 @@ class FileFormatValidator extends AbstractValidator implements ValidatorInterfac
             $files = [$files];
         }
 
-        /** @var UploadedFile $file */
+        /** @var UploadedFileInterface $file */
         foreach ($files as $file) {
-            $mime = $file->getMediaType() ?? 'application/octet-stream';
+            $mime = match ($file->getStream()->isSeekable()) {
+                true => $this->mimeTypeDetector->detectMimeType(
+                    $file->getClientFilename(),
+                    $file->getStream()->read(4096),
+                ),
+                false => $this->mimeTypeDetector->detectMimeTypeFromPath($file->getClientFilename()),
+            } ?? 'application/octet-stream';
             $extension = null;
             if (false !== ($extensionPos = strrpos($file->getClientFilename(), '.'))) {
                 $extension = strtolower(substr($file->getClientFilename(), $extensionPos + 1));
