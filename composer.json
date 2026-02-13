@@ -1,0 +1,35 @@
+{
+  "name": "berlioz/form",
+  "description": "Berlioz Form",
+  "license": "MIT",
+  "homepage": "https://getberlioz.com",
+  "support": {
+    "issues": "https://github.com/BerliozFramework/Berlioz/issues",
+    "source": "https://github.com/BerliozFramework/Berlioz"
+  },
+  "authors": [
+    {
+      "name": "Ronan Giron",
+      "email": "ronan@getberlioz.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Berlioz\\Form\\": ""
+    }
+  },
+  "require": {
+    "php": "^8.2",
+    "berlioz/helpers": "^1.2",
+    "psr/http-message": "^1.0 || ^2.0",
+    "league/mime-type-detection": "^1.0"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-main": "3.x-dev"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  }
+}
