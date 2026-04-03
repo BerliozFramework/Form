@@ -70,13 +70,18 @@ class FileFormatValidator extends AbstractValidator implements ValidatorInterfac
 
         /** @var UploadedFileInterface $file */
         foreach ($files as $file) {
-            $mime = match ($file->getStream()->isSeekable()) {
+            $stream = $file->getStream();
+            $mime = match ($stream->isSeekable()) {
                 true => $this->mimeTypeDetector->detectMimeType(
                     $file->getClientFilename(),
-                    $file->getStream()->read(4096),
+                    $stream->read(4096),
                 ),
                 false => $this->mimeTypeDetector->detectMimeTypeFromPath($file->getClientFilename()),
             } ?? 'application/octet-stream';
+
+            if ($stream->isSeekable()) {
+                $stream->rewind();
+            }
             $extension = null;
             if (false !== ($extensionPos = strrpos($file->getClientFilename(), '.'))) {
                 $extension = strtolower(substr($file->getClientFilename(), $extensionPos + 1));
