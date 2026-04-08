@@ -219,7 +219,7 @@ class Collection extends AbstractTraversableElement
         ksort($value);
 
         foreach ($value as $key => $aValue) {
-            if (is_int($max) && $i > $max) {
+            if (is_int($max) && $i >= $max) {
                 continue;
             }
 
@@ -250,6 +250,11 @@ class Collection extends AbstractTraversableElement
     {
         $this->submitted = true;
         $value = (array)$value;
+
+        $max = $this->getOption('max_elements');
+        if (is_int($max) && $max >= 0) {
+            $value = array_slice($value, 0, $max, true);
+        }
 
         // Complete collection
         $this->completeCollection(count($value));
