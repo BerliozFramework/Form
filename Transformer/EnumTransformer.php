@@ -25,7 +25,7 @@ class EnumTransformer implements TransformerInterface
         if (is_array($data)) {
             return array_filter(
                 array_map(
-                    fn($value) => ($this->class)::tryFrom($data ?? ''),
+                    fn($value) => ($this->class)::tryFrom($value ?? ''),
                     $data,
                 )
             );
@@ -48,11 +48,11 @@ class EnumTransformer implements TransformerInterface
         if (is_array($data)) {
             return array_map(
                 fn($value) => $value->value,
-                array_filter($data, fn($value) => $value instanceof $this->class),
+                array_filter($data, fn($value) => is_object($value) && is_a($value, $this->class)),
             );
         }
 
-        if ($data instanceof $this->class) {
+        if (is_object($data) && is_a($data, $this->class)) {
             return $data->value;
         }
 
