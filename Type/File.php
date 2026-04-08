@@ -27,23 +27,6 @@ class File extends AbstractMultipleType
         return 'file';
     }
 
-    /////////////////
-    /// ID & NAME ///
-    /////////////////
-
-    /**
-     * @inheritDoc
-     */
-    public function getFormName(): ?string
-    {
-        // Multiple?
-        if ($this->isMultiple()) {
-            return sprintf('%s[]', parent::getFormName());
-        }
-
-        return parent::getFormName();
-    }
-
     /////////////
     /// VALUE ///
     /////////////
@@ -100,7 +83,12 @@ class File extends AbstractMultipleType
     public function buildView(): ViewInterface
     {
         $view = parent::buildView();
-        $view->mergeVars(['value' => '']);
+        $view->mergeVars(
+            [
+                'value' => '',
+                'multiple' => $this->isMultiple(),
+            ]
+        );
 
         return $view;
     }
