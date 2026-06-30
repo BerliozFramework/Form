@@ -174,9 +174,7 @@ class Choice extends AbstractMultipleType
         $this->additionalChoices = $choiceTransformer->toForm($unknownChoices, $this);
         $this->additionalChoices = array_filter(
             $this->additionalChoices,
-            function ($choiceValue) {
-                return $choiceValue instanceof ChoiceValue;
-            }
+            fn($choiceValue) => $choiceValue instanceof ChoiceValue
         );
     }
 
@@ -313,7 +311,7 @@ class Choice extends AbstractMultipleType
                         sprintf(
                             'Unable to found getter of "%s" property of "%s" class',
                             $callback,
-                            get_class($value)
+                            $value::class
                         ),
                         previous: $exception
                     );
@@ -398,7 +396,7 @@ class Choice extends AbstractMultipleType
 
         $index = 0;
         foreach ($choices as $key => $value) {
-            if (is_array($value) || $value instanceof Traversable) {
+            if (is_iterable($value)) {
                 foreach ($value as $key2 => $value2) {
                     $this->choices[] = $this->buildChoiceValue($key2, $value2, $index, $key);
                     $index++;

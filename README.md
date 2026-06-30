@@ -30,4 +30,5 @@ $ composer require berlioz/form
 
 ## Documentation
 
-For usage and examples, visit the [official documentation on **getberlioz.com**](https://getberlioz.com/docs/3.x/components/form).
+For usage and examples, visit the
+[official documentation on **getberlioz.com**](https://getberlioz.com/docs/3.x/components/form).

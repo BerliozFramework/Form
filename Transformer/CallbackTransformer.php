@@ -10,8 +10,8 @@ use Closure;
 class CallbackTransformer implements TransformerInterface
 {
     public function __construct(
-        private ?Closure $toFormCallback = null,
-        private ?Closure $fromFormCallback = null,
+        private readonly ?Closure $toFormCallback = null,
+        private readonly ?Closure $fromFormCallback = null,
     ) {
 
     }

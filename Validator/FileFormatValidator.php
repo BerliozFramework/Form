@@ -58,9 +58,9 @@ class FileFormatValidator extends AbstractValidator implements ValidatorInterfac
             return $constraints;
         }
 
-        $accept = explode(',', $accept);
-        $accept = array_map('trim', $accept);
-        $accept = array_map('strtolower', $accept);
+        $accept = explode(',', (string)$accept);
+        $accept = array_map(trim(...), $accept);
+        $accept = array_map(strtolower(...), $accept);
 
         $files = $element->getValue() ?: [];
 
@@ -83,8 +83,8 @@ class FileFormatValidator extends AbstractValidator implements ValidatorInterfac
                 $stream->rewind();
             }
             $extension = null;
-            if (false !== ($extensionPos = strrpos($file->getClientFilename(), '.'))) {
-                $extension = strtolower(substr($file->getClientFilename(), $extensionPos + 1));
+            if (false !== ($extensionPos = strrpos((string)$file->getClientFilename(), '.'))) {
+                $extension = strtolower(substr((string)$file->getClientFilename(), $extensionPos + 1));
             }
 
             foreach ($accept as $acceptValue) {

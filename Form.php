@@ -116,7 +116,7 @@ class Form extends Group
         $collector = new FormCollector($this);
         $this->setValue($collector->collect());
 
-        if (strtolower($request->getMethod()) === strtolower($this->getOption('method'))) {
+        if (strtolower($request->getMethod()) === strtolower((string)$this->getOption('method'))) {
             $submittedData = $this->dataProvider->handle($request, $this);
 
             if ($submittedData !== false) {

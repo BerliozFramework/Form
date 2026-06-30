@@ -9,7 +9,7 @@ use Closure;
 
 class ArrayFilterTransformer implements TransformerInterface
 {
-    public function __construct(private ?Closure $callback = null)
+    public function __construct(private readonly ?Closure $callback = null)
     {
     }
 

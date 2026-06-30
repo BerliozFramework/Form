@@ -24,7 +24,7 @@ class GroupCollector extends AbstractCollector
      *
      * @param Group $group
      */
-    public function __construct(private Group $group)
+    public function __construct(private readonly Group $group)
     {
     }
 

@@ -27,7 +27,7 @@ class CollectionHydrator extends AbstractHydrator
      *
      * @param Collection $collection
      */
-    public function __construct(private Collection $collection)
+    public function __construct(private readonly Collection $collection)
     {
     }
 
@@ -118,7 +118,7 @@ class CollectionHydrator extends AbstractHydrator
                 b_set_property_value($mapped, $propertyName, $subMapped);
             } catch (Exception $e) {
                 throw new HydratorException(
-                    sprintf('Unable to find property setter of "%s" on object "%s"', $propertyName, get_class($mapped)),
+                    sprintf('Unable to find property setter of "%s" on object "%s"', $propertyName, $mapped::class),
                     0,
                     $e
                 );

@@ -25,7 +25,7 @@ class TypeCollector extends AbstractCollector
      *
      * @param TypeInterface $type
      */
-    public function __construct(private TypeInterface $type)
+    public function __construct(private readonly TypeInterface $type)
     {
     }
 
@@ -60,7 +60,7 @@ class TypeCollector extends AbstractCollector
                     sprintf(
                         'Unable to find getter method of "%s" property in mapped object "%s"',
                         $propertyName,
-                        get_class($mapped)
+                        $mapped::class
                     )
                 );
             }
@@ -73,7 +73,7 @@ class TypeCollector extends AbstractCollector
                 sprintf(
                     'Unable to find property getter of "%s" on object "%s"',
                     $propertyName,
-                    get_class($mapped)
+                    $mapped::class
                 ),
                 previous: $exception
             );

@@ -10,7 +10,7 @@ use ValueError;
 
 class EnumTransformer implements TransformerInterface
 {
-    public function __construct(private string $class)
+    public function __construct(private readonly string $class)
     {
         if (false === is_a($this->class, BackedEnum::class, true)) {
             throw new ValueError('Enum must be a PHP 8.1 backed enum type');

@@ -140,11 +140,7 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
                 return null;
             }
 
-            if (isset($mapped[$parent->indexOf($this)])) {
-                return $mapped[$parent->indexOf($this)];
-            }
-
-            return null;
+            return $mapped[$parent->indexOf($this)] ?? null;
         }
 
         // If mapped is an array

@@ -53,7 +53,7 @@ abstract class AbstractCollector implements CollectorInterface
                 message: sprintf(
                     'Unable to find getter method of "%s" property on object "%s"',
                     $element->getName(),
-                    get_class($mapped)
+                    $mapped::class
                 ),
                 previous: $exception
             );
@@ -82,6 +82,6 @@ abstract class AbstractCollector implements CollectorInterface
             return new CollectionCollector($element);
         }
 
-        throw new CollectorException(sprintf('Hydrator not found for "%s"', get_class($element)));
+        throw new CollectorException(sprintf('Hydrator not found for "%s"', $element::class));
     }
 }

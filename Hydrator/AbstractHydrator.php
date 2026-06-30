@@ -48,7 +48,7 @@ abstract class AbstractHydrator implements HydratorInterface
             return new CollectionHydrator($element);
         }
 
-        throw new HydratorException(sprintf('Hydrator not found for "%s"', get_class($element)));
+        throw new HydratorException(sprintf('Hydrator not found for "%s"', $element::class));
     }
 
     /**
@@ -76,7 +76,7 @@ abstract class AbstractHydrator implements HydratorInterface
                     sprintf(
                         'Unable to find getter method of "%s" property in mapped object "%s"',
                         $element->getName(),
-                        get_class($mapped)
+                        $mapped::class
                     )
                 );
             }
@@ -94,7 +94,7 @@ abstract class AbstractHydrator implements HydratorInterface
                         sprintf(
                             'Unable to find setter method of "%s" property on object "%s"',
                             $element->getName(),
-                            get_class($mapped)
+                            $mapped::class
                         ), 0
                     );
                 }
@@ -110,7 +110,7 @@ abstract class AbstractHydrator implements HydratorInterface
                 sprintf(
                     'Unable to find setter method of "%s" property on object "%s"',
                     $element->getName(),
-                    get_class($mapped)
+                    $mapped::class
                 ), 0, $e
             );
         }

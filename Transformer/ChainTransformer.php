@@ -8,7 +8,7 @@ use Berlioz\Form\Element\ElementInterface;
 
 class ChainTransformer implements TransformerInterface
 {
-    private array $transformers;
+    private readonly array $transformers;
 
     public function __construct(TransformerInterface ...$transformers)
     {

@@ -16,21 +16,14 @@ namespace Berlioz\Form\Validator\Constraint;
 
 class BasicConstraint implements ConstraintInterface
 {
-    /** @var array Context */
-    private array $context;
-    /** @var string|null Mssage */
-    private ?string $message;
-
     /**
      * BasicConstraint constructor.
      *
      * @param array $context
      * @param string|null $message
      */
-    public function __construct(array $context = [], ?string $message = null)
+    public function __construct(private readonly array $context = [], private readonly ?string $message = null)
     {
-        $this->context = $context;
-        $this->message = $message;
     }
 
     /**

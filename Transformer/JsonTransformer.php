@@ -61,6 +61,6 @@ class JsonTransformer implements TransformerInterface
             return null;
         }
 
-        return json_decode($data, true, $this->decodeDepth, $this->decodeFlags);
+        return json_decode((string)$data, true, $this->decodeDepth, $this->decodeFlags);
     }
 }

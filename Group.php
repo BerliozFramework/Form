@@ -22,7 +22,7 @@ use InvalidArgumentException;
 
 class Group extends AbstractTraversableElement
 {
-    protected object|null $mapped;
+    protected object|null $mapped = null;
 
     /**
      * __debugInfo() magic method.

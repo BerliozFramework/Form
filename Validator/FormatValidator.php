@@ -28,7 +28,7 @@ class FormatValidator extends AbstractValidator implements ValidatorInterface
      *
      * @throws ValidatorException
      */
-    public function __construct(private string $format, string $constraint = FormatConstraint::class)
+    public function __construct(private readonly string $format, string $constraint = FormatConstraint::class)
     {
         parent::__construct($constraint);
     }

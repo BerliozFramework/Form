@@ -9,7 +9,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ApiDataProvider extends FormDataProvider
 {
-    public function __construct(private ?string $mapToElement = null)
+    public function __construct(private readonly ?string $mapToElement = null)
     {
     }
 

@@ -128,7 +128,7 @@ class Collection extends AbstractTraversableElement
     {
         // Complete by elements
         $nbElements = count($this);
-        $minElements = max($this->getOption('min_elements', 0), !is_null($nb) ? $nb : 0);
+        $minElements = max($this->getOption('min_elements', 0), $nb ?? 0);
 
         if (!is_null($this->getOption('max_elements'))) {
             $minElements = min($minElements, $this->getOption('max_elements'));

@@ -30,7 +30,7 @@ class BasicView implements ViewInterface
      * @param array $variables
      */
     public function __construct(
-        private ElementInterface $src,
+        private readonly ElementInterface $src,
         private array $variables = [],
     ) {
     }

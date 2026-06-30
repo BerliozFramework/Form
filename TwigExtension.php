@@ -22,7 +22,7 @@ use Twig\Error\Error;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-if (class_exists('Twig\\Extension\\AbstractExtension')) {
+if (class_exists(AbstractExtension::class)) {
     class TwigExtension extends AbstractExtension
     {
         public const DEFAULT_TPL = '@Berlioz-Form/default.html.twig';
@@ -32,7 +32,7 @@ if (class_exists('Twig\\Extension\\AbstractExtension')) {
          *
          * @param Environment $twig
          */
-        public function __construct(private Environment $twig)
+        public function __construct(private readonly Environment $twig)
         {
         }
 
@@ -85,14 +85,14 @@ if (class_exists('Twig\\Extension\\AbstractExtension')) {
             $functions = [];
 
             // Forms
-            $functions[] = new TwigFunction('form_render', [$this, 'functionFormRender'], ['is_safe' => ['html']]);
-            $functions[] = new TwigFunction('form_start', [$this, 'functionFormStart'], ['is_safe' => ['html']]);
-            $functions[] = new TwigFunction('form_end', [$this, 'functionFormEnd'], ['is_safe' => ['html']]);
-            $functions[] = new TwigFunction('form_errors', [$this, 'functionFormErrors'], ['is_safe' => ['html']]);
-            $functions[] = new TwigFunction('form_rest', [$this, 'functionFormRest'], ['is_safe' => ['html']]);
-            $functions[] = new TwigFunction('form_label', [$this, 'functionFormLabel'], ['is_safe' => ['html']]);
-            $functions[] = new TwigFunction('form_widget', [$this, 'functionFormWidget'], ['is_safe' => ['html']]);
-            $functions[] = new TwigFunction('form_row', [$this, 'functionFormRow'], ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_render', $this->functionFormRender(...), ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_start', $this->functionFormStart(...), ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_end', $this->functionFormEnd(...), ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_errors', $this->functionFormErrors(...), ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_rest', $this->functionFormRest(...), ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_label', $this->functionFormLabel(...), ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_widget', $this->functionFormWidget(...), ['is_safe' => ['html']]);
+            $functions[] = new TwigFunction('form_row', $this->functionFormRow(...), ['is_safe' => ['html']]);
 
             return $functions;
         }

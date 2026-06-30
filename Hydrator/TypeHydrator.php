@@ -25,7 +25,7 @@ class TypeHydrator extends AbstractHydrator
      *
      * @param TypeInterface $type
      */
-    public function __construct(private TypeInterface $type)
+    public function __construct(private readonly TypeInterface $type)
     {
     }
 
@@ -71,14 +71,14 @@ class TypeHydrator extends AbstractHydrator
         try {
             if (!b_set_property_value($mapped, $propertyName, $value)) {
                 throw new HydratorException(
-                    sprintf('Unable to set property "%s" on object "%s"', $propertyName, get_class($mapped))
+                    sprintf('Unable to set property "%s" on object "%s"', $propertyName, $mapped::class)
                 );
             }
         } catch (HydratorException $e) {
             throw $e;
         } catch (Exception $e) {
             throw new HydratorException(
-                sprintf('Unable to find property setter of "%s" on object "%s"', $propertyName, get_class($mapped)),
+                sprintf('Unable to find property setter of "%s" on object "%s"', $propertyName, $mapped::class),
                 0,
                 $e
             );

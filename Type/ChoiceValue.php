@@ -19,7 +19,7 @@ class ChoiceValue
     private string|int|float $label;
     private mixed $value;
     private mixed $finalValue;
-    private ?string $group;
+    private ?string $group = null;
     private array $attributes = [];
     private bool $preferred = false;
     private bool $selected = false;
