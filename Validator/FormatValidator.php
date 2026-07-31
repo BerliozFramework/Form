@@ -41,6 +41,11 @@ class FormatValidator extends AbstractValidator implements ValidatorInterface
         $value = $element->getValue();
         $constraints = [];
 
+        // A format match only makes sense on a scalar value
+        if (!is_scalar($value)) {
+            return [];
+        }
+
         if (empty($value)) {
             return [];
         }

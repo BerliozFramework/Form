@@ -37,7 +37,14 @@ class LengthValidator extends AbstractValidator implements ValidatorInterface
      */
     public function validate(ElementInterface $element): array
     {
-        $value = trim((string)$element->getValue());
+        $value = $element->getValue();
+
+        // A character length only makes sense on a scalar value
+        if (!is_scalar($value)) {
+            return [];
+        }
+
+        $value = trim((string)$value);
         $valueLength = mb_strlen($value);
         $attributes = $element->getOption('attributes', []);
         $minLength = $attributes['minlength'] ?? 0;

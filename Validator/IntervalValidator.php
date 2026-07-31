@@ -38,6 +38,12 @@ class IntervalValidator extends AbstractValidator implements ValidatorInterface
     public function validate(ElementInterface $element): array
     {
         $value = $element->getValue();
+
+        // An interval comparison only makes sense on a scalar value
+        if (!is_scalar($value)) {
+            return [];
+        }
+
         $attributes = $element->getOption('attributes', []);
         $minValue = $attributes['min'] ?? null;
         $maxValue = $attributes['max'] ?? null;
