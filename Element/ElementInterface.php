@@ -17,6 +17,7 @@ namespace Berlioz\Form\Element;
 use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\Exception\ValidatorException;
 use Berlioz\Form\Form;
+use Berlioz\Form\FormMapping;
 use Berlioz\Form\View\ViewInterface;
 
 interface ElementInterface
@@ -41,6 +42,23 @@ interface ElementInterface
      * @return string|null
      */
     public function getFormName(): ?string;
+
+    ///////////////
+    /// MAPPING ///
+    ///////////////
+
+    /**
+     * Get mapping strategy.
+     *
+     * Resolves the `mapped` option into a {@see FormMapping} strategy:
+     * - `false` returns `null` (element is not mapped);
+     * - a {@see FormMapping} instance is returned as-is;
+     * - a string is normalized to a property mapping on that name;
+     * - `true` (or absence) is normalized to a property mapping on {@see self::getName()}.
+     *
+     * @return FormMapping|null
+     */
+    public function getMapping(): ?FormMapping;
 
     ///////////////
     /// OPTIONS ///

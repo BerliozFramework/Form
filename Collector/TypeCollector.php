@@ -46,20 +46,20 @@ class TypeCollector extends AbstractCollector
             return null;
         }
 
-        $propertyName = $this->type->getOption('mapped');
-        if (!is_string($propertyName)) {
-            $propertyName = $this->type->getName();
+        // Not mapped
+        if (null === ($mapping = $this->type->getMapping())) {
+            return null;
         }
 
         try {
             $exists = false;
-            $value = b_get_property_value($mapped, $propertyName, $exists);
+            $value = $mapping->get($mapped, $exists);
 
             if (!$exists) {
                 throw new CollectorException(
                     sprintf(
                         'Unable to find getter method of "%s" property in mapped object "%s"',
-                        $propertyName,
+                        $this->type->getName(),
                         $mapped::class
                     )
                 );
@@ -71,8 +71,8 @@ class TypeCollector extends AbstractCollector
         } catch (Exception $exception) {
             throw new CollectorException(
                 sprintf(
-                    'Unable to find property getter of "%s" on object "%s"',
-                    $propertyName,
+                    'Unable to collect mapped value of "%s" on object "%s"',
+                    $this->type->getName(),
                     $mapped::class
                 ),
                 previous: $exception

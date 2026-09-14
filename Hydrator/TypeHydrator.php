@@ -46,10 +46,6 @@ class TypeHydrator extends AbstractHydrator
             return;
         }
 
-        if (!$this->type->getOption('mapped', true, true)) {
-            return;
-        }
-
         if ($this->type->getOption('disabled', false, true)) {
             return;
         }
@@ -62,23 +58,24 @@ class TypeHydrator extends AbstractHydrator
             return;
         }
 
-        $propertyName = $this->type->getOption('mapped');
-        if (!is_string($propertyName)) {
-            $propertyName = $this->type->getName();
+        // Not mapped
+        if (null === ($mapping = $this->type->getMapping())) {
+            return;
         }
+
         $value = $this->type->getFinalValue();
 
         try {
-            if (!b_set_property_value($mapped, $propertyName, $value)) {
+            if (!$mapping->set($mapped, $value)) {
                 throw new HydratorException(
-                    sprintf('Unable to set property "%s" on object "%s"', $propertyName, $mapped::class)
+                    sprintf('Unable to set mapped value of "%s" on object "%s"', $this->type->getName(), $mapped::class)
                 );
             }
         } catch (HydratorException $e) {
             throw $e;
         } catch (Exception $e) {
             throw new HydratorException(
-                sprintf('Unable to find property setter of "%s" on object "%s"', $propertyName, $mapped::class),
+                sprintf('Unable to set mapped value of "%s" on object "%s"', $this->type->getName(), $mapped::class),
                 0,
                 $e
             );

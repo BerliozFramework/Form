@@ -17,6 +17,7 @@ namespace Berlioz\Form\Element;
 use Berlioz\Form\Collection;
 use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\Form;
+use Berlioz\Form\FormMapping;
 use Berlioz\Form\Group;
 use Berlioz\Form\Transformer\DefaultTransformer;
 use Berlioz\Form\Transformer\TransformerInterface;
@@ -110,6 +111,36 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
     ///////////////
 
     /**
+     * @inheritDoc
+     */
+    public function getMapping(): ?FormMapping
+    {
+        $option = $this->getOption('mapped', true);
+
+        // Not mapped
+        if (false === $option) {
+            return null;
+        }
+
+        // Custom mapping strategy
+        if ($option instanceof FormMapping) {
+            return $option;
+        }
+
+        // Explicit property name (renaming)
+        if (is_string($option)) {
+            return FormMapping::forProperty($option);
+        }
+
+        // Default: property named after the public name
+        if (null === ($name = $this->getName())) {
+            return null;
+        }
+
+        return FormMapping::forProperty($name);
+    }
+
+    /**
      * Get mapped.
      *
      * @return mixed
@@ -148,8 +179,13 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
             return $mapped[$this->getName()] ?? null;
         }
 
+        // No mapping strategy
+        if (null === ($mapping = $this->getMapping())) {
+            return null;
+        }
+
         try {
-            return b_get_property_value($mapped, $this->getName());
+            return $mapping->get($mapped);
         } catch (Exception $exception) {
             throw new FormException(
                 sprintf('Unable to get value of "%s" input', $this->getName()),
