@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.0] - 2026-09-24
+
 ### Added
 
 - `FormMapping(get:, set:)` strategy accepted as the `mapped` option, allowing full control over how an
