@@ -19,6 +19,7 @@ use Berlioz\Form\Element\ElementInterface;
 use Berlioz\Form\Exception\FormException;
 use Berlioz\Form\View\TraversableView;
 use InvalidArgumentException;
+use stdClass;
 
 class Group extends AbstractTraversableElement
 {
@@ -179,6 +180,11 @@ class Group extends AbstractTraversableElement
      */
     public function submitValue(mixed $value): void
     {
+        // JSON object submitted with ApiDataProvider in strict JSON mode
+        if ($value instanceof stdClass) {
+            $value = get_object_vars($value);
+        }
+
         if (!is_array($value)) {
             throw new FormException('Invalid type of value, array attempted');
         }

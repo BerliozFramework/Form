@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `strictJson` option on `ApiDataProvider` to preserve JSON types: only the root object is converted to an array,
+  nested objects stay `stdClass` (a `{}` field is no longer confused with `[]`)
+- `Group::submitValue()` accepts a `stdClass` value
+
+### Deprecated
+
+- Constructing `ApiDataProvider` without `strictJson: true`; strict JSON will be the only behavior in v4
+
+### Fixed
+
+- `ApiDataProvider` ignores a scalar parsed body instead of throwing a `TypeError`
+
 ## [3.3.2] - 2026-10-25
 
 _No changes in this release._
