@@ -17,6 +17,7 @@ namespace Berlioz\Form\Type;
 use Berlioz\Form\Element\AbstractElement;
 use Berlioz\Form\Validator\FormatValidator;
 use Berlioz\Form\Validator\NotEmptyValidator;
+use Berlioz\Form\Validator\ScalarValidator;
 use Berlioz\Form\View\BasicView;
 use Berlioz\Form\View\ViewInterface;
 
@@ -128,6 +129,45 @@ abstract class AbstractType extends AbstractElement implements SimpleTypeInterfa
         if ($this->hasValidator(NotEmptyValidator::class) === false) {
             $this->addValidator(new NotEmptyValidator());
         }
+
+        // Scalar validator
+        if (true === $this->expectsScalarValue()) {
+            $scalar = $this->getOption('scalar');
+
+            if (null !== $scalar) {
+                trigger_error(
+                    match ((bool)$scalar) {
+                        true => sprintf(
+                            'The "scalar" option of form type "%s" is deprecated and will be removed in v4, ' .
+                            'non-scalar values are already rejected by default: remove the option.',
+                            $this->getName(),
+                        ),
+                        false => sprintf(
+                            'The "scalar" option of form type "%s" is deprecated and will be removed in v4, ' .
+                            'non-scalar values will always be rejected: use a Collection or a RawType instead.',
+                            $this->getName(),
+                        ),
+                    },
+                    E_USER_DEPRECATED,
+                );
+            }
+
+            if (false !== $scalar && $this->hasValidator(ScalarValidator::class) === false) {
+                $this->addValidator(new ScalarValidator());
+            }
+        }
+    }
+
+    /**
+     * Expects a scalar value?
+     *
+     * Types handling non-scalar values by design (files, multiple choices) return false.
+     *
+     * @return bool
+     */
+    protected function expectsScalarValue(): bool
+    {
+        return true;
     }
 
     /**

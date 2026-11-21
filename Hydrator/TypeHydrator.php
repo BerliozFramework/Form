@@ -16,6 +16,7 @@ namespace Berlioz\Form\Hydrator;
 
 use Berlioz\Form\Exception\HydratorException;
 use Berlioz\Form\Type\TypeInterface;
+use Berlioz\Form\Validator\ScalarValidator;
 use Exception;
 
 class TypeHydrator extends AbstractHydrator
@@ -55,6 +56,12 @@ class TypeHydrator extends AbstractHydrator
         }
 
         if (false === $this->type->isSubmitted()) {
+            return;
+        }
+
+        // Rejected non-scalar value, do not corrupt the mapped object
+        if (true === $this->type->hasValidator(ScalarValidator::class) &&
+            false === ScalarValidator::isAccepted($this->type->getValue())) {
             return;
         }
 

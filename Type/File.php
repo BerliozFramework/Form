@@ -59,6 +59,14 @@ class File extends AbstractMultipleType
 
     /**
      * @inheritDoc
+     */
+    protected function expectsScalarValue(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
      * @todo Add validator for accept attribute
      */
     public function build(): void

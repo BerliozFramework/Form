@@ -13,14 +13,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   nested objects stay `stdClass` (a `{}` field is no longer confused with `[]`)
 - `Group::submitValue()` accepts a `stdClass` value
 - `ApiDataProvider` handles `PATCH` and `DELETE` requests, like `FormDataProvider`
+- `ScalarValidator` and `ScalarConstraint`, rejecting non-scalar values (arrays, objects) submitted to a simple type
 
 ### Deprecated
 
 - Constructing `ApiDataProvider` without `strictJson: true`; strict JSON will be the only behavior in v4
+- `scalar` option of simple types: `false` disables the non-scalar check, `true` is redundant; the option will be
+  removed in v4 and non-scalar values always rejected, use a `Collection` or a `RawType` instead
 
 ### Fixed
 
 - `ApiDataProvider` ignores a scalar parsed body instead of throwing a `TypeError`
+
+### Changed
+
+- Simple types (`Text`, `Number`, `Date`, `Hidden`, ...) now reject non-scalar submitted values by default with a
+  `ScalarConstraint`, and no longer hydrate them into the mapped object (previously a `TypeError` on typed setters or
+  properties). `File` and `Choice` are not affected
+
 
 ## [3.3.2] - 2026-10-25
 

@@ -473,6 +473,14 @@ class Choice extends AbstractMultipleType
 
     /**
      * @inheritDoc
+     */
+    protected function expectsScalarValue(): bool
+    {
+        return false;
+    }
+
+    /**
+     * @inheritDoc
      * @throws TypeException
      */
     public function buildView(): ViewInterface
