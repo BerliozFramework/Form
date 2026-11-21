@@ -48,7 +48,7 @@ class ApiDataProvider extends FormDataProvider
      */
     public function handle(ServerRequestInterface $request, Form $form): array|false
     {
-        if (false === in_array(strtolower($request->getMethod()), ['post', 'put'])) {
+        if (false === in_array(strtolower($request->getMethod()), ['delete', 'patch', 'post', 'put'])) {
             return false;
         }
 

@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `strictJson` option on `ApiDataProvider` to preserve JSON types: only the root object is converted to an array,
   nested objects stay `stdClass` (a `{}` field is no longer confused with `[]`)
 - `Group::submitValue()` accepts a `stdClass` value
+- `ApiDataProvider` handles `PATCH` and `DELETE` requests, like `FormDataProvider`
 
 ### Deprecated
 
