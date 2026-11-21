@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   nested objects stay `stdClass` (a `{}` field is no longer confused with `[]`)
 - `Group::submitValue()` accepts a `stdClass` value
 - `ApiDataProvider` handles `PATCH` and `DELETE` requests, like `FormDataProvider`
+- `FormDataProvider` and `ApiDataProvider` read submitted data from the body of `QUERY` requests (RFC 10008)
 - `ScalarValidator` and `ScalarConstraint`, rejecting non-scalar values (arrays, objects) submitted to a simple type
 
 ### Deprecated

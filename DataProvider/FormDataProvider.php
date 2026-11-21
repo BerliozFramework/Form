@@ -37,6 +37,7 @@ class FormDataProvider implements DataProviderInterface
             case 'patch':
             case 'post':
             case 'put':
+            case 'query':
                 $parsedBody = $request->getParsedBody();
                 false === is_array($parsedBody) && $parsedBody = [];
 
