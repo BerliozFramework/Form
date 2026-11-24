@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.4.0] - 2026-11-24
+
 ### Added
 
 - `strictJson` option on `ApiDataProvider` to preserve JSON types: only the root object is converted to an array,
@@ -46,7 +48,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   hydrators extending it must implement `plan()` instead of `hydrate()`
 - `AbstractHydrator::getSubMapped()` has a fourth parameter `?HydrationQueue $queue = null` and
   `AbstractHydrator::locateHydrator()` returns `AbstractHydrator`: overriding subclasses must match
-
 
 ## [3.3.2] - 2026-10-25
 
