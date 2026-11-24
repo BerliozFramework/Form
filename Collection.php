@@ -271,7 +271,7 @@ class Collection extends AbstractTraversableElement
             $this[$keyToDelete]->setParent(null);
 
             // Callback
-            $this->callCallback('remove', $this, $this[$keyToDelete]);
+            $this->callSubmitCallback('remove', $this[$keyToDelete]);
 
             unset($this[$keyToDelete]);
         }
@@ -291,7 +291,27 @@ class Collection extends AbstractTraversableElement
             $element->build();
 
             // Callback
-            $this->callCallback('add', $this, $element);
+            $this->callSubmitCallback('add', $element);
+        }
+    }
+
+    /**
+     * Call a submission callback, deferred until the form applies the submission if needed.
+     *
+     * @param string $type
+     * @param ElementInterface $element
+     *
+     * @return void
+     * @throws FormException
+     */
+    private function callSubmitCallback(string $type, ElementInterface $element): void
+    {
+        $deferred = $this->getForm()?->deferCallback(
+            fn() => $this->callCallback($type, $this, $element)
+        );
+
+        if (true !== $deferred) {
+            $this->callCallback($type, $this, $element);
         }
     }
 

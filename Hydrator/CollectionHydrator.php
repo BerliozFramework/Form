@@ -42,7 +42,7 @@ class CollectionHydrator extends AbstractHydrator
     /**
      * @inheritDoc
      */
-    public function hydrate(mixed &$mapped = null): void
+    public function plan(mixed $mapped, HydrationQueue $queue): void
     {
         if (!$this->getElement()->getOption('mapped', true, true)) {
             return;
@@ -60,7 +60,7 @@ class CollectionHydrator extends AbstractHydrator
             return;
         }
 
-        $subMapped = $this->getSubMapped($this->getElement(), $mapped) ?? [];
+        $subMapped = $this->getSubMapped($this->getElement(), $mapped, queue: $queue) ?? [];
         $isArray = is_array($subMapped);
         $isArrayAccess = $subMapped instanceof ArrayAccess;
 
@@ -83,8 +83,17 @@ class CollectionHydrator extends AbstractHydrator
         }
 
         // Delete old submapped values
-        foreach ($removeKey as $key) {
-            unset($subMapped[$key]);
+        if ($isArray) {
+            foreach ($removeKey as $key) {
+                unset($subMapped[$key]);
+            }
+        }
+        if ($isArrayAccess && count($removeKey) > 0) {
+            $queue->add(function () use ($subMapped, $removeKey): void {
+                foreach ($removeKey as $key) {
+                    unset($subMapped[$key]);
+                }
+            });
         }
 
         /** @var ElementInterface $element */
@@ -94,19 +103,22 @@ class CollectionHydrator extends AbstractHydrator
             }
 
             $obj = $this->createObject($prototype);
-            if (!isset($subMapped[$key]) && null !== $obj) {
-                $subMapped[$key] = $obj;
-            }
 
             if (null !== $obj) {
+                if (isset($subMapped[$key])) {
+                    $obj = $subMapped[$key];
+                } else {
+                    $this->setItem($subMapped, $key, $obj, $queue);
+                }
+
                 $hydrator = $this->locateHydrator($element);
                 if (!$hydrator instanceof TypeHydrator) {
-                    $hydrator->hydrate($subMapped[$key]);
+                    $hydrator->plan($obj, $queue);
                 }
                 continue;
             }
 
-            $subMapped[$key] = $element->getFinalValue();
+            $this->setItem($subMapped, $key, $element->getFinalValue(), $queue);
         }
 
         // Is array? Need to set array, because no reference on arrays.
@@ -115,14 +127,55 @@ class CollectionHydrator extends AbstractHydrator
 
             try {
                 $subMapped = $this->collection->getTransformer()->fromForm($subMapped, $this->collection);
-                b_set_property_value($mapped, $propertyName, $subMapped);
             } catch (Exception $e) {
                 throw new HydratorException(
-                    sprintf('Unable to find property setter of "%s" on object "%s"', $propertyName, $mapped::class),
+                    sprintf('Unable to transform value of collection "%s"', $propertyName),
                     0,
                     $e
                 );
             }
+
+            $queue->add(function () use ($mapped, $propertyName, $subMapped): void {
+                try {
+                    b_set_property_value($mapped, $propertyName, $subMapped);
+                } catch (Exception $e) {
+                    throw new HydratorException(
+                        sprintf(
+                            'Unable to find property setter of "%s" on object "%s"',
+                            $propertyName,
+                            $mapped::class
+                        ),
+                        0,
+                        $e
+                    );
+                }
+            });
         }
+    }
+
+    /**
+     * Set an item of collection.
+     *
+     * Arrays are local copies, so they are modified directly and written back at the end of planning;
+     * \ArrayAccess objects are shared, so the write is queued.
+     *
+     * @param array|ArrayAccess $subMapped
+     * @param int|string $key
+     * @param mixed $value
+     * @param HydrationQueue $queue
+     *
+     * @return void
+     */
+    private function setItem(array|ArrayAccess &$subMapped, int|string $key, mixed $value, HydrationQueue $queue): void
+    {
+        if (is_array($subMapped)) {
+            $subMapped[$key] = $value;
+            return;
+        }
+
+        $collection = $subMapped;
+        $queue->add(function () use ($collection, $key, $value): void {
+            $collection[$key] = $value;
+        });
     }
 }

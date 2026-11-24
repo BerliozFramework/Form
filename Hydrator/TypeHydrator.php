@@ -41,7 +41,7 @@ class TypeHydrator extends AbstractHydrator
     /**
      * @inheritDoc
      */
-    public function hydrate(mixed &$mapped = null): void
+    public function plan(mixed $mapped, HydrationQueue $queue): void
     {
         if (null === $mapped) {
             return;
@@ -72,20 +72,28 @@ class TypeHydrator extends AbstractHydrator
 
         $value = $this->type->getFinalValue();
 
-        try {
-            if (!$mapping->set($mapped, $value)) {
+        $queue->add(function () use ($mapping, $mapped, $value): void {
+            try {
+                $written = $mapping->set($mapped, $value);
+            } catch (HydratorException $e) {
+                throw $e;
+            } catch (Exception $e) {
+                throw new HydratorException(
+                    sprintf(
+                        'Unable to set mapped value of "%s" on object "%s"',
+                        $this->type->getName(),
+                        $mapped::class
+                    ),
+                    0,
+                    $e
+                );
+            }
+
+            if (!$written) {
                 throw new HydratorException(
                     sprintf('Unable to set mapped value of "%s" on object "%s"', $this->type->getName(), $mapped::class)
                 );
             }
-        } catch (HydratorException $e) {
-            throw $e;
-        } catch (Exception $e) {
-            throw new HydratorException(
-                sprintf('Unable to set mapped value of "%s" on object "%s"', $this->type->getName(), $mapped::class),
-                0,
-                $e
-            );
-        }
+        });
     }
 }

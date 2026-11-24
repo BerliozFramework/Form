@@ -39,7 +39,7 @@ class GroupHydrator extends AbstractHydrator
     /**
      * @inheritDoc
      */
-    public function hydrate(mixed &$mapped = null): void
+    public function plan(mixed $mapped, HydrationQueue $queue): void
     {
         $subMapped = null;
 
@@ -62,13 +62,13 @@ class GroupHydrator extends AbstractHydrator
 
         // If mapped object, and sub mapped not already defined
         if (null !== $mapped && null === $subMapped && $this->getElement()->getOption('mapped', true, true)) {
-            $subMapped = $this->getSubMapped($this->getElement(), $mapped);
+            $subMapped = $this->getSubMapped($this->getElement(), $mapped, queue: $queue);
         }
 
         /** @var ElementInterface $element */
         foreach ($this->group as $element) {
             $hydrator = $this->locateHydrator($element);
-            $hydrator->hydrate($subMapped);
+            $hydrator->plan($subMapped, $queue);
         }
     }
 }
