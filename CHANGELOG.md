@@ -25,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - `ApiDataProvider` ignores a scalar parsed body instead of throwing a `TypeError`
+- `isValid()` takes into account constraints added with `invalid()`, on the element and its parents;
+  `resetConstraints()` (now part of `ValidatorHandlerInterface`) clears them recursively, `Form::handle()` resets
+  them, and cloned elements (including `Collection` entries) no longer copy the constraints of the original
 
 ### Changed
 

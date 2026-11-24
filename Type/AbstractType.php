@@ -31,6 +31,7 @@ abstract class AbstractType extends AbstractElement implements SimpleTypeInterfa
      */
     public function __clone()
     {
+        parent::__clone();
         $this->value = null;
     }
 

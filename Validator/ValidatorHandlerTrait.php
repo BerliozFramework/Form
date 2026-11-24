@@ -58,10 +58,10 @@ trait ValidatorHandlerTrait
                 }
             }
 
-            return $childrenValid && empty($this->constraints);
+            return $childrenValid && empty($this->getConstraints());
         }
 
-        return empty($this->constraints);
+        return empty($this->getConstraints());
     }
 
     /**
@@ -113,11 +113,12 @@ trait ValidatorHandlerTrait
     }
 
     /**
-     * Reset constraints.
+     * @inheritDoc
      */
     public function resetConstraints(): void
     {
         $this->constraints = [];
+        $this->invalidated = [];
     }
 
     /**

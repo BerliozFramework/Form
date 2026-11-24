@@ -49,7 +49,17 @@ interface ValidatorHandlerInterface
     public function getConstraints(): array;
 
     /**
+     * Reset constraints, including manual ones added with invalid().
+     *
+     * Traversable elements also reset their children.
+     */
+    public function resetConstraints(): void;
+
+    /**
      * Invalid.
+     *
+     * Manually add not respected constraints: the element is invalid until resetConstraints() is called,
+     * the form is handled again or the element is cloned.
      *
      * @param ConstraintInterface ...$constraint
      */

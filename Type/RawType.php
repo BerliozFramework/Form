@@ -29,6 +29,7 @@ class RawType extends AbstractElement implements TypeInterface
      */
     public function __clone()
     {
+        parent::__clone();
         $this->value = null;
     }
 

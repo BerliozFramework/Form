@@ -47,6 +47,15 @@ abstract class AbstractElement implements ElementInterface, ValidatorHandlerInte
         $this->transformer = $options['transformer'] ?? new DefaultTransformer();
     }
 
+    /**
+     * __clone() magic method.
+     */
+    public function __clone()
+    {
+        $this->constraints = [];
+        $this->invalidated = [];
+    }
+
     /////////////////
     /// ID & NAME ///
     /////////////////

@@ -16,6 +16,7 @@ namespace Berlioz\Form\Element;
 
 use ArrayIterator;
 use Berlioz\Form\Exception\FormException;
+use Berlioz\Form\Validator\ValidatorHandlerInterface;
 use Berlioz\Form\View\TraversableView;
 use InvalidArgumentException;
 
@@ -28,9 +29,25 @@ abstract class AbstractTraversableElement extends AbstractElement implements Tra
      */
     public function __clone()
     {
+        parent::__clone();
+
         foreach ($this->list as &$element) {
             $element = clone $element;
             $element->setParent($this);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function resetConstraints(): void
+    {
+        parent::resetConstraints();
+
+        foreach ($this->list as $element) {
+            if ($element instanceof ValidatorHandlerInterface) {
+                $element->resetConstraints();
+            }
         }
     }
 
